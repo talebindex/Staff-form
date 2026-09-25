@@ -14,11 +14,13 @@
 
   <div class="max-w-2xl mx-auto bg-white p-4 sm:p-8 rounded-xl shadow-lg border-t-8 border-purple-800 my-2 sm:my-6">
     
-    <!-- ==================== الهيدر وشعار المدرسة ==================== -->
+    <!-- الهيدر مع شعار المدرسة -->
     <div class="text-center mb-6">
       <img src="https://lh3.googleusercontent.com/d/16UFKJgx0WDC_7CvQdf5vlB-SnTSlgT19" 
            alt="شعار المدرسة" 
-           class="h-28 mx-auto mb-3 object-contain drop-shadow-md">
+           class="h-24 mx-auto mb-3 object-contain drop-shadow-md"
+           onerror="this.style.display='none'">
+           
       <h1 class="text-xl sm:text-2xl font-bold text-purple-900 mb-2">استمارة معلومات الكادر الخاصة بالعقود</h1>
       <p class="text-gray-700 font-semibold text-xs sm:text-sm">استمارة خاصة لكادر ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين</p>
     </div>
@@ -73,7 +75,8 @@
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">رقم البطاقة الموحدة <span class="star">*</span></label>
-        <input type="text" id="idNumber2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <input type="text" id="idNumber2" pattern="[0-9]{12}" maxlength="12" placeholder="أدخل 12 رقماً باللغة الإنجليزية (مثلاً: 202612345678)" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم البطاقة الموحدة من 12 رقماً باللغة الإنجليزية حصراً">
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب كتابة 12 رقماً باللغة الإنجليزية (0-9).</p>
       </div>
 
       <div>
@@ -131,7 +134,20 @@
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">الحالة الوظيفية <span class="star">*</span></label>
-        <input type="text" id="jobStatus2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <select id="jobStatus2" onchange="toggleLeaveType(2)" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+          <option value="">اختر الحالة الوظيفية...</option>
+          <option value="مستمر">مستمر</option>
+          <option value="مفصول">مفصول</option>
+          <option value="في إجازة أمومة">في إجازة أمومة</option>
+          <option value="في إجازة دراسية">في إجازة دراسية</option>
+          <option value="إجازة أخرى">إجازة أخرى</option>
+        </select>
+      </div>
+
+      <!-- حقل نوع الإجازة (يظهر فقط عند اختيار "إجازة أخرى") -->
+      <div id="leaveTypeContainer2" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
+        <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
+        <input type="text" id="jobStatusOther2" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
       </div>
 
       <div>
@@ -151,37 +167,29 @@
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">تاريخ التخرج</label>
-        <input type="date" id="gradDate2" class="w-full p-2.5 border rounded text-sm sm:text-base">
+        <input type="text" id="gradDate2" placeholder="2015-2016" pattern="[0-9/-]+" title="يرجى استخدام الأرقام والرموز باللغة الإنجليزية فقط" class="w-full p-2.5 border rounded text-sm sm:text-base">
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
       </div>
 
-      <!-- وثيقة التخرج المدرسين -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة لوثيقة التخرج</label>
-        <div class="my-1 text-center bg-white p-2 border rounded">
-          <p class="text-xs text-purple-700 font-bold mb-1">📷 صورة توضيحية لوثيقة التخرج:</p>
-          <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="توضيح وثيقة التخرج" class="max-h-40 rounded border shadow-sm mx-auto">
-        </div>
-        <input type="file" id="gradDoc2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
+        <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
+        <input type="file" id="gradDoc2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
       <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ اول تعيين <span class="star">*</span></label>
+        <label class="block font-semibold text-sm sm:text-base">تاريخ أول تعيين <span class="star">*</span></label>
         <input type="date" id="firstAppDate2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- الأمر الإداري المدرسين -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الامامي للامر الاداري <span class="star">*</span></label>
-        <div class="my-1 text-center bg-white p-2 border rounded">
-          <p class="text-xs text-purple-700 font-bold mb-1">📷 صورة توضيحية للأمر الإداري:</p>
-          <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="توضيح الأمر الإداري" class="max-h-40 rounded border shadow-sm mx-auto">
-        </div>
+        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
         <input type="file" id="adminOrder2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">رقم الهاتف <span class="star">*</span></label>
-        <input type="tel" id="phone2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <input type="text" id="phone2" pattern="[0-9]{11}" maxlength="11" placeholder="07801234567" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم الهاتف من 11 رقماً باللغة الإنجليزية حصراً">
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب إدخال 11 رقماً باللغة الإنجليزية فقط (0-9).</p>
       </div>
 
       <div>
@@ -194,13 +202,8 @@
         <input type="text" id="landmark2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- أمر المباشرة المدرسين -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
-        <div class="my-1 text-center bg-white p-2 border rounded">
-          <p class="text-xs text-purple-700 font-bold mb-1">📷 صورة توضيحية لكتاب المباشرة:</p>
-          <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="توضيح المباشرة" class="max-h-40 rounded border shadow-sm mx-auto">
-        </div>
         <input type="file" id="commencementOrder2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
       </div>
 
@@ -247,7 +250,8 @@
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">رقم البطاقة الموحدة <span class="star">*</span></label>
-        <input type="text" id="idNumber3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <input type="text" id="idNumber3" pattern="[0-9]{12}" maxlength="12" placeholder="أدخل 12 رقماً باللغة الإنجليزية" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم البطاقة الموحدة من 12 رقماً باللغة الإنجليزية حصراً">
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب كتابة 12 رقماً باللغة الإنجليزية (0-9).</p>
       </div>
 
       <div>
@@ -300,17 +304,33 @@
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">العنوان الوظيفي <span class="star">*</span></label>
-        <input type="text" id="jobTitle3" placeholder="مثلاً: كاتب / معاون ملاحظ / حارس..." class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <select id="jobTitle3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+          <option value="">اختر العنوان الوظيفي...</option>
+          <option value="كاتب">كاتب</option>
+          <option value="ملاحظ">ملاحظ</option>
+          <option value="معاون ملاحظ">معاون ملاحظ</option>
+          <option value="حرفي">حرفي</option>
+          <option value="موظف خدمات">موظف خدمات</option>
+          <option value="حارس">حارس</option>
+        </select>
       </div>
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">الحالة الوظيفية <span class="star">*</span></label>
-        <input type="text" id="jobStatus3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <select id="jobStatus3" onchange="toggleLeaveType(3)" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+          <option value="">اختر الحالة الوظيفية...</option>
+          <option value="مستمر">مستمر</option>
+          <option value="مفصول">مفصول</option>
+          <option value="في إجازة أمومة">في إجازة أمومة</option>
+          <option value="في إجازة دراسية">في إجازة دراسية</option>
+          <option value="إجازة أخرى">إجازة أخرى</option>
+        </select>
       </div>
 
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">أخرى (نوع الإجازة / ملاحظات):</label>
-        <input type="text" id="jobStatusOther3" class="w-full p-2.5 border rounded text-sm sm:text-base">
+      <!-- حقل نوع الإجازة (يظهر فقط عند اختيار "إجازة أخرى") -->
+      <div id="leaveTypeContainer3" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
+        <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
+        <input type="text" id="jobStatusOther3" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
       </div>
 
       <div>
@@ -329,22 +349,29 @@
       </div>
 
       <div>
-        <label class="block font-semibold text-sm sm:text-base">رقم الهاتف <span class="star">*</span></label>
-        <input type="tel" id="phone3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <label class="block font-semibold text-sm sm:text-base">تاريخ التخرج</label>
+        <input type="text" id="gradDate3" placeholder="2015-2016" pattern="[0-9/-]+" title="يرجى استخدام الأرقام والرموز باللغة الإنجليزية فقط" class="w-full p-2.5 border rounded text-sm sm:text-base">
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
+      </div>
+
+      <div class="border p-3 rounded bg-gray-50 space-y-2">
+        <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
+        <input type="file" id="gradDoc3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
       <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ اول تعيين <span class="star">*</span></label>
+        <label class="block font-semibold text-sm sm:text-base">رقم الهاتف <span class="star">*</span></label>
+        <input type="text" id="phone3" pattern="[0-9]{11}" maxlength="11" placeholder="07801234567" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم الهاتف من 11 رقماً باللغة الإنجليزية حصراً">
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب إدخال 11 رقماً باللغة الإنجليزية فقط (0-9).</p>
+      </div>
+
+      <div>
+        <label class="block font-semibold text-sm sm:text-base">تاريخ أول تعيين <span class="star">*</span></label>
         <input type="date" id="firstAppDate3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- الأمر الإداري الموظفين -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الامامي للامر الاداري <span class="star">*</span></label>
-        <div class="my-1 text-center bg-white p-2 border rounded">
-          <p class="text-xs text-purple-700 font-bold mb-1">📷 صورة توضيحية للأمر الإداري:</p>
-          <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="توضيح الأمر الإداري" class="max-h-40 rounded border shadow-sm mx-auto">
-        </div>
+        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
         <input type="file" id="adminOrder3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
@@ -358,13 +385,8 @@
         <input type="text" id="landmark3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- أمر المباشرة الموظفين -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
-        <div class="my-1 text-center bg-white p-2 border rounded">
-          <p class="text-xs text-purple-700 font-bold mb-1">📷 صورة توضيحية لكتاب المباشرة:</p>
-          <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="توضيح المباشرة" class="max-h-40 rounded border shadow-sm mx-auto">
-        </div>
         <input type="file" id="commencementOrder3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
       </div>
 
@@ -377,7 +399,7 @@
     <!-- شاشة التحميل -->
     <div id="loading" class="hidden-section text-center py-6">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-800 mb-2"></div>
-      <p class="text-purple-900 font-bold text-base sm:text-lg">جاري رفع المستمسكات بجودة عالية، يرجى الانتظار... ⏳</p>
+      <p class="text-purple-900 font-bold text-base sm:text-lg">جاري رفع المستمسكات وإرسال البيانات، يرجى الانتظار... ⏳</p>
     </div>
 
     <!-- شاشة النجاح -->
@@ -419,7 +441,22 @@
       }
     }
 
-    // دالة لتحسين وتصغير أبعاد الصور مع الحفاظ على الجودة العالية (2000px ودقة 90%)
+    // إظهار حقل نوع الإجازة فقط عند اختيار "إجازة أخرى" بالتحديد
+    function toggleLeaveType(sec) {
+      const statusSelect = document.getElementById(`jobStatus${sec}`).value;
+      const leaveContainer = document.getElementById(`leaveTypeContainer${sec}`);
+      const leaveInput = document.getElementById(`jobStatusOther${sec}`);
+
+      if (statusSelect === 'إجازة أخرى') {
+        leaveContainer.classList.remove('hidden-section');
+        leaveInput.setAttribute('required', 'required');
+      } else {
+        leaveContainer.classList.add('hidden-section');
+        leaveInput.removeAttribute('required');
+        leaveInput.value = '';
+      }
+    }
+
     function compressAndConvertToBase64(fileInputId) {
       return new Promise((resolve) => {
         const input = document.getElementById(fileInputId);
@@ -492,7 +529,7 @@
           bloodType: getVal(`bloodType${sec}`),
           socialStatus: getVal(`socialStatus${sec}`),
           religion: getVal(`religion${sec}`),
-          jobTitle: getVal(`jobTitle${sec}`),
+          jobTitle: sec === 2 ? 'مدرس' : getVal(`jobTitle${sec}`),
           jobStatus: getVal(`jobStatus${sec}`),
           jobStatusOther: getVal(`jobStatusOther${sec}`),
           qualification: getVal(`qualification${sec}`),
