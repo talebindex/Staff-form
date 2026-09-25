@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استمارة معلومات الكادر الخاصة بالعقود</title>
+  <!-- أيقونة الموقع (شعار المدرسة) -->
+  <link rel="icon" type="image/jpeg" href="https://lh3.googleusercontent.com/d/16UFKJgx0WDC_7CvQdf5vlB-SnTSlgT19">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .hidden-section { display: none !important; }
@@ -18,7 +20,7 @@
     <div class="text-center mb-6">
       <img src="https://lh3.googleusercontent.com/d/16UFKJgx0WDC_7CvQdf5vlB-SnTSlgT19" 
            alt="شعار المدرسة" 
-           class="h-24 mx-auto mb-3 object-contain drop-shadow-md"
+           class="h-28 mx-auto mb-3 object-contain drop-shadow-md"
            onerror="this.style.display='none'">
            
       <h1 class="text-xl sm:text-2xl font-bold text-purple-900 mb-2">استمارة معلومات الكادر الخاصة بالعقود</h1>
@@ -75,7 +77,7 @@
 
       <div>
         <label class="block font-semibold text-sm sm:text-base">رقم البطاقة الموحدة <span class="star">*</span></label>
-        <input type="text" id="idNumber2" pattern="[0-9]{12}" maxlength="12" placeholder="أدخل 12 رقماً باللغة الإنجليزية (مثلاً: 202612345678)" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم البطاقة الموحدة من 12 رقماً باللغة الإنجليزية حصراً">
+        <input type="text" id="idNumber2" pattern="[0-9]{12}" maxlength="12" placeholder="أدخل 12 رقماً باللغة الإنجليزية" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم البطاقة الموحدة من 12 رقماً باللغة الإنجليزية حصراً">
         <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب كتابة 12 رقماً باللغة الإنجليزية (0-9).</p>
       </div>
 
@@ -171,8 +173,13 @@
         <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
       </div>
 
+      <!-- صورة وثيقة التخرج مع الصورة التوضيحية -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
+        <div class="my-2 text-center">
+          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة لوثيقة التخرج للتوضيح:</p>
+          <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-40 mx-auto rounded border shadow-sm">
+        </div>
         <input type="file" id="gradDoc2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
@@ -181,8 +188,13 @@
         <input type="date" id="firstAppDate2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
+      <!-- صورة الأمر الإداري مع الصورة التوضيحية -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
+        <div class="my-2 text-center">
+          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للأمر الإداري للتوضيح:</p>
+          <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-40 mx-auto rounded border shadow-sm">
+        </div>
         <input type="file" id="adminOrder2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
@@ -202,8 +214,13 @@
         <input type="text" id="landmark2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
+      <!-- صورة أمر المباشرة مع الصورة التوضيحية -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
+        <div class="my-2 text-center">
+          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للوجه الخلفي لأمر المباشرة للتوضيح:</p>
+          <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-40 mx-auto rounded border shadow-sm">
+        </div>
         <input type="file" id="commencementOrder2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
       </div>
 
@@ -354,8 +371,13 @@
         <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
       </div>
 
+      <!-- صورة وثيقة التخرج مع الصورة التوضيحية -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
+        <div class="my-2 text-center">
+          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة لوثيقة التخرج للتوضيح:</p>
+          <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-40 mx-auto rounded border shadow-sm">
+        </div>
         <input type="file" id="gradDoc3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
@@ -370,8 +392,13 @@
         <input type="date" id="firstAppDate3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
+      <!-- صورة الأمر الإداري مع الصورة التوضيحية -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
+        <div class="my-2 text-center">
+          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للأمر الإداري للتوضيح:</p>
+          <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-40 mx-auto rounded border shadow-sm">
+        </div>
         <input type="file" id="adminOrder3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
       </div>
 
@@ -385,8 +412,13 @@
         <input type="text" id="landmark3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
+      <!-- صورة أمر المباشرة مع الصورة التوضيحية -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
+        <div class="my-2 text-center">
+          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للوجه الخلفي لأمر المباشرة للتوضيح:</p>
+          <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-40 mx-auto rounded border shadow-sm">
+        </div>
         <input type="file" id="commencementOrder3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
       </div>
 
@@ -441,7 +473,6 @@
       }
     }
 
-    // إظهار حقل نوع الإجازة فقط عند اختيار "إجازة أخرى" بالتحديد
     function toggleLeaveType(sec) {
       const statusSelect = document.getElementById(`jobStatus${sec}`).value;
       const leaveContainer = document.getElementById(`leaveTypeContainer${sec}`);
