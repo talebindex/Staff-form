@@ -59,6 +59,7 @@
       <div>
         <label class="block font-semibold text-sm sm:text-base">اللقب <span class="star">*</span></label>
         <input type="text" id="title2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: إذا كان المدرس لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
       </div>
 
       <div>
@@ -146,7 +147,7 @@
         </select>
       </div>
 
-      <!-- حقل نوع الإجازة (يظهر فقط عند اختيار "إجازة أخرى") -->
+      <!-- حقل نوع الإجازة -->
       <div id="leaveTypeContainer2" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
         <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
         <input type="text" id="jobStatusOther2" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
@@ -168,12 +169,12 @@
       </div>
 
       <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ التخرج</label>
-        <input type="text" id="gradDate2" placeholder="2015-2016" pattern="[0-9/-]+" title="يرجى استخدام الأرقام والرموز باللغة الإنجليزية فقط" class="w-full p-2.5 border rounded text-sm sm:text-base">
+        <label class="block font-semibold text-sm sm:text-base">تاريخ التخرج <span class="star">*</span></label>
+        <input type="text" id="gradDate2" placeholder="2015-2016" pattern="[0-9/-]+" title="يرجى استخدام الأرقام والرموز باللغة الإنجليزية فقط" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
         <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
       </div>
 
-      <!-- صورة وثيقة التخرج مع الصورة التوضيحية -->
+      <!-- صورة وثيقة التخرج -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
         <div class="my-2 text-center">
@@ -186,9 +187,10 @@
       <div>
         <label class="block font-semibold text-sm sm:text-base">تاريخ أول تعيين <span class="star">*</span></label>
         <input type="date" id="firstAppDate2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <p class="text-xs text-gray-500 mt-1">ملاحظه: تاريخ اول امر اداري صادر من التربيه..</p>
       </div>
 
-      <!-- صورة الأمر الإداري مع الصورة التوضيحية -->
+      <!-- صورة الأمر الإداري -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
         <div class="my-2 text-center">
@@ -205,7 +207,7 @@
       </div>
 
       <div>
-        <label class="block font-semibold text-sm sm:text-base">عنوان السكن <span class="star">*</span></label>
+        <label class="block font-semibold text-sm sm:text-base">عنوان السكن (المدينة / القرية) <span class="star">*</span></label>
         <input type="text" id="address2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
@@ -214,7 +216,7 @@
         <input type="text" id="landmark2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- صورة أمر المباشرة مع الصورة التوضيحية -->
+      <!-- صورة أمر المباشرة -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
         <div class="my-2 text-center">
@@ -244,6 +246,7 @@
       <div>
         <label class="block font-semibold text-sm sm:text-base">اللقب <span class="star">*</span></label>
         <input type="text" id="title3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <p class="text-xs text-gray-500 mt-1">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
       </div>
 
       <div>
@@ -344,7 +347,7 @@
         </select>
       </div>
 
-      <!-- حقل نوع الإجازة (يظهر فقط عند اختيار "إجازة أخرى") -->
+      <!-- حقل نوع الإجازة -->
       <div id="leaveTypeContainer3" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
         <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
         <input type="text" id="jobStatusOther3" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
@@ -371,14 +374,14 @@
         <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
       </div>
 
-      <!-- صورة وثيقة التخرج مع الصورة التوضيحية -->
+      <!-- صورة وثيقة التخرج (غير إجباري للموظف) -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
+        <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج</label>
         <div class="my-2 text-center">
           <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة لوثيقة التخرج للتوضيح:</p>
           <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-40 mx-auto rounded border shadow-sm">
         </div>
-        <input type="file" id="gradDoc3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
+        <input type="file" id="gradDoc3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
       </div>
 
       <div>
@@ -390,9 +393,10 @@
       <div>
         <label class="block font-semibold text-sm sm:text-base">تاريخ أول تعيين <span class="star">*</span></label>
         <input type="date" id="firstAppDate3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
+        <p class="text-xs text-gray-500 mt-1">ملاحظه: تاريخ اول امر اداري صادر من التربيه..</p>
       </div>
 
-      <!-- صورة الأمر الإداري مع الصورة التوضيحية -->
+      <!-- صورة الأمر الإداري -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
         <div class="my-2 text-center">
@@ -403,7 +407,7 @@
       </div>
 
       <div>
-        <label class="block font-semibold text-sm sm:text-base">عنوان السكن <span class="star">*</span></label>
+        <label class="block font-semibold text-sm sm:text-base">عنوان السكن (المدينة / القرية) <span class="star">*</span></label>
         <input type="text" id="address3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
@@ -412,7 +416,7 @@
         <input type="text" id="landmark3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- صورة أمر المباشرة مع الصورة التوضيحية -->
+      <!-- صورة أمر المباشرة -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
         <div class="my-2 text-center">
@@ -428,10 +432,15 @@
       </div>
     </form>
 
-    <!-- شاشة التحميل -->
-    <div id="loading" class="hidden-section text-center py-6">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-800 mb-2"></div>
-      <p class="text-purple-900 font-bold text-base sm:text-lg">جاري رفع المستمسكات وإرسال البيانات، يرجى الانتظار... ⏳</p>
+    <!-- شاشة التحميل وشريط النسبة المئوية -->
+    <div id="loading" class="hidden-section text-center py-6 space-y-3">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-800 mb-1"></div>
+      <p id="loadingText" class="text-purple-900 font-bold text-base sm:text-lg">جاري تجهيز المستمسكات (0%)... ⏳</p>
+      
+      <!-- شريط النسبة المئوية -->
+      <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden border border-purple-200">
+        <div id="progressBar" class="bg-purple-700 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+      </div>
     </div>
 
     <!-- شاشة النجاح -->
@@ -488,6 +497,7 @@
       }
     }
 
+    // دالة ضغط وتحويل الصور بشكل تسلسلي وآمن
     function compressAndConvertToBase64(fileInputId) {
       return new Promise((resolve) => {
         const input = document.getElementById(fileInputId);
@@ -503,7 +513,7 @@
           const img = new Image();
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            const MAX_SIZE = 2000;
+            const MAX_SIZE = 1200; // تقليل الحجم قليلاً لضمان السرعة ومنع انقطاع الحزمة
             let width = img.width;
             let height = img.height;
 
@@ -525,7 +535,7 @@
             ctx.drawImage(img, 0, 0, width, height);
 
             resolve({
-              data: canvas.toDataURL('image/jpeg', 0.9),
+              data: canvas.toDataURL('image/jpeg', 0.8),
               name: file.name
             });
           };
@@ -535,6 +545,14 @@
         reader.onerror = () => resolve(null);
         reader.readAsDataURL(file);
       });
+    }
+
+    // تحديث واجهة شريط النسبة المئوية
+    function updateProgress(percent, text) {
+      const bar = document.getElementById('progressBar');
+      const textEl = document.getElementById('loadingText');
+      if(bar) bar.style.width = percent + '%';
+      if(textEl) textEl.innerText = text;
     }
 
     async function handleFormSubmit(e, sec) {
@@ -549,6 +567,8 @@
       document.getElementById('loading').classList.remove('hidden-section');
 
       try {
+        updateProgress(10, "جاري جمع بيانات الاستمارة (10%)...");
+
         const formData = {
           employeeType: getVal('employeeType'),
           fullName: getVal(`fullName${sec}`),
@@ -573,14 +593,32 @@
           landmark: getVal(`landmark${sec}`)
         };
 
+        updateProgress(25, "جاري معالجة الوجه الأمامي للبطاقة (25%)...");
+        const idFront = await compressAndConvertToBase64(`idFront${sec}`);
+
+        updateProgress(40, "جاري معالجة الوجه الخلفي للبطاقة (40%)...");
+        const idBack = await compressAndConvertToBase64(`idBack${sec}`);
+
+        updateProgress(55, "جاري معالجة الصورة الشخصية (55%)...");
+        const personalPhoto = await compressAndConvertToBase64(`personalPhoto${sec}`);
+
+        updateProgress(70, "جاري معالجة وثيقة التخرج (70%)...");
+        const gradDoc = await compressAndConvertToBase64(`gradDoc${sec}`);
+
+        updateProgress(85, "جاري معالجة الأمر الإداري والمباشرة (85%)...");
+        const adminOrder = await compressAndConvertToBase64(`adminOrder${sec}`);
+        const commencementOrder = await compressAndConvertToBase64(`commencementOrder${sec}`);
+
         const filesData = {
-          idFront: await compressAndConvertToBase64(`idFront${sec}`),
-          idBack: await compressAndConvertToBase64(`idBack${sec}`),
-          personalPhoto: await compressAndConvertToBase64(`personalPhoto${sec}`),
-          gradDoc: await compressAndConvertToBase64(`gradDoc${sec}`),
-          adminOrder: await compressAndConvertToBase64(`adminOrder${sec}`),
-          commencementOrder: await compressAndConvertToBase64(`commencementOrder${sec}`)
+          idFront,
+          idBack,
+          personalPhoto,
+          gradDoc,
+          adminOrder,
+          commencementOrder
         };
+
+        updateProgress(95, "جاري إرسال البيانات نهائياً إلى الخادم (95%)...");
 
         await fetch(SCRIPT_URL, {
           method: "POST",
@@ -589,8 +627,12 @@
           body: JSON.stringify({ formData: formData, filesData: filesData })
         });
 
-        document.getElementById('loading').classList.add('hidden-section');
-        document.getElementById('successMessage').classList.remove('hidden-section');
+        updateProgress(100, "تم الإرسال بنجاح! (100%)");
+        
+        setTimeout(() => {
+          document.getElementById('loading').classList.add('hidden-section');
+          document.getElementById('successMessage').classList.remove('hidden-section');
+        }, 500);
 
       } catch (err) {
         alert("حدث خطأ أثناء الإرسال: " + err.message);
