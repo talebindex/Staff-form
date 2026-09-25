@@ -191,7 +191,7 @@
     /* ---- buttons ---- */
     .btn{
       border-radius: 12px; font-weight:700; font-size:0.92rem;
-      padding: 0.8rem 1rem; transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+      padding: 0.8rem 1rem; transition: transform .12s ease, box-shadow .15s ease, background .15s ease;
       border: none; cursor:pointer;
     }
     .btn:active{ transform: scale(0.98); }
@@ -302,7 +302,6 @@
 
           <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName2" class="field-input"></div>
 
-          <!-- اللقب 2 -->
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
             <input type="text" id="title2" class="field-input">
@@ -315,7 +314,6 @@
             <select id="gender2" class="field-select"><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
           </div>
 
-          <!-- رقم البطاقة الموحدة 2 -->
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
             <input type="text" id="idNumber2" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
@@ -339,7 +337,6 @@
             <select id="religion2" class="field-select"><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
           </div>
 
-          <!-- الحالة الوظيفية 2 -->
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
             <select id="jobStatus2" onchange="toggleLeaveDetails('2')" class="field-select">
@@ -355,7 +352,6 @@
             <input type="text" id="jobStatusOther2" placeholder="اكتب نوع وتفاصيل الإجازة..." class="field-input">
           </div>
 
-          <!-- التحصيل الدراسي 2 -->
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
             <input type="text" id="qualification2" class="field-input">
@@ -365,14 +361,12 @@
           <div class="field-group"><label class="field-label">إسم الكلية / المعهد <span class="req-star">*</span></label><input type="text" id="college2" class="field-input"></div>
           <div class="field-group"><label class="field-label">الإختصاص <span class="req-star">*</span></label><input type="text" id="specialization2" class="field-input"></div>
 
-          <!-- تاريخ التخرج 2 -->
           <div class="field-group">
             <label class="field-label">تاريخ التخرج <span class="req-star">*</span></label>
             <input type="text" id="gradDate2" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
-          <!-- صورة وثيقة التخرج 2 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة لوثيقة التخرج</label>
             <div class="my-2 text-center">
@@ -382,14 +376,12 @@
             <input type="file" id="gradDoc2" accept="image/*" class="field-file">
           </div>
 
-          <!-- تاريخ أول تعيين 2 -->
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
             <input type="date" id="firstAppDate2" class="field-input">
             <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
-          <!-- صورة الأمر الإداري 2 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الامامي للامر الاداري <span class="req-star">*</span></label>
             <div class="my-2 text-center">
@@ -399,7 +391,6 @@
             <input type="file" id="adminOrder2" accept="image/*" class="field-file">
           </div>
 
-          <!-- رقم الهاتف 2 -->
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
             <input type="text" id="phone2" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
@@ -409,7 +400,6 @@
           <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address2" class="field-input"></div>
           <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark2" class="field-input"></div>
 
-          <!-- صورة أمر المباشرة 2 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
             <div class="my-2 text-center">
@@ -437,7 +427,6 @@
 
           <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName3" class="field-input"></div>
 
-          <!-- اللقب 3 -->
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
             <input type="text" id="title3" class="field-input">
@@ -451,7 +440,6 @@
           </div>
           <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName3" class="field-input"></div>
 
-          <!-- رقم البطاقة الموحدة 3 -->
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
             <input type="text" id="idNumber3" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
@@ -474,7 +462,6 @@
             <select id="socialStatus3" class="field-select"><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
           </div>
 
-          <!-- العنوان الوظيفي لقسم الموظف (قائمة منسدلة) -->
           <div class="field-group">
             <label class="field-label">العنوان الوظيفي <span class="req-star">*</span></label>
             <select id="jobTitle3" class="field-select">
@@ -488,7 +475,6 @@
             </select>
           </div>
 
-          <!-- الحالة الوظيفية 3 -->
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
             <select id="jobStatus3" onchange="toggleLeaveDetails('3')" class="field-select">
@@ -504,7 +490,6 @@
             <input type="text" id="jobStatusOther3" placeholder="اكتب نوع وتفاصيل الإجازة..." class="field-input">
           </div>
 
-          <!-- التحصيل الدراسي 3 -->
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
             <input type="text" id="qualification3" class="field-input">
@@ -514,28 +499,24 @@
           <div class="field-group"><label class="field-label">إسم الكلية / المعهد</label><input type="text" id="college3" class="field-input"></div>
           <div class="field-group"><label class="field-label">الإختصاص</label><input type="text" id="specialization3" class="field-input"></div>
 
-          <!-- تاريخ التخرج 3 -->
           <div class="field-group">
             <label class="field-label">تاريخ التخرج</label>
             <input type="text" id="gradDate3" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
-          <!-- رقم الهاتف 3 -->
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
             <input type="text" id="phone3" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
             <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <!-- تاريخ أول تعيين 3 -->
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
             <input type="date" id="firstAppDate3" class="field-input">
-            <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
+            <p class="note-text">ملاحظه: تاريخ اولامر اداري صادر من التربيه.</p>
           </div>
 
-          <!-- صورة الأمر الإداري 3 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الامامي للامر الاداري <span class="req-star">*</span></label>
             <div class="my-2 text-center">
@@ -548,7 +529,6 @@
           <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address3" class="field-input"></div>
           <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark3" class="field-input"></div>
 
-          <!-- صورة أمر المباشرة 3 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
             <div class="my-2 text-center">
@@ -584,7 +564,7 @@
           </div>
         </div>
 
-        <!-- واجهة شريط التحميل والنسبة المئوية -->
+        <!-- واجهة شريط التحميل -->
         <div id="loading" class="hidden-section text-center py-8 px-2 space-y-4">
           <div class="progress-track">
             <div id="progressBar" class="progress-fill" style="width: 0%"></div>
@@ -593,7 +573,7 @@
           <p class="font-semibold text-sm sm:text-base animate-pulse" style="color: var(--muted);" id="progressStatus">جاري تجهيز البيانات...</p>
         </div>
 
-        <!-- واجهة النجاح الأنيقة -->
+        <!-- واجهة النجاح -->
         <div id="successCard" class="hidden-section text-center py-8 px-2 space-y-4 rounded-2xl border" style="background: var(--success-bg); border-color:#cdeade;">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full text-3xl font-bold mb-2" style="background:#d7f0e2; color: var(--success);">
             ✓
@@ -609,7 +589,7 @@
     </div>
   </div>
 
-  <!-- نافذة تنبيه مخصصة تحل محل alert الافتراضي -->
+  <!-- نافذة تنبيه مخصصة -->
   <div id="customAlertOverlay" class="custom-alert-overlay hidden-section">
     <div class="custom-alert-card">
       <div class="custom-alert-icon">⚠️</div>
@@ -619,7 +599,10 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYQBkNdTR16PoKgvhJwr-iI4DR4oHYfxn0AaIlYcVc2py8gVupBdjezMC67Cn-HxNk/exec";
+    // =========================================================================
+    // 🔗 ضع رابط تطبيق الويب (Web App URL) الخاص بالسكربت المُنشر هنا بين القوسين:
+    // =========================================================================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsCHtQtSd3SRzgjXk2seElzZj2TGhI6hOmCzPtOia7A8t49_DTqcveCbdduEd_qgUX/exec";
 
     let activeSection = 1;
 
@@ -851,6 +834,11 @@
     }
 
     async function confirmAndSubmit() {
+      if (!SCRIPT_URL || SCRIPT_URL.includes("ضع_رابط_السكربت")) {
+        showCustomAlert("يرجى إدخال رابط السكربت (SCRIPT_URL) في الكود أولاً.");
+        return;
+      }
+
       const sec = activeSection;
 
       document.getElementById('reviewSection').classList.add('hidden-section');
@@ -903,25 +891,32 @@
 
       updateProgress(70, "جاري إرسال البيانات وحفظ المرفقات...");
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ formData: formData, filesData: filesData })
-      })
-      .then(() => {
-        updateProgress(100, "تم إتمام الإرسال بنجاح!");
-        setTimeout(() => {
-          document.getElementById('loading').classList.add('hidden-section');
-          document.getElementById('successCard').classList.remove('hidden-section');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 500);
-      })
-      .catch((err) => {
-        showCustomAlert("حدث خطأ أثناء الإرسال: " + err);
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({ formData: formData, filesData: filesData })
+        });
+
+        const res = await response.json();
+
+        if (res.result === "success") {
+          updateProgress(100, "تم إتمام الإرسال بنجاح!");
+          setTimeout(() => {
+            document.getElementById('loading').classList.add('hidden-section');
+            document.getElementById('successCard').classList.remove('hidden-section');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 500);
+        } else {
+          throw new Error(res.message || "حدث خطأ غير معروف أثناء الحفظ.");
+        }
+      } catch (err) {
+        showCustomAlert("حدث خطأ أثناء الإرسال: " + err.message);
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
-      });
+      }
     }
   </script>
 </body>
