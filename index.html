@@ -64,14 +64,15 @@
     }
     .header-inner{ position:relative; z-index:1; }
     .school-emblem{
-      width: 92px; height: 92px;
+      width: 96px; height: 96px;
       border-radius: 9999px;
+      overflow: hidden;
       background: #fff;
       display:flex; align-items:center; justify-content:center;
       margin: 0 auto 1rem;
       box-shadow: 0 0 0 3px rgba(255,255,255,0.25), 0 10px 24px -8px rgba(0,0,0,0.5);
     }
-    .school-emblem img{ width: 74px; height: 74px; object-fit: contain; }
+    .school-emblem img{ width: 100%; height: 100%; object-fit: cover; }
 
     /* ---- step indicator ---- */
     .step-track{
@@ -90,8 +91,8 @@
     .step-dot.is-done{ background: var(--brass); border-color: var(--brass); color:#fff; }
     .step-line{ width: 44px; height: 2px; background: var(--border); }
     .step-line.is-done{ background: var(--brass); }
-    .step-labels{ display:flex; justify-content:center; gap: 2.1rem; margin-top:0.4rem; }
-    .step-labels span{ font-size: 0.68rem; color: var(--muted); font-weight:600; width:70px; text-align:center; }
+    .step-labels{ display:flex; justify-content:center; gap: 1.1rem; margin-top:0.4rem; }
+    .step-labels span{ font-size: 0.62rem; color: var(--muted); font-weight:600; width:64px; text-align:center; line-height:1.3; }
 
     /* ---- body padding ---- */
     .form-body{ padding: 1.5rem 1.25rem 1.75rem; }
@@ -173,6 +174,15 @@
       margin-bottom: 0.5rem;
     }
 
+    /* ---- review summary ---- */
+    .review-list{ border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
+    .review-heading{ padding: 0.55rem 0.9rem; background: #efe9f7; font-weight: 700; font-size: 0.78rem; color: var(--ink); }
+    .review-row{ display:flex; justify-content:space-between; align-items:baseline; gap: 0.75rem; padding: 0.6rem 0.9rem; font-size: 0.85rem; border-top: 1px solid var(--border); }
+    .review-row:first-of-type{ border-top: none; }
+    .review-label{ color: var(--muted); font-weight: 600; flex-shrink: 0; }
+    .review-value{ color: var(--text); font-weight: 700; text-align: left; word-break: break-word; }
+    .review-value.is-empty{ color: #c0392b; font-weight: 600; }
+
     /* ---- leave detail callout ---- */
     .leave-callout{
       background: #f6f2fb; border: 1px solid #e2d5f2; border-radius: 12px; padding: 0.85rem;
@@ -217,10 +227,13 @@
       <div id="stepDot1" class="step-dot is-active">١</div>
       <div id="stepLine1" class="step-line"></div>
       <div id="stepDot2" class="step-dot">٢</div>
+      <div id="stepLine2" class="step-line"></div>
+      <div id="stepDot3" class="step-dot">٣</div>
     </div>
     <div class="step-labels">
       <span>نوع الكادر</span>
       <span>البيانات والمستمسكات</span>
+      <span>المراجعة والتأكيد</span>
     </div>
 
     <div class="form-body">
@@ -379,7 +392,7 @@
 
           <div class="flex gap-2 pt-2">
             <button type="button" onclick="showSection(1)" class="btn btn-secondary w-1/2">السابق</button>
-            <button type="submit" class="btn btn-success w-1/2">إرسال البيانات</button>
+            <button type="submit" class="btn btn-success w-1/2">مراجعة البيانات</button>
           </div>
         </div>
 
@@ -518,7 +531,27 @@
 
           <div class="flex gap-2 pt-2">
             <button type="button" onclick="showSection(1)" class="btn btn-secondary w-1/2">السابق</button>
-            <button type="submit" class="btn btn-success w-1/2">إرسال البيانات</button>
+            <button type="submit" class="btn btn-success w-1/2">مراجعة البيانات</button>
+          </div>
+        </div>
+
+        <!-- القسم 4: مراجعة المعلومات قبل الإرسال النهائي -->
+        <div id="reviewSection" class="space-y-1 hidden-section">
+          <div class="section-title">
+            <div class="badge">٣</div>
+            <div>
+              <h2>مراجعة المعلومات قبل الإرسال</h2>
+              <p>تأكد من صحة البيانات، ويمكنك العودة للتعديل في أي وقت قبل الإرسال النهائي</p>
+            </div>
+          </div>
+
+          <div id="reviewList" class="review-list"></div>
+
+          <p class="warning-note">⚠️ بعد الضغط على "تأكيد وإرسال البيانات" سيتم إرسال الاستمارة نهائياً. يرجى مراجعة كل الحقول والمرفقات أعلاه بدقة قبل التأكيد.</p>
+
+          <div class="flex gap-2 pt-2">
+            <button type="button" onclick="backToEdit()" class="btn btn-secondary w-1/2">تعديل المعلومات</button>
+            <button type="button" onclick="confirmAndSubmit()" class="btn btn-success w-1/2">تأكيد وإرسال البيانات</button>
           </div>
         </div>
 
@@ -553,19 +586,21 @@
     let activeSection = 1;
 
     function setStep(step) {
-      const dot1 = document.getElementById('stepDot1');
-      const dot2 = document.getElementById('stepDot2');
-      const line1 = document.getElementById('stepLine1');
-      if (!dot1 || !dot2 || !line1) return;
-      if (step === 1) {
-        dot1.classList.add('is-active'); dot1.classList.remove('is-done');
-        dot2.classList.remove('is-active', 'is-done');
-        line1.classList.remove('is-done');
-      } else {
-        dot1.classList.remove('is-active'); dot1.classList.add('is-done');
-        dot2.classList.add('is-active'); dot2.classList.remove('is-done');
-        line1.classList.add('is-done');
-      }
+      const dots = [1, 2, 3].map(n => document.getElementById('stepDot' + n));
+      const lines = [1, 2].map(n => document.getElementById('stepLine' + n));
+      if (dots.some(d => !d) || lines.some(l => !l)) return;
+
+      dots.forEach((dot, i) => {
+        const n = i + 1;
+        dot.classList.remove('is-active', 'is-done');
+        if (n < step) dot.classList.add('is-done');
+        else if (n === step) dot.classList.add('is-active');
+      });
+      lines.forEach((line, i) => {
+        const n = i + 1;
+        if (n < step) line.classList.add('is-done');
+        else line.classList.remove('is-done');
+      });
     }
 
     function showSection(sectionNum) {
@@ -640,7 +675,7 @@
       });
     }
 
-    async function handleFormSubmit(e) {
+    function handleFormSubmit(e) {
       e.preventDefault();
       const sec = activeSection;
 
@@ -679,7 +714,95 @@
         return;
       }
 
+      renderReview(sec);
       document.getElementById('section' + sec).classList.add('hidden-section');
+      document.getElementById('reviewSection').classList.remove('hidden-section');
+      setStep(3);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToEdit() {
+      document.getElementById('reviewSection').classList.add('hidden-section');
+      document.getElementById('section' + activeSection).classList.remove('hidden-section');
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function reviewRow(label, value, isFile) {
+      const isEmpty = !value;
+      const shown = isEmpty ? (isFile ? 'لم يتم إرفاق ملف' : 'لم يتم الإدخال') : value;
+      return `<div class="review-row"><span class="review-label">${escapeHtml(label)}</span><span class="review-value${isEmpty ? ' is-empty' : ''}">${escapeHtml(shown)}</span></div>`;
+    }
+
+    function renderReview(sec) {
+      const getVal = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : "";
+      };
+
+      const textFields = [
+        ['fullName', 'الاسم الرباعي'],
+        ['title', 'اللقب'],
+        ['dob', 'تاريخ التولّد'],
+        ['gender', 'الجنس'],
+        ['motherName', 'اسم الأم الثلاثي'],
+        ['idNumber', 'رقم البطاقة الموحدة'],
+        ['bloodType', 'فصيلة الدم'],
+        ['socialStatus', 'الحالة الاجتماعية'],
+        ['religion', 'الديانة']
+      ];
+      if (sec === 3) textFields.push(['jobTitle', 'العنوان الوظيفي']);
+      textFields.push(
+        ['qualification', 'التحصيل الدراسي'],
+        ['college', 'إسم الكلية / المعهد'],
+        ['specialization', 'الإختصاص'],
+        ['gradDate', 'تاريخ التخرج'],
+        ['firstAppDate', 'تاريخ اول تعيين'],
+        ['phone', 'رقم الهاتف'],
+        ['address', 'عنوان السكن (المدينة / القرية)'],
+        ['landmark', 'أقرب نقطة دالة']
+      );
+
+      const fileFields = [
+        ['idFront', 'الوجه الأمامي للبطاقة الموحدة'],
+        ['idBack', 'الوجه الخلفي للبطاقة الموحدة'],
+        ['personalPhoto', 'صورة شخصية للموظف']
+      ];
+      if (sec === 2) fileFields.push(['gradDoc', 'صورة وثيقة التخرج']);
+      fileFields.push(['adminOrder', 'الأمر الإداري'], ['commencementOrder', 'أمر المباشرة']);
+
+      let html = '<div class="review-heading">البيانات الأساسية</div>';
+      html += reviewRow('نوع الموظف', document.getElementById('employeeType').value);
+
+      let jobStatusVal = getVal(`jobStatus${sec}`);
+      if (jobStatusVal === 'اجازة اخرى') {
+        const other = getVal(`jobStatusOther${sec}`);
+        if (other) jobStatusVal = jobStatusVal + ' - ' + other;
+      }
+
+      textFields.forEach(([id, label]) => {
+        html += reviewRow(label, getVal(id + sec));
+      });
+      html += reviewRow('الحالة الوظيفية', jobStatusVal);
+
+      html += '<div class="review-heading">المستمسكات المرفقة</div>';
+      fileFields.forEach(([id, label]) => {
+        const input = document.getElementById(id + sec);
+        const fileName = (input && input.files && input.files[0]) ? input.files[0].name : '';
+        html += reviewRow(label, fileName, true);
+      });
+
+      document.getElementById('reviewList').innerHTML = html;
+    }
+
+    async function confirmAndSubmit() {
+      const sec = activeSection;
+
+      document.getElementById('reviewSection').classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
 
       updateProgress(10, "جاري قراءة وتجهيز البيانات...");
@@ -689,6 +812,9 @@
         return el ? el.value.trim() : "";
       };
 
+      const jobStatus = getVal(`jobStatus${sec}`);
+      const jobStatusOther = getVal(`jobStatusOther${sec}`);
+
       const formData = {
         employeeType: document.getElementById('employeeType').value,
         fullName: getVal(`fullName${sec}`),
@@ -696,7 +822,7 @@
         dob: getVal(`dob${sec}`),
         gender: getVal(`gender${sec}`),
         motherName: getVal(`motherName${sec}`),
-        idNumber: idVal,
+        idNumber: getVal(`idNumber${sec}`),
         bloodType: getVal(`bloodType${sec}`),
         socialStatus: getVal(`socialStatus${sec}`),
         religion: getVal(`religion${sec}`),
@@ -708,7 +834,7 @@
         specialization: getVal(`specialization${sec}`),
         gradDate: getVal(`gradDate${sec}`),
         firstAppDate: getVal(`firstAppDate${sec}`),
-        phone: phoneVal,
+        phone: getVal(`phone${sec}`),
         address: getVal(`address${sec}`),
         landmark: getVal(`landmark${sec}`)
       };
@@ -743,7 +869,7 @@
       .catch((err) => {
         alert("حدث خطأ أثناء الإرسال: " + err);
         document.getElementById('loading').classList.add('hidden-section');
-        document.getElementById('section' + sec).classList.remove('hidden-section');
+        document.getElementById('reviewSection').classList.remove('hidden-section');
       });
     }
   </script>
