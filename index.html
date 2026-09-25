@@ -6,8 +6,8 @@
   <title>استمارة معلومات الكادر الخاصة بالعقود</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .hidden-section { display: none; }
-    .star { color: red; margin-right: 2px; }
+    .hidden-section { display: none !important; }
+    .star { color: #ef4444; margin-right: 2px; }
     .note-text { color: #4b5563; font-size: 0.8rem; margin-top: 3px; line-height: 1.4; }
     .warning-note { color: #b45309; background-color: #fffbeb; padding: 6px 10px; border-radius: 6px; border: 1px solid #fef3c7; font-size: 0.8rem; margin-top: 4px; line-height: 1.4; }
   </style>
@@ -93,8 +93,10 @@
           <label class="block font-semibold text-sm sm:text-base">الحالة الوظيفية <span class="star">*</span></label>
           <select id="jobStatus2" onchange="toggleLeaveDetails('2')" class="w-full p-2.5 border rounded-lg text-sm sm:text-base bg-white">
             <option value="">اختر...</option>
-            <option value="مستمر بالخدمة">مستمر بالخدمة</option>
-            <option value="إجازة / أخرى">إجازة / أخرى</option>
+            <option value="مستمر">مستمر</option>
+            <option value="في اجازة امومة">في اجازة امومة</option>
+            <option value="في اجازة دراسية">في اجازة دراسية</option>
+            <option value="اجازة اخرى">اجازة اخرى</option>
           </select>
         </div>
         <div id="leaveDetailsGroup2" class="hidden-section bg-purple-50 p-3 rounded-lg border border-purple-200">
@@ -216,15 +218,30 @@
           <label class="block font-semibold text-sm sm:text-base">الحالة الاجتماعية <span class="star">*</span></label>
           <select id="socialStatus3" class="w-full p-2.5 border rounded-lg text-sm sm:text-base bg-white"><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
         </div>
-        <div><label class="block font-semibold text-sm sm:text-base">العنوان الوظيفي <span class="star">*</span></label><input type="text" id="jobTitle3" placeholder="كاتب / معاون ملاحظ..." class="w-full p-2.5 border rounded-lg text-sm sm:text-base"></div>
+
+        <!-- العنوان الوظيفي لقسم الموظف (قائمة منسدلة) -->
+        <div>
+          <label class="block font-semibold text-sm sm:text-base mb-1">العنوان الوظيفي <span class="star">*</span></label>
+          <select id="jobTitle3" class="w-full p-2.5 border rounded-lg text-sm sm:text-base bg-white">
+            <option value="">اختر العنوان الوظيفي...</option>
+            <option value="كاتب">كاتب</option>
+            <option value="ملاحظ">ملاحظ</option>
+            <option value="معاون ملاحظ">معاون ملاحظ</option>
+            <option value="حرفي">حرفي</option>
+            <option value="موظف خدمات">موظف خدمات</option>
+            <option value="حارس">حارس</option>
+          </select>
+        </div>
         
         <!-- الحالة الوظيفية 3 -->
         <div>
           <label class="block font-semibold text-sm sm:text-base">الحالة الوظيفية <span class="star">*</span></label>
           <select id="jobStatus3" onchange="toggleLeaveDetails('3')" class="w-full p-2.5 border rounded-lg text-sm sm:text-base bg-white">
             <option value="">اختر...</option>
-            <option value="مستمر بالخدمة">مستمر بالخدمة</option>
-            <option value="إجازة / أخرى">إجازة / أخرى</option>
+            <option value="مستمر">مستمر</option>
+            <option value="في اجازة امومة">في اجازة امومة</option>
+            <option value="في اجازة دراسية">في اجازة دراسية</option>
+            <option value="اجازة اخرى">اجازة اخرى</option>
           </select>
         </div>
         <div id="leaveDetailsGroup3" class="hidden-section bg-purple-50 p-3 rounded-lg border border-purple-200">
@@ -292,8 +309,25 @@
         </div>
       </div>
 
-      <div id="loading" class="hidden-section text-center py-6">
-        <p class="text-purple-900 font-bold text-base sm:text-lg animate-pulse">جاري معالجة ورفع المستمسكات وإرسال البيانات، يرجى الانتظار... ⏳</p>
+      <!-- واجهة شريط التحميل والنسبة المئوية -->
+      <div id="loading" class="hidden-section text-center py-8 px-4 space-y-4">
+        <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden border border-gray-300">
+          <div id="progressBar" class="bg-purple-700 h-4 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+        </div>
+        <div class="text-2xl font-bold text-purple-900" id="progressPercentage">0%</div>
+        <p class="text-gray-700 font-semibold text-sm sm:text-base animate-pulse" id="progressStatus">جاري تجهيز البيانات...</p>
+      </div>
+
+      <!-- واجهة النجاح الأنيقة -->
+      <div id="successCard" class="hidden-section text-center py-8 px-4 space-y-4 bg-green-50 rounded-xl border border-green-200">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 text-green-600 rounded-full text-3xl font-bold mb-2 shadow-inner">
+          ✓
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-green-800">تم إرسال البيانات والمستمسكات بنجاح!</h2>
+        <p class="text-gray-600 text-sm">شكراً لك، تم تسجيل معلوماتك بنجاح في قاعدة بيانات ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين.</p>
+        <button type="button" onclick="location.reload()" class="mt-4 bg-purple-700 text-white px-6 py-2.5 rounded-lg hover:bg-purple-800 font-bold text-sm sm:text-base shadow">
+          إرسال استمارة جديدة
+        </button>
       </div>
 
     </form>
@@ -328,9 +362,9 @@
     }
 
     function toggleLeaveDetails(sec) {
-      const statusSelect = document.getElementById(`jobStatus${sec}`);
+      const statusSelect = document.getElementById(`jobStatus${sec}`).value;
       const leaveGroup = document.getElementById(`leaveDetailsGroup${sec}`);
-      if (statusSelect.value === "إجازة / أخرى") {
+      if (statusSelect === "اجازة اخرى") {
         leaveGroup.classList.remove('hidden-section');
       } else {
         leaveGroup.classList.add('hidden-section');
@@ -350,6 +384,16 @@
     function formatGradDate(input) {
       let val = convertToArabicDigitsToEnglish(input.value);
       input.value = val.replace(/[^0-9-]/g, '');
+    }
+
+    function updateProgress(percent, text) {
+      const pBar = document.getElementById('progressBar');
+      const pText = document.getElementById('progressPercentage');
+      const pStatus = document.getElementById('progressStatus');
+      
+      if (pBar) pBar.style.width = percent + '%';
+      if (pText) pText.innerText = percent + '%';
+      if (pStatus) pStatus.innerText = text;
     }
 
     async function fileToBase64(fileInputId) {
@@ -377,27 +421,37 @@
         }
       }
 
+      if (sec === 3) {
+        const jobTitleVal = document.getElementById('jobTitle3').value;
+        if (!jobTitleVal) {
+          alert('يرجى اختيار العنوان الوظيفي.');
+          return;
+        }
+      }
+
       const phoneVal = document.getElementById(`phone${sec}`).value.trim();
       if (phoneVal.length !== 11) {
-        alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقماً باللغة الإنجليزية.');
+        alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقماً وباللغة الإنجليزية.');
         return;
       }
 
       const idVal = document.getElementById(`idNumber${sec}`).value.trim();
       if (idVal.length !== 12) {
-        alert('يرجى إدخال رقم بطاقة موحدة صحيح يتكون من 12 رقماً باللغة الإنجليزية.');
+        alert('يرجى إدخال رقم بطاقة موحدة صحيح يتكون من 12 رقماً وباللغة الإنجليزية.');
         return;
       }
 
       const jobStatus = document.getElementById(`jobStatus${sec}`).value;
       const jobStatusOther = document.getElementById(`jobStatusOther${sec}`).value.trim();
-      if (jobStatus === "إجازة / أخرى" && !jobStatusOther) {
+      if (jobStatus === "اجازة اخرى" && !jobStatusOther) {
         alert('يرجى كتابة نوع وتفاصيل الإجازة.');
         return;
       }
 
       document.getElementById('section' + sec).classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
+
+      updateProgress(10, "جاري قراءة وتجهيز البيانات...");
 
       const getVal = (id) => {
         const el = document.getElementById(id);
@@ -415,7 +469,7 @@
         bloodType: getVal(`bloodType${sec}`),
         socialStatus: getVal(`socialStatus${sec}`),
         religion: getVal(`religion${sec}`),
-        jobTitle: getVal(`jobTitle${sec}`),
+        jobTitle: sec === 2 ? 'مدرس' : getVal('jobTitle3'),
         jobStatus: jobStatus,
         jobStatusOther: jobStatusOther,
         qualification: getVal(`qualification${sec}`),
@@ -428,6 +482,8 @@
         landmark: getVal(`landmark${sec}`)
       };
 
+      updateProgress(30, "جاري معالجة ورفع المستمسكات...");
+
       const filesData = {
         idFront: await fileToBase64(`idFront${sec}`),
         idBack: await fileToBase64(`idBack${sec}`),
@@ -437,6 +493,8 @@
         commencementOrder: await fileToBase64(`commencementOrder${sec}`)
       };
 
+      updateProgress(70, "جاري إرسال البيانات وحفظ المرفقات...");
+
       fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
@@ -444,8 +502,12 @@
         body: JSON.stringify({ formData: formData, filesData: filesData })
       })
       .then(() => {
-        alert("تم إرسال الاستمارة ورفع الصور بنجاح!");
-        location.reload();
+        updateProgress(100, "تم مكتكال الإرسال بنجاح!");
+        setTimeout(() => {
+          document.getElementById('loading').classList.add('hidden-section');
+          document.getElementById('successCard').classList.remove('hidden-section');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 500);
       })
       .catch((err) => {
         alert("حدث خطأ أثناء الإرسال: " + err);
