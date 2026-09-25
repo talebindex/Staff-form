@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استمارة تحديث بيانات الكادر</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">استمارة تحديث بيانات الكادر</h2>
+    <p class="text-sm text-center text-gray-500 mb-6">يرجى إدخال البيانات بدقة وأرفاق المستندات المطلوب إرفاقها.</p>
+
+    <form id="staffForm" class="space-y-4">
+      
+      <!-- الاسم الثلاثي -->
+      <div>
+        <label class="block font-semibold text-gray-700 mb-1">الاسم الثلاثي واللقب <span class="text-red-500">*</span></label>
+        <input type="text" name="fullName" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+
+      <!-- الجنس -->
+      <div>
+        <label class="block font-semibold text-gray-700 mb-1">الجنس <span class="text-red-500">*</span></label>
+        <select name="gender" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+          <option value="">اختر الجنس...</option>
+          <option value="ذكر">ذكر</option>
+          <option value="أنثى">أنثى</option>
+        </select>
+      </div>
+
+      <!-- البيانات العائلية والرقم التعريفي -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">الاسم العائلي الإضافي <span class="text-red-500">*</span></label>
+          <input type="text" name="motherName" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">الرقم التعريفي للموظف <span class="text-red-500">*</span></label>
+          <input type="text" name="idNumber" maxlength="12" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+      </div>
+
+      <!-- رقم الهاتف -->
+      <div>
+        <label class="block font-semibold text-gray-700 mb-1">رقم الهاتف <span class="text-red-500">*</span></label>
+        <input type="tel" name="phone" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="07XXXXXXXXX">
+      </div>
+
+      <!-- الحالة الوظيفية -->
+      <div>
+        <label class="block font-semibold text-gray-700 mb-1">الحالة الوظيفية <span class="text-red-500">*</span></label>
+        <select id="jobStatus" name="jobStatus" required onchange="toggleLeaveFields()" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+          <option value="">اختر الحالة...</option>
+          <option value="مستمر">مستمر بالدوام</option>
+          <option value="مجاز">في إجازة رسمية</option>
+          <option value="مفصول">مفصول / منقطع</option>
+        </select>
+      </div>
+
+      <!-- حقول الإجازة (تظهر شرطياً عند اختيار "مجاز") -->
+      <div id="leaveSection" class="hidden p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+        <h4 class="font-bold text-blue-800 text-sm">تفاصيل الإجازة والأمر الإداري:</h4>
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">نوع الإجازة</label>
+          <input type="text" name="leaveType" placeholder="مثال: إجازة أمومة / دراسية" class="w-full p-2 border border-gray-300 rounded-lg">
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">رقم الأمر الإداري</label>
+            <input type="text" name="orderNo" class="w-full p-2 border border-gray-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">تاريخ الأمر الإداري</label>
+            <input type="date" name="orderDate" class="w-full p-2 border border-gray-300 rounded-lg">
+          </div>
+        </div>
+      </div>
+
+      <!-- المرفقات والصور -->
+      <div class="border-t pt-4 space-y-3">
+        <h3 class="font-bold text-gray-800">المرفقات والوثائق المطلوب إرفاقها:</h3>
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">مرفق مستند التعريف (الوجه الأول) <span class="text-red-500">*</span></label>
+          <input type="file" id="idFront" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">مرفق مستند التعريف (الوجه الثاني) <span class="text-red-500">*</span></label>
+          <input type="file" id="idBack" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">الصورة المعاملاتية <span class="text-red-500">*</span></label>
+          <input type="file" id="personalPhoto" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </div>
+      </div>
+
+      <!-- زر الإرسال -->
+      <button type="submit" id="submitBtn" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition">
+        إرسال البيانات
+      </button>
+
+      <div id="statusMsg" class="text-center font-bold mt-2"></div>
+      
+      <!-- إخلاء مسؤولية تنظيمي للحماية -->
+      <p class="text-xs text-center text-gray-400 mt-4 border-t pt-2">
+        هذه الاستمارة خاصة بإدارة الثانوية والأغراض التنظيمية والإدارية الداخلية فقط.
+      </p>
+
+    </form>
+  </div>
+
+  <script>
+    // ضع رابط الـ Web App الخاص بـ Google Apps Script هنا
+    const SCRIPT_URL = "ضع_رابط_WEB_APP_الخاص_بك_هنا";
+
+    function toggleLeaveFields() {
+      const status = document.getElementById("jobStatus").value;
+      const leaveSection = document.getElementById("leaveSection");
+      if (status === "مجاز") {
+        leaveSection.classList.remove("hidden");
+      } else {
+        leaveSection.classList.add("hidden");
+      }
+    }
+
+    // دالة تحويل الصور إلى Base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) { resolve(""); return; }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    document.getElementById("staffForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById("submitBtn");
+      const statusMsg = document.getElementById("statusMsg");
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "جاري رفع الملفات وإرسال البيانات...";
+      statusMsg.innerText = "";
+
+      try {
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        // تحويل الصور إلى Base64
+        data.idFront = await fileToBase64(document.getElementById("idFront").files[0]);
+        data.idBack = await fileToBase64(document.getElementById("idBack").files[0]);
+        data.personalPhoto = await fileToBase64(document.getElementById("personalPhoto").files[0]);
+
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.result === "success") {
+          statusMsg.className = "text-green-600 text-center font-bold mt-2";
+          statusMsg.innerText = "✅ تم إرسال الاستمارة بنجاح!";
+          this.reset();
+          toggleLeaveFields();
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (err) {
+        statusMsg.className = "text-red-600 text-center font-bold mt-2";
+        statusMsg.innerText = "❌ حدث خطأ أثناء الإرسال، يرجى إعادة المحاولة.";
+        console.error(err);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "إرسال البيانات";
+      }
+    });
+  </script>
+</body>
+</html>
