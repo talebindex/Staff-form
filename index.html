@@ -491,4 +491,224 @@
     function compressAndConvertToBase64(fileInputId) {
       return new Promise((resolve) => {
         const input = document.getElementById(fileInputId);
-        if (!input || !input.f
+        if (!input || !input.files || input.files.length === 0) {
+          resolve(null);
+          return;
+        }
+
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_SIZE = 1200;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_SIZE) {
+                height *= MAX_SIZE / width;
+                width = MAX_SIZE;
+              }
+            } else {
+              if (height > MAX_SIZE) {
+                width *= MAX_SIZE / height;
+                height = MAX_SIZE;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            resolve({
+              data: canvas.toDataURL('image/jpeg', 0.75),
+              name: file.name
+            });
+          };
+          img.onerror = () => resolve(null);
+          img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function updateProgress(percent, text) {
+      const bar = document.getElementById('progressBar');
+      const textEl = document.getElementById('loadingText');
+      if (bar) bar.style.width = percent + '%';
+      if (textEl) textEl.innerText = text;
+    }
+
+    async function sendTextData(formData) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ 
+            action: "saveText", 
+            formData: formData 
+          })
+        });
+        
+        const text = await response.text();
+        console.log("الرد من السيرفر:", text);
+        
+        let result;
+        try {
+          result = JSON.parse(text);
+        } catch (parseErr) {
+          console.error("الرد ليس JSON صالحاً:", text);
+          alert("خطأ في السيرفر:\n" + text.substring(0, 300));
+          return null;
+        }
+        
+        if (!result.success) {
+          alert("خطأ من السيرفر: " + (result.message || "غير معروف"));
+          return null;
+        }
+        
+        return result.recordId || null;
+      } catch (err) {
+        console.error("خطأ في الاتصال:", err);
+        alert("تعذر الاتصال بالسيرفر:\n" + err.message + "\n\nتأكد من:\n1. نشر السكربت بصلاحية Anyone\n2. صحة رابط SCRIPT_URL");
+        return null;
+      }
+    }
+
+    async function sendImage(recordId, fieldName, imageData) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "saveImage",
+            recordId: recordId,
+            field: fieldName,
+            imageData: imageData.data,
+            fileName: imageData.name
+          })
+        });
+        
+        const text = await response.text();
+        let result;
+        try {
+          result = JSON.parse(text);
+        } catch (e) {
+          console.error(`الرد ليس JSON في ${fieldName}:`, text);
+          return false;
+        }
+        
+        return result.success === true;
+      } catch (err) {
+        console.error(`خطأ في إرسال الصورة ${fieldName}:`, err);
+        return false;
+      }
+    }
+
+    async function handleFormSubmit(e, sec) {
+      e.preventDefault();
+
+      const getVal = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : "";
+      };
+
+      document.getElementById('formSection' + sec).classList.add('hidden-section');
+      document.getElementById('loading').classList.remove('hidden-section');
+
+      try {
+        updateProgress(5, "جاري جمع بيانات الاستمارة (5%)...");
+
+        const formData = {
+          employeeType: getVal('employeeType'),
+          fullName: getVal(`fullName${sec}`),
+          title: getVal(`title${sec}`),
+          dob: getVal(`dob${sec}`),
+          gender: getVal(`gender${sec}`),
+          idNumber: getVal(`idNumber${sec}`),
+          motherName: getVal(`motherName${sec}`),
+          bloodType: getVal(`bloodType${sec}`),
+          socialStatus: getVal(`socialStatus${sec}`),
+          religion: getVal(`religion${sec}`),
+          jobTitle: sec === 2 ? 'مدرس' : getVal(`jobTitle${sec}`),
+          jobStatus: getVal(`jobStatus${sec}`),
+          jobStatusOther: getVal(`jobStatusOther${sec}`),
+          qualification: getVal(`qualification${sec}`),
+          college: getVal(`college${sec}`),
+          specialization: getVal(`specialization${sec}`),
+          gradDate: getVal(`gradDate${sec}`),
+          firstAppDate: getVal(`firstAppDate${sec}`),
+          phone: getVal(`phone${sec}`),
+          address: getVal(`address${sec}`),
+          landmark: getVal(`landmark${sec}`)
+        };
+
+        updateProgress(10, "جاري إرسال البيانات النصية (10%)...");
+        
+        const recordId = await sendTextData(formData);
+        
+        if (!recordId) {
+          throw new Error("فشل إنشاء السجل في قاعدة البيانات. يرجى المحاولة مرة أخرى.");
+        }
+
+        const images = [
+          { id: `idFront${sec}`, field: "idFront", label: "الوجه الأمامي للبطاقة" },
+          { id: `idBack${sec}`, field: "idBack", label: "الوجه الخلفي للبطاقة" },
+          { id: `personalPhoto${sec}`, field: "personalPhoto", label: "الصورة الشخصية" },
+          { id: `gradDoc${sec}`, field: "gradDoc", label: "وثيقة التخرج" },
+          { id: `adminOrder${sec}`, field: "adminOrder", label: "الأمر الإداري" },
+          { id: `commencementOrder${sec}`, field: "commencementOrder", label: "أمر المباشرة" }
+        ];
+
+        const totalImages = images.length;
+        let completed = 0;
+
+        for (const img of images) {
+          const input = document.getElementById(img.id);
+          if (!input || !input.files || input.files.length === 0) {
+            completed++;
+            continue;
+          }
+
+          const percent = 15 + Math.round((completed / totalImages) * 80);
+          updateProgress(percent, `جاري إرسال ${img.label} (${percent}%)...`);
+
+          const imageData = await compressAndConvertToBase64(img.id);
+          
+          if (imageData) {
+            let success = await sendImage(recordId, img.field, imageData);
+            
+            if (!success) {
+              console.warn(`فشل إرسال ${img.label}، جاري إعادة المحاولة...`);
+              await new Promise(r => setTimeout(r, 1000));
+              success = await sendImage(recordId, img.field, imageData);
+            }
+            
+            if (!success) {
+              console.error(`فشل نهائي في إرسال: ${img.label}`);
+            }
+          }
+          
+          completed++;
+          await new Promise(r => setTimeout(r, 400));
+        }
+
+        updateProgress(100, "تم الإرسال بنجاح! (100%)");
+        
+        setTimeout(() => {
+          document.getElementById('loading').classList.add('hidden-section');
+          document.getElementById('successMessage').classList.remove('hidden-section');
+        }, 500);
+
+      } catch (err) {
+        alert("حدث خطأ أثناء الإرسال: " + err.message);
+        document.getElementById('loading').classList.add('hidden-section');
+        document.getElementById('formSection' + sec).classList.remove('hidden-section');
+      }
+    }
+  </script>
+</body>
+</html>
