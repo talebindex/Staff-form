@@ -348,7 +348,7 @@
     <!-- شاشة التحميل -->
     <div id="loading" class="hidden-section text-center py-6">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-800 mb-2"></div>
-      <p class="text-purple-900 font-bold text-base sm:text-lg">جاري رفع المستمسكات وإرسال البيانات، يرجى الانتظار... ⏳</p>
+      <p class="text-purple-900 font-bold text-base sm:text-lg">جاري رفع المستمسكات بجودة عالية، يرجى الانتظار... ⏳</p>
     </div>
 
     <!-- شاشة النجاح -->
@@ -363,7 +363,6 @@
   </div>
 
   <script>
-    // ضعي رابط الـ WEB APP الخاص بك هنا
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqSGb-xu8HoX4yqYkQMeyjirn8Dk1yZoE_REFOATi14xAiu2xuczRcLE_05-jI4hyC/exec";
 
     function showSection(sectionNum) {
@@ -391,7 +390,7 @@
       }
     }
 
-    // دالة آمنة لتحويل وتصغير الصور دون أي إيقاف للبرنامج
+    // دالة لتحسين ورفع جودة ووضوح الصور المرفوعة (2000px وجودة 90%)
     function compressAndConvertToBase64(fileInputId) {
       return new Promise((resolve) => {
         const input = document.getElementById(fileInputId);
@@ -407,7 +406,7 @@
           const img = new Image();
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            const MAX_SIZE = 1000;
+            const MAX_SIZE = 2000; // تم رفع الأبعاد إلى 2000 بكسل لوضوح تام
             let width = img.width;
             let height = img.height;
 
@@ -429,7 +428,7 @@
             ctx.drawImage(img, 0, 0, width, height);
 
             resolve({
-              data: canvas.toDataURL('image/jpeg', 0.7),
+              data: canvas.toDataURL('image/jpeg', 0.9), // رفع دقة الجودة لـ 90%
               name: file.name
             });
           };
@@ -449,7 +448,6 @@
         return el ? el.value.trim() : "";
       };
 
-      // إخفاء الاستمارة وإظهار شاشة التحميل
       document.getElementById('formSection' + sec).classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
 
@@ -478,7 +476,6 @@
           landmark: getVal(`landmark${sec}`)
         };
 
-        // معالجة الصور بأمان كامل
         const filesData = {
           idFront: await compressAndConvertToBase64(`idFront${sec}`),
           idBack: await compressAndConvertToBase64(`idBack${sec}`),
@@ -488,7 +485,6 @@
           commencementOrder: await compressAndConvertToBase64(`commencementOrder${sec}`)
         };
 
-        // إرسال البيانات إلى Google Apps Script
         await fetch(SCRIPT_URL, {
           method: "POST",
           mode: "no-cors",
@@ -496,7 +492,6 @@
           body: JSON.stringify({ formData: formData, filesData: filesData })
         });
 
-        // إخفاء التحميل وإظهار رسالة النجاح
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('successMessage').classList.remove('hidden-section');
 
