@@ -205,6 +205,35 @@
     /* ---- progress ---- */
     .progress-track{ background: var(--border); border-radius:999px; height: 10px; overflow:hidden; }
     .progress-fill{ background: linear-gradient(90deg, var(--ink), var(--brass)); height:100%; border-radius:999px; transition: width .3s ease; }
+
+    /* ---- custom alert modal ---- */
+    .custom-alert-overlay{
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(37,26,53,0.55);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.25rem;
+    }
+    .custom-alert-card{
+      background: #fff; width: 100%; max-width: 360px;
+      border-radius: 18px; padding: 1.6rem 1.35rem 1.35rem;
+      text-align: center;
+      border: 1px solid var(--border);
+      box-shadow: 0 22px 50px -18px rgba(40,19,65,0.5);
+      animation: alertPop .18s ease-out;
+    }
+    @keyframes alertPop{ from{ transform: scale(0.94); opacity:0; } to{ transform: scale(1); opacity:1; } }
+    .custom-alert-icon{
+      width: 54px; height: 54px; border-radius: 9999px;
+      background: var(--warn-bg); color: var(--warn-text);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin: 0 auto 0.9rem;
+      border: 1px solid var(--warn-border);
+    }
+    .custom-alert-message{
+      font-size: 0.92rem; font-weight: 600; color: var(--text);
+      line-height: 1.7; margin-bottom: 1.35rem;
+    }
+    .custom-alert-card .btn{ width: 100%; }
   </style>
 </head>
 <body class="p-2 sm:p-5 md:p-8">
@@ -580,10 +609,32 @@
     </div>
   </div>
 
+  <!-- نافذة تنبيه مخصصة تحل محل alert الافتراضي -->
+  <div id="customAlertOverlay" class="custom-alert-overlay hidden-section">
+    <div class="custom-alert-card">
+      <div class="custom-alert-icon">⚠️</div>
+      <p class="custom-alert-message" id="customAlertMessage"></p>
+      <button type="button" class="btn btn-primary" onclick="closeCustomAlert()">حسنًا</button>
+    </div>
+  </div>
+
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYQBkNdTR16PoKgvhJwr-iI4DR4oHYfxn0AaIlYcVc2py8gVupBdjezMC67Cn-HxNk/exec";
 
     let activeSection = 1;
+
+    function showCustomAlert(message) {
+      const overlay = document.getElementById('customAlertOverlay');
+      const msgEl = document.getElementById('customAlertMessage');
+      if (!overlay || !msgEl) { window.alert(message); return; }
+      msgEl.textContent = message;
+      overlay.classList.remove('hidden-section');
+    }
+
+    function closeCustomAlert() {
+      const overlay = document.getElementById('customAlertOverlay');
+      if (overlay) overlay.classList.add('hidden-section');
+    }
 
     function setStep(step) {
       const dots = [1, 2, 3].map(n => document.getElementById('stepDot' + n));
@@ -617,7 +668,7 @@
     function goToNextFromSection1() {
       const empType = document.getElementById('employeeType').value;
       if (!empType) {
-        alert('يرجى اختيار نوع الموظف أولاً.');
+        showCustomAlert('يرجى اختيار نوع الموظف أولاً.');
         return;
       }
       if (empType === 'مدرس') {
@@ -682,7 +733,7 @@
       if (sec === 2) {
         const gradDateVal = document.getElementById('gradDate2').value.trim();
         if (!gradDateVal) {
-          alert('يرجى إدخال تاريخ التخرج.');
+          showCustomAlert('يرجى إدخال تاريخ التخرج.');
           return;
         }
       }
@@ -690,27 +741,27 @@
       if (sec === 3) {
         const jobTitleVal = document.getElementById('jobTitle3').value;
         if (!jobTitleVal) {
-          alert('يرجى اختيار العنوان الوظيفي.');
+          showCustomAlert('يرجى اختيار العنوان الوظيفي.');
           return;
         }
       }
 
       const phoneVal = document.getElementById(`phone${sec}`).value.trim();
       if (phoneVal.length !== 11) {
-        alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقماً وباللغة الإنجليزية.');
+        showCustomAlert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقماً وباللغة الإنجليزية.');
         return;
       }
 
       const idVal = document.getElementById(`idNumber${sec}`).value.trim();
       if (idVal.length !== 12) {
-        alert('يرجى إدخال رقم بطاقة موحدة صحيح يتكون من 12 رقماً وباللغة الإنجليزية.');
+        showCustomAlert('يرجى إدخال رقم بطاقة موحدة صحيح يتكون من 12 رقماً وباللغة الإنجليزية.');
         return;
       }
 
       const jobStatus = document.getElementById(`jobStatus${sec}`).value;
       const jobStatusOther = document.getElementById(`jobStatusOther${sec}`).value.trim();
       if (jobStatus === "اجازة اخرى" && !jobStatusOther) {
-        alert('يرجى كتابة نوع وتفاصيل الإجازة.');
+        showCustomAlert('يرجى كتابة نوع وتفاصيل الإجازة.');
         return;
       }
 
@@ -867,7 +918,7 @@
         }, 500);
       })
       .catch((err) => {
-        alert("حدث خطأ أثناء الإرسال: " + err);
+        showCustomAlert("حدث خطأ أثناء الإرسال: " + err);
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
       });
