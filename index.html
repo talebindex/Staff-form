@@ -204,7 +204,7 @@
 
     /* ---- progress ---- */
     .progress-track{ background: var(--border); border-radius:999px; height: 10px; overflow:hidden; }
-    .progress-fill{ background: linear-gradient(90deg, var(--ink), var(--brass)); height:100%; border-radius:999px; transition: width .3s ease; }
+    .progress-fill{ background: linear-gradient(90deg, var(--ink), var(--brass)); height:100%; border-radius:999px; transition: width .1s linear; }
 
     /* ---- custom alert modal ---- */
     .custom-alert-overlay{
@@ -602,9 +602,11 @@
     // =========================================================================
     // 🔗 ضع رابط تطبيق الويب (Web App URL) الخاص بالسكربت المُنشر هنا بين القوسين:
     // =========================================================================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsCHtQtSd3SRzgjXk2seElzZj2TGhI6hOmCzPtOia7A8t49_DTqcveCbdduEd_qgUX/exec";
+    const SCRIPT_URL = "ضع_رابط_السكربت_الخاص_بك_هنا";
 
     let activeSection = 1;
+    let currentProgress = 0;
+    let progressInterval = null;
 
     function showCustomAlert(message) {
       const overlay = document.getElementById('customAlertOverlay');
@@ -686,14 +688,29 @@
       input.value = val.replace(/[^0-9-]/g, '');
     }
 
-    function updateProgress(percent, text) {
+    // دالة تحريك النسبة المئوية بشكل انسيابي وتفاعلي
+    function animateProgressTo(targetPercent, text, speed = 20) {
       const pBar = document.getElementById('progressBar');
       const pText = document.getElementById('progressPercentage');
       const pStatus = document.getElementById('progressStatus');
 
-      if (pBar) pBar.style.width = percent + '%';
-      if (pText) pText.innerText = percent + '%';
-      if (pStatus) pStatus.innerText = text;
+      if (pStatus && text) pStatus.innerText = text;
+
+      if (progressInterval) clearInterval(progressInterval);
+
+      progressInterval = setInterval(() => {
+        if (currentProgress < targetPercent) {
+          currentProgress++;
+          if (pBar) pBar.style.width = currentProgress + '%';
+          if (pText) pText.innerText = currentProgress + '%';
+        } else if (currentProgress > targetPercent) {
+          currentProgress--;
+          if (pBar) pBar.style.width = currentProgress + '%';
+          if (pText) pText.innerText = currentProgress + '%';
+        } else {
+          clearInterval(progressInterval);
+        }
+      }, speed);
     }
 
     async function fileToBase64(fileInputId) {
@@ -834,7 +851,7 @@
     }
 
     async function confirmAndSubmit() {
-      if (!SCRIPT_URL || SCRIPT_URL.includes("ضع_رابط_السكربت")) {
+      if (!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbxsCHtQtSd3SRzgjXk2seElzZj2TGhI6hOmCzPtOia7A8t49_DTqcveCbdduEd_qgUX/exec")) {
         showCustomAlert("يرجى إدخال رابط السكربت (SCRIPT_URL) في الكود أولاً.");
         return;
       }
@@ -844,7 +861,8 @@
       document.getElementById('reviewSection').classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
 
-      updateProgress(10, "جاري قراءة وتجهيز البيانات...");
+      currentProgress = 0;
+      animateProgressTo(15, "جاري قراءة وتجهيز البيانات...", 15);
 
       const getVal = (id) => {
         const el = document.getElementById(id);
@@ -878,7 +896,8 @@
         landmark: getVal(`landmark${sec}`)
       };
 
-      updateProgress(30, "جاري معالجة ورفع المستمسكات...");
+      // حركة انسيابية نحو 45% أثناء تحويل الصور
+      animateProgressTo(45, "جاري معالجة ورفع المستمسكات...", 30);
 
       const filesData = {
         idFront: await fileToBase64(`idFront${sec}`),
@@ -889,7 +908,8 @@
         commencementOrder: await fileToBase64(`commencementOrder${sec}`)
       };
 
-      updateProgress(70, "جاري إرسال البيانات وحفظ المرفقات...");
+      // حركة تدريجية ناعمة نحو 85% أثناء الاتصال بالسيرفر
+      animateProgressTo(85, "جاري إرسال البيانات وحفظ المرفقات...", 25);
 
       try {
         const response = await fetch(SCRIPT_URL, {
@@ -903,12 +923,14 @@
         const res = await response.json();
 
         if (res.result === "success") {
-          updateProgress(100, "تم إتمام الإرسال بنجاح!");
+          // إنهاء التحميل إلى 100%
+          animateProgressTo(100, "تم إتمام الإرسال بنجاح!", 10);
+          
           setTimeout(() => {
             document.getElementById('loading').classList.add('hidden-section');
             document.getElementById('successCard').classList.remove('hidden-section');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-          }, 500);
+          }, 800);
         } else {
           throw new Error(res.message || "حدث خطأ غير معروف أثناء الحفظ.");
         }
