@@ -2,461 +2,323 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استمارة معلومات الكادر الخاصة بالعقود</title>
-  <link rel="icon" type="image/jpeg" href="https://lh3.googleusercontent.com/d/16UFKJgx0WDC_7CvQdf5vlB-SnTSlgT19">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .hidden-section { display: none !important; }
+    .hidden-section { display: none; }
     .star { color: red; margin-right: 2px; }
   </style>
 </head>
-<body class="bg-gray-100 font-sans min-h-screen p-3 sm:p-6">
+<body class="bg-gray-100 font-sans p-2 md:p-6">
 
-  <div class="max-w-2xl mx-auto bg-white p-4 sm:p-8 rounded-xl shadow-lg border-t-8 border-purple-800 my-2 sm:my-6">
+  <div class="max-w-2xl mx-auto bg-white p-4 md:p-8 rounded-lg shadow-md border-t-8 border-purple-800">
     
-    <!-- الهيدر -->
     <div class="text-center mb-6">
-      <img src="https://lh3.googleusercontent.com/d/16UFKJgx0WDC_7CvQdf5vlB-SnTSlgT19" 
-           alt="شعار المدرسة" 
-           class="h-28 mx-auto mb-3 object-contain drop-shadow-md"
-           onerror="this.style.display='none'">
-           
-      <h1 class="text-xl sm:text-2xl font-bold text-purple-900 mb-2">استمارة معلومات الكادر الخاصة بالعقود</h1>
-      <p class="text-gray-700 font-semibold text-xs sm:text-sm">استمارة خاصة لكادر ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين</p>
+      <h1 class="text-2xl font-bold text-purple-900 mb-2">استمارة معلومات الكادر الخاصة بالعقود</h1>
+      <p class="text-gray-700 font-semibold text-sm md:text-base">استمارة خاصة لكادر ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين</p>
     </div>
 
-    <!-- ==================== القسم 1 من 3 ==================== -->
-    <div id="section1" class="space-y-5">
-      <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-base sm:text-lg border-r-4 border-purple-800">
-        القسم 1 من 3: تحديد نوع الكادر
-      </div>
-      
-      <div>
-        <label class="block font-semibold mb-2 text-sm sm:text-base">نوع الموظف <span class="star">*</span></label>
-        <select id="employeeType" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 text-sm sm:text-base">
-          <option value="">اختر نوع الموظف...</option>
-          <option value="مدرس">مدرس</option>
-          <option value="موظف">موظف (كاتب / معاون ملاحظ / حارس / حرفي / خدمات)</option>
-        </select>
-      </div>
+    <form id="mainForm" onsubmit="handleFormSubmit(event)">
 
-      <button type="button" onclick="goToNextFromSection1()" class="w-full bg-purple-700 text-white py-3 rounded-lg hover:bg-purple-800 font-bold transition text-base">التالي</button>
-    </div>
-
-    <!-- ==================== القسم 2: المدرسين ==================== -->
-    <form id="formSection2" onsubmit="handleFormSubmit(event, 2)" class="space-y-4 hidden-section">
-      <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-base sm:text-lg border-r-4 border-purple-800">
-        القسم 2 من 3: استمارة المعلومات الخاصة بالمدرسين
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الاسم الرباعي <span class="star">*</span></label>
-        <input type="text" id="fullName2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">اللقب <span class="star">*</span></label>
-        <input type="text" id="title2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: إذا كان المدرس لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ التولّد <span class="star">*</span></label>
-        <input type="date" id="dob2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الجنس <span class="star">*</span></label>
-        <select id="gender2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر...</option>
-          <option value="ذكر">ذكر</option>
-          <option value="أنثى">أنثى</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">رقم البطاقة الموحدة <span class="star">*</span></label>
-        <input type="text" id="idNumber2" pattern="[0-9]{12}" maxlength="12" placeholder="أدخل 12 رقماً باللغة الإنجليزية" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم البطاقة الموحدة من 12 رقماً باللغة الإنجليزية حصراً">
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب كتابة 12 رقماً باللغة الإنجليزية (0-9).</p>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الوجه الأمامي للبطاقة الموحدة <span class="star">*</span></label>
-        <input type="file" id="idFront2" accept="image/*" class="w-full p-2 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الوجه الخلفي للبطاقة الموحدة <span class="star">*</span></label>
-        <input type="file" id="idBack2" accept="image/*" class="w-full p-2 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">اسم الأم الثلاثي <span class="star">*</span></label>
-        <input type="text" id="motherName2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">صورة شخصية للموظف <span class="star">*</span></label>
-        <input type="file" id="personalPhoto2" accept="image/*" class="w-full p-2 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">فصيلة الدم</label>
-        <select id="bloodType2" class="w-full p-2.5 border rounded text-sm sm:text-base">
-          <option value="">اختر...</option>
-          <option value="A+">A+</option><option value="A-">A-</option>
-          <option value="B+">B+</option><option value="B-">B-</option>
-          <option value="O+">O+</option><option value="O-">O-</option>
-          <option value="AB+">AB+</option><option value="AB-">AB-</option>
-          <option value="غير معروف">غير معروف</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الحالة الاجتماعية <span class="star">*</span></label>
-        <select id="socialStatus2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر...</option>
-          <option value="أعزب/عزباء">أعزب / عزباء</option>
-          <option value="متزوج/متزوجة">متزوج / متزوجة</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الديانة <span class="star">*</span></label>
-        <select id="religion2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر...</option>
-          <option value="مسلم">مسلم</option>
-          <option value="مسيحي">مسيحي</option>
-          <option value="صابئي">صابئي</option>
-          <option value="إيزيدي">إيزيدي</option>
-          <option value="أخرى">أخرى</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الحالة الوظيفية <span class="star">*</span></label>
-        <select id="jobStatus2" onchange="toggleLeaveType(2)" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر الحالة الوظيفية...</option>
-          <option value="مستمر">مستمر</option>
-          <option value="مفصول">مفصول</option>
-          <option value="في إجازة أمومة">في إجازة أمومة</option>
-          <option value="في إجازة دراسية">في إجازة دراسية</option>
-          <option value="إجازة أخرى">إجازة أخرى</option>
-        </select>
-      </div>
-
-      <div id="leaveTypeContainer2" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
-        <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
-        <input type="text" id="jobStatusOther2" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">التحصيل الدراسي <span class="star">*</span></label>
-        <input type="text" id="qualification2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">إسم الكلية / المعهد <span class="star">*</span></label>
-        <input type="text" id="college2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الإختصاص <span class="star">*</span></label>
-        <input type="text" id="specialization2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ التخرج <span class="star">*</span></label>
-        <input type="text" id="gradDate2" placeholder="2015-2016" pattern="[0-9/-]+" title="يرجى استخدام الأرقام والرموز باللغة الإنجليزية فقط" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
-      </div>
-
-      <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
-        <div class="my-2 text-center">
-          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة لوثيقة التخرج للتوضيح:</p>
-          <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-40 mx-auto rounded border shadow-sm">
+      <!-- القسم 1: نوع الكادر -->
+      <div id="section1" class="space-y-5">
+        <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-lg border-r-4 border-purple-800">
+          القسم 1 من 3: تحديد نوع الكادر
         </div>
-        <input type="file" id="gradDoc2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ أول تعيين <span class="star">*</span></label>
-        <input type="date" id="firstAppDate2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-        <p class="text-xs text-gray-500 mt-1">ملاحظه: تاريخ اول امر اداري صادر من التربيه..</p>
-      </div>
-
-      <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
-        <div class="my-2 text-center">
-          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للأمر الإداري للتوضيح:</p>
-          <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-40 mx-auto rounded border shadow-sm">
+        
+        <div>
+          <label class="block font-semibold mb-2">نوع الموظف <span class="star">*</span></label>
+          <select id="employeeType" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500" required>
+            <option value="">اختر نوع الموظف...</option>
+            <option value="مدرس">مدرس</option>
+            <option value="موظف">موظف (كاتب / معاون ملاحظ / حارس / حرفي / خدمات)</option>
+          </select>
         </div>
-        <input type="file" id="adminOrder2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
+
+        <button type="button" onclick="goToNextFromSection1()" class="w-full bg-purple-700 text-white py-3 rounded-lg hover:bg-purple-800 font-bold transition">التالي</button>
       </div>
 
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">رقم الهاتف <span class="star">*</span></label>
-        <input type="text" id="phone2" pattern="[0-9]{11}" maxlength="11" placeholder="07801234567" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم الهاتف من 11 رقماً باللغة الإنجليزية حصراً">
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب إدخال 11 رقماً باللغة الإنجليزية فقط (0-9).</p>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">عنوان السكن (المدينة / القرية) <span class="star">*</span></label>
-        <input type="text" id="address2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">أقرب نقطة دالة <span class="star">*</span></label>
-        <input type="text" id="landmark2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
-        <div class="my-2 text-center">
-          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للوجه الخلفي لأمر المباشرة للتوضيح:</p>
-          <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-40 mx-auto rounded border shadow-sm">
+      <!-- القسم 2: المدرسين -->
+      <div id="section2" class="space-y-4 hidden-section">
+        <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-lg border-r-4 border-purple-800">
+          القسم 2 من 3: استمارة المعلومات الخاصة بالمدرسين
         </div>
-        <input type="file" id="commencementOrder2" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
+
+        <div>
+          <label class="block font-semibold">الاسم الرباعي <span class="star">*</span></label>
+          <input type="text" id="fullName2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">اللقب <span class="star">*</span></label>
+          <input type="text" id="title2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">تاريخ التولّد <span class="star">*</span></label>
+          <input type="date" id="dob2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الجنس <span class="star">*</span></label>
+          <select id="gender2" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="ذكر">ذكر</option>
+            <option value="أنثى">أنثى</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">رقم البطاقة الموحدة <span class="star">*</span></label>
+          <input type="text" id="idNumber2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الوجه الأمامي للبطاقة الموحدة <span class="star">*</span></label>
+          <input type="file" id="idFront2" accept="image/*" class="w-full p-1 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الوجه الخلفي للبطاقة الموحدة <span class="star">*</span></label>
+          <input type="file" id="idBack2" accept="image/*" class="w-full p-1 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">اسم الأم الثلاثي <span class="star">*</span></label>
+          <input type="text" id="motherName2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">صورة شخصية للموظف <span class="star">*</span></label>
+          <input type="file" id="personalPhoto2" accept="image/*" class="w-full p-1 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">فصيلة الدم</label>
+          <select id="bloodType2" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="A+">A+</option><option value="A-">A-</option>
+            <option value="B+">B+</option><option value="B-">B-</option>
+            <option value="O+">O+</option><option value="O-">O-</option>
+            <option value="AB+">AB+</option><option value="AB-">AB-</option>
+            <option value="غير معروف">غير معروف</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">الحالة الاجتماعية <span class="star">*</span></label>
+          <select id="socialStatus2" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="أعزب/عزباء">أعزب / عزباء</option>
+            <option value="متزوج/متزوجة">متزوج / متزوجة</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">الديانة <span class="star">*</span></label>
+          <select id="religion2" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="مسلم">مسلم</option>
+            <option value="مسيحي">مسيحي</option>
+            <option value="صابئي">صابئي</option>
+            <option value="إيزيدي">إيزيدي</option>
+            <option value="أخرى">أخرى</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">الحالة الوظيفية <span class="star">*</span></label>
+          <input type="text" id="jobStatus2" placeholder="مستمر / إجازة أمومة..." class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">التحصيل الدراسي <span class="star">*</span></label>
+          <input type="text" id="qualification2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">إسم الكلية / المعهد <span class="star">*</span></label>
+          <input type="text" id="college2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الإختصاص <span class="star">*</span></label>
+          <input type="text" id="specialization2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">تاريخ التخرج</label>
+          <input type="date" id="gradDate2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">صورة لوثيقة التخرج</label>
+          <input type="file" id="gradDoc2" accept="image/*" class="w-full p-1 border rounded bg-white">
+        </div>
+        <div>
+          <label class="block font-semibold">تاريخ اول تعيين <span class="star">*</span></label>
+          <input type="date" id="firstAppDate2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">صورة الوجه الامامي للامر الاداري <span class="star">*</span></label>
+          <input type="file" id="adminOrder2" accept="image/*" class="w-full p-1 border rounded bg-white">
+        </div>
+        <div>
+          <label class="block font-semibold">رقم الهاتف <span class="star">*</span></label>
+          <input type="text" id="phone2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">عنوان السكن <span class="star">*</span></label>
+          <input type="text" id="address2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">أقرب نقطة دالة <span class="star">*</span></label>
+          <input type="text" id="landmark2" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">صورة الوجه الخلفي للمباشرة</label>
+          <input type="file" id="commencementOrder2" accept="image/*" class="w-full p-1 border rounded bg-white">
+        </div>
+
+        <div class="flex gap-2 mt-6">
+          <button type="button" onclick="showSection(1)" class="w-1/2 bg-gray-500 text-white py-2.5 rounded-lg font-bold">السابق</button>
+          <button type="submit" class="w-1/2 bg-green-700 text-white py-2.5 rounded-lg font-bold">إرسال البيانات</button>
+        </div>
       </div>
 
-      <div class="flex gap-2 mt-6">
-        <button type="button" onclick="showSection(1)" class="w-1/2 bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 font-bold text-sm sm:text-base">السابق</button>
-        <button type="submit" class="w-1/2 bg-green-700 text-white py-3 rounded-lg hover:bg-green-800 font-bold text-sm sm:text-base">إرسال البيانات</button>
+      <!-- القسم 3: الموظفين -->
+      <div id="section3" class="space-y-4 hidden-section">
+        <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-lg border-r-4 border-purple-800">
+          القسم 3 من 3: استمارة المعلومات الخاصة بالموظفين
+        </div>
+
+        <div>
+          <label class="block font-semibold">الاسم الرباعي <span class="star">*</span></label>
+          <input type="text" id="fullName3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">اللقب <span class="star">*</span></label>
+          <input type="text" id="title3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">تاريخ التولّد <span class="star">*</span></label>
+          <input type="date" id="dob3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الجنس <span class="star">*</span></label>
+          <select id="gender3" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="ذكر">ذكر</option>
+            <option value="أنثى">أنثى</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">اسم الأم الثلاثي <span class="star">*</span></label>
+          <input type="text" id="motherName3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">رقم البطاقة الموحدة <span class="star">*</span></label>
+          <input type="text" id="idNumber3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الوجه الأمامي للبطاقة الموحدة <span class="star">*</span></label>
+          <input type="file" id="idFront3" accept="image/*" class="w-full p-1 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الوجه الخلفي للبطاقة الموحدة <span class="star">*</span></label>
+          <input type="file" id="idBack3" accept="image/*" class="w-full p-1 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">صورة شخصية للموظف <span class="star">*</span></label>
+          <input type="file" id="personalPhoto3" accept="image/*" class="w-full p-1 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">فصيلة الدم</label>
+          <select id="bloodType3" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="A+">A+</option><option value="A-">A-</option>
+            <option value="B+">B+</option><option value="B-">B-</option>
+            <option value="O+">O+</option><option value="O-">O-</option>
+            <option value="AB+">AB+</option><option value="AB-">AB-</option>
+            <option value="غير معروف">غير معروف</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">الديانة <span class="star">*</span></label>
+          <select id="religion3" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="مسلم">مسلم</option>
+            <option value="مسيحي">مسيحي</option>
+            <option value="صابئي">صابئي</option>
+            <option value="إيزيدي">إيزيدي</option>
+            <option value="أخرى">أخرى</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">الحالة الاجتماعية <span class="star">*</span></label>
+          <select id="socialStatus3" class="w-full p-2 border rounded">
+            <option value="">اختر...</option>
+            <option value="أعزب/عزباء">أعزب / عزباء</option>
+            <option value="متزوج/متزوجة">متزوج / متزوجة</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">العنوان الوظيفي <span class="star">*</span></label>
+          <input type="text" id="jobTitle3" placeholder="كاتب / معاون ملاحظ..." class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الحالة الوظيفية <span class="star">*</span></label>
+          <input type="text" id="jobStatus3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">أخرى (نوع الإجازة / ملاحظات):</label>
+          <input type="text" id="jobStatusOther3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">التحصيل الدراسي <span class="star">*</span></label>
+          <input type="text" id="qualification3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">إسم الكلية / المعهد</label>
+          <input type="text" id="college3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">الإختصاص</label>
+          <input type="text" id="specialization3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">رقم الهاتف <span class="star">*</span></label>
+          <input type="text" id="phone3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">تاريخ اول تعيين <span class="star">*</span></label>
+          <input type="date" id="firstAppDate3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">صورة الوجه الامامي للامر الاداري <span class="star">*</span></label>
+          <input type="file" id="adminOrder3" accept="image/*" class="w-full p-1 border rounded bg-white">
+        </div>
+        <div>
+          <label class="block font-semibold">عنوان السكن <span class="star">*</span></label>
+          <input type="text" id="address3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">أقرب نقطة دالة <span class="star">*</span></label>
+          <input type="text" id="landmark3" class="w-full p-2 border rounded">
+        </div>
+        <div>
+          <label class="block font-semibold">صورة الوجه الخلفي للمباشرة</label>
+          <input type="file" id="commencementOrder3" accept="image/*" class="w-full p-1 border rounded bg-white">
+        </div>
+
+        <div class="flex gap-2 mt-6">
+          <button type="button" onclick="showSection(1)" class="w-1/2 bg-gray-500 text-white py-2.5 rounded-lg font-bold">السابق</button>
+          <button type="submit" class="w-1/2 bg-green-700 text-white py-2.5 rounded-lg font-bold">إرسال البيانات</button>
+        </div>
       </div>
+
+      <div id="loading" class="hidden-section text-center py-6">
+        <p class="text-purple-900 font-bold text-lg animate-pulse">جاري رفع المستمسكات وإرسال البيانات، يرجى الانتظار... ⏳</p>
+      </div>
+
     </form>
-
-    <!-- ==================== القسم 3: الموظفين ==================== -->
-    <form id="formSection3" onsubmit="handleFormSubmit(event, 3)" class="space-y-4 hidden-section">
-      <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-base sm:text-lg border-r-4 border-purple-800">
-        القسم 3 من 3: استمارة المعلومات الخاصة بالموظفين
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الاسم الرباعي <span class="star">*</span></label>
-        <input type="text" id="fullName3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">اللقب <span class="star">*</span></label>
-        <input type="text" id="title3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ التولّد <span class="star">*</span></label>
-        <input type="date" id="dob3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الجنس <span class="star">*</span></label>
-        <select id="gender3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر...</option>
-          <option value="ذكر">ذكر</option>
-          <option value="أنثى">أنثى</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">اسم الأم الثلاثي <span class="star">*</span></label>
-        <input type="text" id="motherName3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">رقم البطاقة الموحدة <span class="star">*</span></label>
-        <input type="text" id="idNumber3" pattern="[0-9]{12}" maxlength="12" placeholder="أدخل 12 رقماً باللغة الإنجليزية" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم البطاقة الموحدة من 12 رقماً باللغة الإنجليزية حصراً">
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب كتابة 12 رقماً باللغة الإنجليزية (0-9).</p>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الوجه الأمامي للبطاقة الموحدة <span class="star">*</span></label>
-        <input type="file" id="idFront3" accept="image/*" class="w-full p-2 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الوجه الخلفي للبطاقة الموحدة <span class="star">*</span></label>
-        <input type="file" id="idBack3" accept="image/*" class="w-full p-2 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">صورة شخصية للموظف <span class="star">*</span></label>
-        <input type="file" id="personalPhoto3" accept="image/*" class="w-full p-2 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">فصيلة الدم</label>
-        <select id="bloodType3" class="w-full p-2.5 border rounded text-sm sm:text-base">
-          <option value="">اختر...</option>
-          <option value="A+">A+</option><option value="A-">A-</option>
-          <option value="B+">B+</option><option value="B-">B-</option>
-          <option value="O+">O+</option><option value="O-">O-</option>
-          <option value="AB+">AB+</option><option value="AB-">AB-</option>
-          <option value="غير معروف">غير معروف</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الديانة <span class="star">*</span></label>
-        <select id="religion3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر...</option>
-          <option value="مسلم">مسلم</option>
-          <option value="مسيحي">مسيحي</option>
-          <option value="صابئي">صابئي</option>
-          <option value="إيزيدي">إيزيدي</option>
-          <option value="أخرى">أخرى</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الحالة الاجتماعية <span class="star">*</span></label>
-        <select id="socialStatus3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر...</option>
-          <option value="أعزب/عزباء">أعزب / عزباء</option>
-          <option value="متزوج/متزوجة">متزوج / متزوجة</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">العنوان الوظيفي <span class="star">*</span></label>
-        <select id="jobTitle3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر العنوان الوظيفي...</option>
-          <option value="كاتب">كاتب</option>
-          <option value="ملاحظ">ملاحظ</option>
-          <option value="معاون ملاحظ">معاون ملاحظ</option>
-          <option value="حرفي">حرفي</option>
-          <option value="موظف خدمات">موظف خدمات</option>
-          <option value="حارس">حارس</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الحالة الوظيفية <span class="star">*</span></label>
-        <select id="jobStatus3" onchange="toggleLeaveType(3)" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-          <option value="">اختر الحالة الوظيفية...</option>
-          <option value="مستمر">مستمر</option>
-          <option value="مفصول">مفصول</option>
-          <option value="في إجازة أمومة">في إجازة أمومة</option>
-          <option value="في إجازة دراسية">في إجازة دراسية</option>
-          <option value="إجازة أخرى">إجازة أخرى</option>
-        </select>
-      </div>
-
-      <div id="leaveTypeContainer3" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
-        <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
-        <input type="text" id="jobStatusOther3" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">التحصيل الدراسي <span class="star">*</span></label>
-        <input type="text" id="qualification3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">إسم الكلية / المعهد</label>
-        <input type="text" id="college3" class="w-full p-2.5 border rounded text-sm sm:text-base">
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">الإختصاص</label>
-        <input type="text" id="specialization3" class="w-full p-2.5 border rounded text-sm sm:text-base">
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ التخرج</label>
-        <input type="text" id="gradDate3" placeholder="2015-2016" pattern="[0-9/-]+" title="يرجى استخدام الأرقام والرموز باللغة الإنجليزية فقط" class="w-full p-2.5 border rounded text-sm sm:text-base">
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
-      </div>
-
-      <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج</label>
-        <div class="my-2 text-center">
-          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة لوثيقة التخرج للتوضيح:</p>
-          <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-40 mx-auto rounded border shadow-sm">
-        </div>
-        <input type="file" id="gradDoc3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">رقم الهاتف <span class="star">*</span></label>
-        <input type="text" id="phone3" pattern="[0-9]{11}" maxlength="11" placeholder="07801234567" class="w-full p-2.5 border rounded text-sm sm:text-base" required title="يجب أن يتكون رقم الهاتف من 11 رقماً باللغة الإنجليزية حصراً">
-        <p class="text-xs text-gray-500 mt-1">ملاحظة: يجب إدخال 11 رقماً باللغة الإنجليزية فقط (0-9).</p>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">تاريخ أول تعيين <span class="star">*</span></label>
-        <input type="date" id="firstAppDate3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-        <p class="text-xs text-gray-500 mt-1">ملاحظه: تاريخ اول امر اداري صادر من التربيه..</p>
-      </div>
-
-      <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
-        <div class="my-2 text-center">
-          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للأمر الإداري للتوضيح:</p>
-          <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-40 mx-auto rounded border shadow-sm">
-        </div>
-        <input type="file" id="adminOrder3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">عنوان السكن (المدينة / القرية) <span class="star">*</span></label>
-        <input type="text" id="address3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-sm sm:text-base">أقرب نقطة دالة <span class="star">*</span></label>
-        <input type="text" id="landmark3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
-      </div>
-
-      <div class="border p-3 rounded bg-gray-50 space-y-2">
-        <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
-        <div class="my-2 text-center">
-          <p class="text-xs text-purple-700 font-bold mb-1">صورة مشابهة للوجه الخلفي لأمر المباشرة للتوضيح:</p>
-          <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-40 mx-auto rounded border shadow-sm">
-        </div>
-        <input type="file" id="commencementOrder3" accept="image/*" class="w-full p-2 border rounded bg-white text-sm sm:text-base">
-      </div>
-
-      <div class="flex gap-2 mt-6">
-        <button type="button" onclick="showSection(1)" class="w-1/2 bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 font-bold text-sm sm:text-base">السابق</button>
-        <button type="submit" class="w-1/2 bg-green-700 text-white py-3 rounded-lg hover:bg-green-800 font-bold text-sm sm:text-base">إرسال البيانات</button>
-      </div>
-    </form>
-
-    <!-- شاشة التحميل -->
-    <div id="loading" class="hidden-section text-center py-6 space-y-3">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-800 mb-1"></div>
-      <p id="loadingText" class="text-purple-900 font-bold text-base sm:text-lg">جاري تجهيز المستمسكات (0%)... ⏳</p>
-      
-      <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden border border-purple-200">
-        <div id="progressBar" class="bg-purple-700 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
-      </div>
-    </div>
-
-    <!-- شاشة النجاح -->
-    <div id="successMessage" class="hidden-section text-center py-8 space-y-4">
-      <div class="text-5xl">✅</div>
-      <h2 class="text-xl sm:text-2xl font-bold text-green-700">تم إرسال الاستمارة بنجاح!</h2>
-      <button type="button" onclick="location.reload()" class="bg-purple-800 text-white px-6 py-2.5 rounded-lg hover:bg-purple-900 font-bold text-sm sm:text-base">
-        إرسال استمارة أخرى
-      </button>
-    </div>
-
   </div>
 
   <script>
-    // ⚠️⚠️⚠️ ضع هنا رابط Web App الخاص بـ Google Apps Script ⚠️⚠️⚠️
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZeSyrfwGem2FKl3pePD43JhBiXFRDl4By0Gw0MnxVpH7ScyzuuAShk7NHMfE3Bgxl/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkFn6Z2Hd0Zcqf9PpRgzkgN8sFQ0RnTHq5W3EkPx63KSofE6heGftjCG3g1Zjo-jPl/exec";
+
+    let activeSection = 1;
 
     function showSection(sectionNum) {
       document.getElementById('section1').classList.add('hidden-section');
-      document.getElementById('formSection2').classList.add('hidden-section');
-      document.getElementById('formSection3').classList.add('hidden-section');
+      document.getElementById('section2').classList.add('hidden-section');
+      document.getElementById('section3').classList.add('hidden-section');
       
-      if (sectionNum === 1) document.getElementById('section1').classList.remove('hidden-section');
-      if (sectionNum === 2) document.getElementById('formSection2').classList.remove('hidden-section');
-      if (sectionNum === 3) document.getElementById('formSection3').classList.remove('hidden-section');
-      
+      document.getElementById('section' + sectionNum).classList.remove('hidden-section');
+      activeSection = sectionNum;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -473,241 +335,65 @@
       }
     }
 
-    function toggleLeaveType(sec) {
-      const statusSelect = document.getElementById(`jobStatus${sec}`).value;
-      const leaveContainer = document.getElementById(`leaveTypeContainer${sec}`);
-      const leaveInput = document.getElementById(`jobStatusOther${sec}`);
-
-      if (statusSelect === 'إجازة أخرى') {
-        leaveContainer.classList.remove('hidden-section');
-        leaveInput.setAttribute('required', 'required');
-      } else {
-        leaveContainer.classList.add('hidden-section');
-        leaveInput.removeAttribute('required');
-        leaveInput.value = '';
-      }
-    }
-
-    function compressAndConvertToBase64(fileInputId) {
-      return new Promise((resolve) => {
-        const input = document.getElementById(fileInputId);
-        if (!input || !input.files || input.files.length === 0) {
-          resolve(null);
-          return;
-        }
-
-        const file = input.files[0];
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const MAX_SIZE = 1200;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > height) {
-              if (width > MAX_SIZE) {
-                height *= MAX_SIZE / width;
-                width = MAX_SIZE;
-              }
-            } else {
-              if (height > MAX_SIZE) {
-                width *= MAX_SIZE / height;
-                height = MAX_SIZE;
-              }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            resolve({
-              data: canvas.toDataURL('image/jpeg', 0.75),
-              name: file.name
-            });
-          };
-          img.onerror = () => resolve(null);
-          img.src = e.target.result;
-        };
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function updateProgress(percent, text) {
-      const bar = document.getElementById('progressBar');
-      const textEl = document.getElementById('loadingText');
-      if (bar) bar.style.width = percent + '%';
-      if (textEl) textEl.innerText = text;
-    }
-
-    async function sendTextData(formData) {
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({ 
-            action: "saveText", 
-            formData: formData 
-          })
-        });
-        
-        const text = await response.text();
-        console.log("الرد من السيرفر:", text);
-        
-        let result;
-        try {
-          result = JSON.parse(text);
-        } catch (parseErr) {
-          console.error("الرد ليس JSON صالحاً:", text);
-          alert("خطأ في السيرفر:\n" + text.substring(0, 300));
-          return null;
-        }
-        
-        if (!result.success) {
-          alert("خطأ من السيرفر: " + (result.message || "غير معروف"));
-          return null;
-        }
-        
-        return result.recordId || null;
-      } catch (err) {
-        console.error("خطأ في الاتصال:", err);
-        alert("تعذر الاتصال بالسيرفر:\n" + err.message + "\n\nتأكد من:\n1. نشر السكربت بصلاحية Anyone\n2. صحة رابط SCRIPT_URL");
-        return null;
-      }
-    }
-
-    async function sendImage(recordId, fieldName, imageData) {
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "saveImage",
-            recordId: recordId,
-            field: fieldName,
-            imageData: imageData.data,
-            fileName: imageData.name
-          })
-        });
-        
-        const text = await response.text();
-        let result;
-        try {
-          result = JSON.parse(text);
-        } catch (e) {
-          console.error(`الرد ليس JSON في ${fieldName}:`, text);
-          return false;
-        }
-        
-        return result.success === true;
-      } catch (err) {
-        console.error(`خطأ في إرسال الصورة ${fieldName}:`, err);
-        return false;
-      }
-    }
-
-    async function handleFormSubmit(e, sec) {
+    function handleFormSubmit(e) {
       e.preventDefault();
+      const sec = activeSection;
 
-      const getVal = (id) => {
-        const el = document.getElementById(id);
-        return el ? el.value.trim() : "";
-      };
-
-      document.getElementById('formSection' + sec).classList.add('hidden-section');
+      document.getElementById('section' + sec).classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
 
-      try {
-        updateProgress(5, "جاري جمع بيانات الاستمارة (5%)...");
+      const formData = new FormData();
+      formData.append('employeeType', document.getElementById('employeeType').value);
+      formData.append('fullName', document.getElementById(`fullName${sec}`).value.trim());
+      formData.append('title', document.getElementById(`title${sec}`).value.trim());
+      formData.append('dob', document.getElementById(`dob${sec}`).value);
+      formData.append('gender', document.getElementById(`gender${sec}`).value);
+      formData.append('motherName', document.getElementById(`motherName${sec}`).value.trim());
+      formData.append('idNumber', document.getElementById(`idNumber${sec}`).value.trim());
+      formData.append('bloodType', document.getElementById(`bloodType${sec}`).value);
+      formData.append('socialStatus', document.getElementById(`socialStatus${sec}`).value);
+      formData.append('religion', document.getElementById(`religion${sec}`).value);
+      formData.append('jobTitle', document.getElementById(`jobTitle${sec}`) ? document.getElementById(`jobTitle${sec}`).value.trim() : "");
+      formData.append('jobStatus', document.getElementById(`jobStatus${sec}`) ? document.getElementById(`jobStatus${sec}`).value.trim() : "");
+      formData.append('jobStatusOther', document.getElementById(`jobStatusOther${sec}`) ? document.getElementById(`jobStatusOther${sec}`).value.trim() : "");
+      formData.append('qualification', document.getElementById(`qualification${sec}`).value.trim());
+      formData.append('college', document.getElementById(`college${sec}`).value.trim());
+      formData.append('specialization', document.getElementById(`specialization${sec}`).value.trim());
+      formData.append('gradDate', document.getElementById(`gradDate${sec}`) ? document.getElementById(`gradDate${sec}`).value : "");
+      formData.append('firstAppDate', document.getElementById(`firstAppDate${sec}`).value);
+      formData.append('phone', document.getElementById(`phone${sec}`).value.trim());
+      formData.append('address', document.getElementById(`address${sec}`).value.trim());
+      formData.append('landmark', document.getElementById(`landmark${sec}`).value.trim());
 
-        const formData = {
-          employeeType: getVal('employeeType'),
-          fullName: getVal(`fullName${sec}`),
-          title: getVal(`title${sec}`),
-          dob: getVal(`dob${sec}`),
-          gender: getVal(`gender${sec}`),
-          idNumber: getVal(`idNumber${sec}`),
-          motherName: getVal(`motherName${sec}`),
-          bloodType: getVal(`bloodType${sec}`),
-          socialStatus: getVal(`socialStatus${sec}`),
-          religion: getVal(`religion${sec}`),
-          jobTitle: sec === 2 ? 'مدرس' : getVal(`jobTitle${sec}`),
-          jobStatus: getVal(`jobStatus${sec}`),
-          jobStatusOther: getVal(`jobStatusOther${sec}`),
-          qualification: getVal(`qualification${sec}`),
-          college: getVal(`college${sec}`),
-          specialization: getVal(`specialization${sec}`),
-          gradDate: getVal(`gradDate${sec}`),
-          firstAppDate: getVal(`firstAppDate${sec}`),
-          phone: getVal(`phone${sec}`),
-          address: getVal(`address${sec}`),
-          landmark: getVal(`landmark${sec}`)
-        };
-
-        updateProgress(10, "جاري إرسال البيانات النصية (10%)...");
-        
-        const recordId = await sendTextData(formData);
-        
-        if (!recordId) {
-          throw new Error("فشل إنشاء السجل في قاعدة البيانات. يرجى المحاولة مرة أخرى.");
+      // إضافة الملفات والصور إذا تم اختيارها
+      const appendFile = (id) => {
+        const input = document.getElementById(id);
+        if (input && input.files && input.files[0]) {
+          formData.append(id.replace('2','').replace('3',''), input.files[0]);
         }
+      };
 
-        const images = [
-          { id: `idFront${sec}`, field: "idFront", label: "الوجه الأمامي للبطاقة" },
-          { id: `idBack${sec}`, field: "idBack", label: "الوجه الخلفي للبطاقة" },
-          { id: `personalPhoto${sec}`, field: "personalPhoto", label: "الصورة الشخصية" },
-          { id: `gradDoc${sec}`, field: "gradDoc", label: "وثيقة التخرج" },
-          { id: `adminOrder${sec}`, field: "adminOrder", label: "الأمر الإداري" },
-          { id: `commencementOrder${sec}`, field: "commencementOrder", label: "أمر المباشرة" }
-        ];
+      appendFile(`idFront${sec}`);
+      appendFile(`idBack${sec}`);
+      appendFile(`personalPhoto${sec}`);
+      appendFile(`gradDoc${sec}`);
+      appendFile(`adminOrder${sec}`);
+      appendFile(`commencementOrder${sec}`);
 
-        const totalImages = images.length;
-        let completed = 0;
-
-        for (const img of images) {
-          const input = document.getElementById(img.id);
-          if (!input || !input.files || input.files.length === 0) {
-            completed++;
-            continue;
-          }
-
-          const percent = 15 + Math.round((completed / totalImages) * 80);
-          updateProgress(percent, `جاري إرسال ${img.label} (${percent}%)...`);
-
-          const imageData = await compressAndConvertToBase64(img.id);
-          
-          if (imageData) {
-            let success = await sendImage(recordId, img.field, imageData);
-            
-            if (!success) {
-              console.warn(`فشل إرسال ${img.label}، جاري إعادة المحاولة...`);
-              await new Promise(r => setTimeout(r, 1000));
-              success = await sendImage(recordId, img.field, imageData);
-            }
-            
-            if (!success) {
-              console.error(`فشل نهائي في إرسال: ${img.label}`);
-            }
-          }
-          
-          completed++;
-          await new Promise(r => setTimeout(r, 400));
-        }
-
-        updateProgress(100, "تم الإرسال بنجاح! (100%)");
-        
-        setTimeout(() => {
-          document.getElementById('loading').classList.add('hidden-section');
-          document.getElementById('successMessage').classList.remove('hidden-section');
-        }, 500);
-
-      } catch (err) {
-        alert("حدث خطأ أثناء الإرسال: " + err.message);
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+      })
+      .then(() => {
+        alert("تم إرسال الاستمارة ورفع الصور بنجاح!");
+        location.reload();
+      })
+      .catch((err) => {
+        alert("حدث خطأ أثناء الإرسال: " + err);
         document.getElementById('loading').classList.add('hidden-section');
-        document.getElementById('formSection' + sec).classList.remove('hidden-section');
-      }
+        document.getElementById('section' + sec).classList.remove('hidden-section');
+      });
     }
   </script>
 </body>
