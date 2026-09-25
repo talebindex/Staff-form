@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استمارة معلومات الكادر الخاصة بالعقود</title>
-  <!-- أيقونة الموقع (شعار المدرسة) -->
   <link rel="icon" type="image/jpeg" href="https://lh3.googleusercontent.com/d/16UFKJgx0WDC_7CvQdf5vlB-SnTSlgT19">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -16,7 +15,6 @@
 
   <div class="max-w-2xl mx-auto bg-white p-4 sm:p-8 rounded-xl shadow-lg border-t-8 border-purple-800 my-2 sm:my-6">
     
-    <!-- الهيدر مع شعار المدرسة -->
     <div class="text-center mb-6">
       <img src="https://lh3.googleusercontent.com/d/16UFKJgx0WDC_7CvQdf5vlB-SnTSlgT19" 
            alt="شعار المدرسة" 
@@ -27,7 +25,7 @@
       <p class="text-gray-700 font-semibold text-xs sm:text-sm">استمارة خاصة لكادر ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين</p>
     </div>
 
-    <!-- ==================== القسم 1 من 3 ==================== -->
+    <!-- القسم 1 من 3 -->
     <div id="section1" class="space-y-5">
       <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-base sm:text-lg border-r-4 border-purple-800">
         القسم 1 من 3: تحديد نوع الكادر
@@ -45,7 +43,7 @@
       <button type="button" onclick="goToNextFromSection1()" class="w-full bg-purple-700 text-white py-3 rounded-lg hover:bg-purple-800 font-bold transition text-base">التالي</button>
     </div>
 
-    <!-- ==================== القسم 2 من 3: المدرسين ==================== -->
+    <!-- القسم 2: المدرسين -->
     <form id="formSection2" onsubmit="handleFormSubmit(event, 2)" class="space-y-4 hidden-section">
       <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-base sm:text-lg border-r-4 border-purple-800">
         القسم 2 من 3: استمارة المعلومات الخاصة بالمدرسين
@@ -147,7 +145,6 @@
         </select>
       </div>
 
-      <!-- حقل نوع الإجازة -->
       <div id="leaveTypeContainer2" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
         <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
         <input type="text" id="jobStatusOther2" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
@@ -174,7 +171,6 @@
         <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
       </div>
 
-      <!-- صورة وثيقة التخرج -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج <span class="star">*</span></label>
         <div class="my-2 text-center">
@@ -190,7 +186,6 @@
         <p class="text-xs text-gray-500 mt-1">ملاحظه: تاريخ اول امر اداري صادر من التربيه..</p>
       </div>
 
-      <!-- صورة الأمر الإداري -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
         <div class="my-2 text-center">
@@ -216,7 +211,6 @@
         <input type="text" id="landmark2" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- صورة أمر المباشرة -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
         <div class="my-2 text-center">
@@ -232,7 +226,7 @@
       </div>
     </form>
 
-    <!-- ==================== القسم 3 من 3: الموظفين ==================== -->
+    <!-- القسم 3: الموظفين -->
     <form id="formSection3" onsubmit="handleFormSubmit(event, 3)" class="space-y-4 hidden-section">
       <div class="bg-purple-100 p-3 rounded font-bold text-purple-800 text-base sm:text-lg border-r-4 border-purple-800">
         القسم 3 من 3: استمارة المعلومات الخاصة بالموظفين
@@ -347,7 +341,6 @@
         </select>
       </div>
 
-      <!-- حقل نوع الإجازة -->
       <div id="leaveTypeContainer3" class="hidden-section bg-yellow-50 p-3 rounded border border-yellow-300">
         <label class="block font-semibold text-sm sm:text-base text-yellow-900">يرجى كتابة نوع الإجازة الأخرى <span class="star">*</span></label>
         <input type="text" id="jobStatusOther3" placeholder="اكتب نوع الإجازة هنا..." class="w-full p-2.5 border rounded mt-1 text-sm sm:text-base">
@@ -374,7 +367,6 @@
         <p class="text-xs text-gray-500 mt-1">ملاحظة: أدخل النص باللغة الإنجليزية فقط (مثال: 2015-2016).</p>
       </div>
 
-      <!-- صورة وثيقة التخرج (غير إجباري للموظف) -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة وثيقة التخرج</label>
         <div class="my-2 text-center">
@@ -396,7 +388,6 @@
         <p class="text-xs text-gray-500 mt-1">ملاحظه: تاريخ اول امر اداري صادر من التربيه..</p>
       </div>
 
-      <!-- صورة الأمر الإداري -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الأمامي للأمر الإداري <span class="star">*</span></label>
         <div class="my-2 text-center">
@@ -416,7 +407,6 @@
         <input type="text" id="landmark3" class="w-full p-2.5 border rounded text-sm sm:text-base" required>
       </div>
 
-      <!-- صورة أمر المباشرة -->
       <div class="border p-3 rounded bg-gray-50 space-y-2">
         <label class="block font-semibold text-sm sm:text-base">صورة الوجه الخلفي للمباشرة</label>
         <div class="my-2 text-center">
@@ -432,12 +422,11 @@
       </div>
     </form>
 
-    <!-- شاشة التحميل وشريط النسبة المئوية -->
+    <!-- شاشة التحميل -->
     <div id="loading" class="hidden-section text-center py-6 space-y-3">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-800 mb-1"></div>
       <p id="loadingText" class="text-purple-900 font-bold text-base sm:text-lg">جاري تجهيز المستمسكات (0%)... ⏳</p>
       
-      <!-- شريط النسبة المئوية -->
       <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden border border-purple-200">
         <div id="progressBar" class="bg-purple-700 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
       </div>
@@ -455,7 +444,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqSGb-xu8HoX4yqYkQMeyjirn8Dk1yZoE_REFOATi14xAiu2xuczRcLE_05-jI4hyC/exec";
+    // ⚠️ ضع هنا رابط Web App الخاص بـ Google Apps Script
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-5G8llWE1dQlwVh04c4YZVDhpSd5W4VNEvm8L_ivCw1Kb9yCu-tgAjTS5ghph9G7f/exec";
 
     function showSection(sectionNum) {
       document.getElementById('section1').classList.add('hidden-section');
@@ -497,7 +487,7 @@
       }
     }
 
-    // دالة ضغط وتحويل الصور بشكل تسلسلي وآمن
+    // ضغط الصورة وتحويلها إلى Base64
     function compressAndConvertToBase64(fileInputId) {
       return new Promise((resolve) => {
         const input = document.getElementById(fileInputId);
@@ -513,7 +503,7 @@
           const img = new Image();
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            const MAX_SIZE = 1200; // تقليل الحجم قليلاً لضمان السرعة ومنع انقطاع الحزمة
+            const MAX_SIZE = 1200;
             let width = img.width;
             let height = img.height;
 
@@ -535,7 +525,7 @@
             ctx.drawImage(img, 0, 0, width, height);
 
             resolve({
-              data: canvas.toDataURL('image/jpeg', 0.8),
+              data: canvas.toDataURL('image/jpeg', 0.75),
               name: file.name
             });
           };
@@ -547,12 +537,52 @@
       });
     }
 
-    // تحديث واجهة شريط النسبة المئوية
     function updateProgress(percent, text) {
       const bar = document.getElementById('progressBar');
       const textEl = document.getElementById('loadingText');
-      if(bar) bar.style.width = percent + '%';
-      if(textEl) textEl.innerText = text;
+      if (bar) bar.style.width = percent + '%';
+      if (textEl) textEl.innerText = text;
+    }
+
+    // إرسال البيانات النصية وحفظ رقم السجل
+    async function sendTextData(formData) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ 
+            action: "saveText", 
+            formData: formData 
+          })
+        });
+        const result = await response.json();
+        return result.recordId || null;
+      } catch (err) {
+        console.error("خطأ في إرسال البيانات النصية:", err);
+        return null;
+      }
+    }
+
+    // إرسال صورة واحدة مع إعادة المحاولة
+    async function sendImage(recordId, fieldName, imageData) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "saveImage",
+            recordId: recordId,
+            field: fieldName,
+            imageData: imageData.data,
+            fileName: imageData.name
+          })
+        });
+        const result = await response.json();
+        return result.success === true;
+      } catch (err) {
+        console.error(`خطأ في إرسال الصورة ${fieldName}:`, err);
+        return false;
+      }
     }
 
     async function handleFormSubmit(e, sec) {
@@ -567,7 +597,7 @@
       document.getElementById('loading').classList.remove('hidden-section');
 
       try {
-        updateProgress(10, "جاري جمع بيانات الاستمارة (10%)...");
+        updateProgress(5, "جاري جمع بيانات الاستمارة (5%)...");
 
         const formData = {
           employeeType: getVal('employeeType'),
@@ -593,39 +623,59 @@
           landmark: getVal(`landmark${sec}`)
         };
 
-        updateProgress(25, "جاري معالجة الوجه الأمامي للبطاقة (25%)...");
-        const idFront = await compressAndConvertToBase64(`idFront${sec}`);
+        // 1) إرسال البيانات النصية أولاً
+        updateProgress(10, "جاري إرسال البيانات النصية (10%)...");
+        
+        const recordId = await sendTextData(formData);
+        
+        if (!recordId) {
+          throw new Error("فشل إنشاء السجل في قاعدة البيانات. يرجى المحاولة مرة أخرى.");
+        }
 
-        updateProgress(40, "جاري معالجة الوجه الخلفي للبطاقة (40%)...");
-        const idBack = await compressAndConvertToBase64(`idBack${sec}`);
+        // 2) إرسال الصور واحدة تلو الأخرى
+        const images = [
+          { id: `idFront${sec}`, field: "idFront", label: "الوجه الأمامي للبطاقة" },
+          { id: `idBack${sec}`, field: "idBack", label: "الوجه الخلفي للبطاقة" },
+          { id: `personalPhoto${sec}`, field: "personalPhoto", label: "الصورة الشخصية" },
+          { id: `gradDoc${sec}`, field: "gradDoc", label: "وثيقة التخرج" },
+          { id: `adminOrder${sec}`, field: "adminOrder", label: "الأمر الإداري" },
+          { id: `commencementOrder${sec}`, field: "commencementOrder", label: "أمر المباشرة" }
+        ];
 
-        updateProgress(55, "جاري معالجة الصورة الشخصية (55%)...");
-        const personalPhoto = await compressAndConvertToBase64(`personalPhoto${sec}`);
+        const totalImages = images.length;
+        let completed = 0;
 
-        updateProgress(70, "جاري معالجة وثيقة التخرج (70%)...");
-        const gradDoc = await compressAndConvertToBase64(`gradDoc${sec}`);
+        for (const img of images) {
+          const input = document.getElementById(img.id);
+          if (!input || !input.files || input.files.length === 0) {
+            completed++;
+            continue;
+          }
 
-        updateProgress(85, "جاري معالجة الأمر الإداري والمباشرة (85%)...");
-        const adminOrder = await compressAndConvertToBase64(`adminOrder${sec}`);
-        const commencementOrder = await compressAndConvertToBase64(`commencementOrder${sec}`);
+          const percent = 15 + Math.round((completed / totalImages) * 80);
+          updateProgress(percent, `جاري إرسال ${img.label} (${percent}%)...`);
 
-        const filesData = {
-          idFront,
-          idBack,
-          personalPhoto,
-          gradDoc,
-          adminOrder,
-          commencementOrder
-        };
-
-        updateProgress(95, "جاري إرسال البيانات نهائياً إلى الخادم (95%)...");
-
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ formData: formData, filesData: filesData })
-        });
+          const imageData = await compressAndConvertToBase64(img.id);
+          
+          if (imageData) {
+            let success = await sendImage(recordId, img.field, imageData);
+            
+            // إعادة المحاولة مرة واحدة عند الفشل
+            if (!success) {
+              console.warn(`فشل إرسال ${img.label}، جاري إعادة المحاولة...`);
+              await new Promise(r => setTimeout(r, 1000));
+              success = await sendImage(recordId, img.field, imageData);
+            }
+            
+            if (!success) {
+              console.error(`فشل نهائي في إرسال: ${img.label}`);
+            }
+          }
+          
+          completed++;
+          // تأخير بسيط بين كل صورة لتجنب رفض الطلبات السريعة
+          await new Promise(r => setTimeout(r, 400));
+        }
 
         updateProgress(100, "تم الإرسال بنجاح! (100%)");
         
