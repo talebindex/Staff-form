@@ -204,7 +204,7 @@
 
     /* ---- progress ---- */
     .progress-track{ background: var(--border); border-radius:999px; height: 10px; overflow:hidden; }
-    .progress-fill{ background: linear-gradient(90deg, var(--ink), var(--brass)); height:100%; border-radius:999px; transition: width .1s linear; }
+    .progress-fill{ background: linear-gradient(90deg, var(--ink), var(--brass)); height:100%; border-radius:999px; transition: width .2s ease-out; }
 
     /* ---- custom alert modal ---- */
     .custom-alert-overlay{
@@ -599,9 +599,6 @@
   </div>
 
   <script>
-    // =========================================================================
-    // 🔗 ضع رابط تطبيق الويب (Web App URL) الخاص بالسكربت المُنشر هنا بين القوسين:
-    // =========================================================================
     const SCRIPT_URL = "ضع_رابط_السكربت_الخاص_بك_هنا";
 
     let activeSection = 1;
@@ -688,8 +685,10 @@
       input.value = val.replace(/[^0-9-]/g, '');
     }
 
-    // دالة تحريك النسبة المئوية بشكل انسيابي وتفاعلي
-    function animateProgressTo(targetPercent, text, speed = 20) {
+    // ==========================================
+    // 🚀 دالة تحريك النسبة المئوية بسلاسة وتفاعلية
+    // ==========================================
+    function setProgress(targetPercent, text, speed = 30) {
       const pBar = document.getElementById('progressBar');
       const pText = document.getElementById('progressPercentage');
       const pStatus = document.getElementById('progressStatus');
@@ -713,14 +712,20 @@
       }, speed);
     }
 
-    async function fileToBase64(fileInputId) {
+    async function fileToBase64(fileInputId, onProgressStep) {
       const input = document.getElementById(fileInputId);
-      if (!input || !input.files || input.files.length === 0) return null;
+      if (!input || !input.files || input.files.length === 0) {
+        if (onProgressStep) onProgressStep();
+        return null;
+      }
 
       const file = input.files[0];
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve({ data: reader.result, name: file.name });
+        reader.onload = () => {
+          if (onProgressStep) onProgressStep();
+          resolve({ data: reader.result, name: file.name });
+        };
         reader.onerror = error => reject(error);
         reader.readAsDataURL(file);
       });
@@ -851,7 +856,7 @@
     }
 
     async function confirmAndSubmit() {
-      if (!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbxsCHtQtSd3SRzgjXk2seElzZj2TGhI6hOmCzPtOia7A8t49_DTqcveCbdduEd_qgUX/exec")) {
+      if (!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbwlkgfiwH_r9mSZ8MvycsT2weWbdLa2HHo967VGJjHMJ8FlUMn18HdoGbYkebDfdQyM/exec")) {
         showCustomAlert("يرجى إدخال رابط السكربت (SCRIPT_URL) في الكود أولاً.");
         return;
       }
@@ -861,8 +866,9 @@
       document.getElementById('reviewSection').classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
 
+      // إعادة تعيين شريط التقدم
       currentProgress = 0;
-      animateProgressTo(15, "جاري قراءة وتجهيز البيانات...", 15);
+      setProgress(15, "جاري قراءة وتجهيز البيانات...", 15);
 
       const getVal = (id) => {
         const el = document.getElementById(id);
@@ -896,20 +902,26 @@
         landmark: getVal(`landmark${sec}`)
       };
 
-      // حركة انسيابية نحو 45% أثناء تحويل الصور
-      animateProgressTo(45, "جاري معالجة ورفع المستمسكات...", 30);
-
-      const filesData = {
-        idFront: await fileToBase64(`idFront${sec}`),
-        idBack: await fileToBase64(`idBack${sec}`),
-        personalPhoto: await fileToBase64(`personalPhoto${sec}`),
-        gradDoc: await fileToBase64(`gradDoc${sec}`),
-        adminOrder: await fileToBase64(`adminOrder${sec}`),
-        commencementOrder: await fileToBase64(`commencementOrder${sec}`)
+      // 🔄 معالجة وتحويل الصور بشكل تفاعلي مستمر مع زيادة النسبة تدريجياً
+      let processedFiles = 0;
+      const totalFiles = 6;
+      const onFileDone = () => {
+        processedFiles++;
+        const target = 15 + Math.round((processedFiles / totalFiles) * 45); // يصل إلى 60%
+        setProgress(target, `جاري تجهيز الصورة ${processedFiles} من ${totalFiles}...`, 20);
       };
 
-      // حركة تدريجية ناعمة نحو 85% أثناء الاتصال بالسيرفر
-      animateProgressTo(85, "جاري إرسال البيانات وحفظ المرفقات...", 25);
+      const filesData = {
+        idFront: await fileToBase64(`idFront${sec}`, onFileDone),
+        idBack: await fileToBase64(`idBack${sec}`, onFileDone),
+        personalPhoto: await fileToBase64(`personalPhoto${sec}`, onFileDone),
+        gradDoc: await fileToBase64(`gradDoc${sec}`, onFileDone),
+        adminOrder: await fileToBase64(`adminOrder${sec}`, onFileDone),
+        commencementOrder: await fileToBase64(`commencementOrder${sec}`, onFileDone)
+      };
+
+      // 📡 بدء إرسال البيانات وسحب النسبة ببطء نحو 95% لحين رد السيرفر
+      setProgress(92, "جاري رفع الملفات وحفظ الاستجابة...", 120);
 
       try {
         const response = await fetch(SCRIPT_URL, {
@@ -923,14 +935,12 @@
         const res = await response.json();
 
         if (res.result === "success") {
-          // إنهاء التحميل إلى 100%
-          animateProgressTo(100, "تم إتمام الإرسال بنجاح!", 10);
-          
+          setProgress(100, "تم الإرسال والحفظ بنجاح!", 10);
           setTimeout(() => {
             document.getElementById('loading').classList.add('hidden-section');
             document.getElementById('successCard').classList.remove('hidden-section');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-          }, 800);
+          }, 600);
         } else {
           throw new Error(res.message || "حدث خطأ غير معروف أثناء الحفظ.");
         }
