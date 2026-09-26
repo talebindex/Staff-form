@@ -31,6 +31,7 @@
 
     .hidden-section { display: none !important; }
 
+    /* ---- shell / card ---- */
     .form-shell{
       background: #fff;
       border-radius: 22px;
@@ -39,6 +40,7 @@
       border: 1px solid var(--border);
     }
 
+    /* ---- header banner ---- */
     .form-header{
       position: relative;
       background: linear-gradient(160deg, var(--ink) 0%, var(--ink-dark) 100%);
@@ -72,6 +74,7 @@
     }
     .school-emblem img{ width: 100%; height: 100%; object-fit: cover; }
 
+    /* ---- step indicator ---- */
     .step-track{
       display:flex; align-items:center; justify-content:center; gap:0.5rem;
       margin-top: -1.4rem; position:relative; z-index:2;
@@ -91,8 +94,10 @@
     .step-labels{ display:flex; justify-content:center; gap: 1.1rem; margin-top:0.4rem; }
     .step-labels span{ font-size: 0.62rem; color: var(--muted); font-weight:600; width:64px; text-align:center; line-height:1.3; }
 
+    /* ---- body padding ---- */
     .form-body{ padding: 1.5rem 1.25rem 1.75rem; }
 
+    /* ---- section title bar ---- */
     .section-title{
       display:flex; align-items:center; gap:0.65rem;
       padding: 0.85rem 1rem;
@@ -110,6 +115,7 @@
     .section-title h2{ font-size: 1rem; font-weight:700; color: var(--ink); }
     .section-title p{ font-size: 0.72rem; color: var(--muted); margin-top:1px; }
 
+    /* ---- fields ---- */
     .field-group{ margin-bottom: 1rem; }
     .field-label{ display:block; font-weight:600; font-size:0.88rem; color: var(--text); margin-bottom:0.4rem; }
     .req-star{ color:#c0392b; margin-right:2px; }
@@ -154,6 +160,7 @@
       font-size: 0.78rem; margin-top: 6px; line-height: 1.5;
     }
 
+    /* ---- sample image blocks ---- */
     .sample-block{
       border: 1px dashed var(--border);
       border-radius: 12px;
@@ -167,6 +174,7 @@
       margin-bottom: 0.5rem;
     }
 
+    /* ---- review summary ---- */
     .review-list{ border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
     .review-heading{ padding: 0.55rem 0.9rem; background: #efe9f7; font-weight: 700; font-size: 0.78rem; color: var(--ink); }
     .review-row{ display:flex; justify-content:space-between; align-items:baseline; gap: 0.75rem; padding: 0.6rem 0.9rem; font-size: 0.85rem; border-top: 1px solid var(--border); }
@@ -175,10 +183,12 @@
     .review-value{ color: var(--text); font-weight: 700; text-align: left; word-break: break-word; }
     .review-value.is-empty{ color: #c0392b; font-weight: 600; }
 
+    /* ---- leave detail callout ---- */
     .leave-callout{
       background: #f6f2fb; border: 1px solid #e2d5f2; border-radius: 12px; padding: 0.85rem;
     }
 
+    /* ---- buttons ---- */
     .btn{
       border-radius: 12px; font-weight:700; font-size:0.92rem;
       padding: 0.8rem 1rem; transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
@@ -192,6 +202,7 @@
     .btn-success{ background: var(--success); color:#fff; box-shadow: 0 10px 22px -10px rgba(31,122,77,0.55); }
     .btn-success:hover{ background:#175f3d; }
 
+    /* ---- progress ---- */
     .progress-track{ background: var(--border); border-radius:999px; height: 12px; overflow:hidden; }
     .progress-fill{
       height:100%; border-radius:999px;
@@ -205,6 +216,7 @@
       100% { background-position: -220% 0; }
     }
 
+    /* ---- custom alert modal ---- */
     .custom-alert-overlay{
       position: fixed; inset: 0; z-index: 60;
       background: rgba(37,26,53,0.55);
@@ -238,6 +250,7 @@
 
   <div class="max-w-xl mx-auto form-shell">
 
+    <!-- الهيدر وشعار المدرسة -->
     <div class="form-header">
       <div class="header-inner">
         <div class="school-emblem">
@@ -248,6 +261,7 @@
       </div>
     </div>
 
+    <!-- مؤشر الخطوات -->
     <div id="stepTrack" class="step-track">
       <div id="stepDot1" class="step-dot is-active">١</div>
       <div id="stepLine1" class="step-line"></div>
@@ -296,46 +310,49 @@
             </div>
           </div>
 
-          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName2" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName2" class="field-input"></div>
 
+          <!-- اللقب 2 -->
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
-            <input type="text" id="title2" class="field-input" required>
+            <input type="text" id="title2" class="field-input">
             <p class="note-text">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob2" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob2" class="field-input"></div>
           <div class="field-group">
             <label class="field-label">الجنس <span class="req-star">*</span></label>
-            <select id="gender2" class="field-select" required><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
+            <select id="gender2" class="field-select"><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
           </div>
 
+          <!-- رقم البطاقة الموحدة 2 -->
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
-            <input type="text" id="idNumber2" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input" required>
+            <input type="text" id="idNumber2" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
             <p class="note-text">تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront2" accept="image/*" class="field-file" required></div>
-          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack2" accept="image/*" class="field-file" required></div>
-          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName2" class="field-input" required></div>
-          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto2" accept="image/*" class="field-file" required></div>
+          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront2" accept="image/*" class="field-file"></div>
+          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack2" accept="image/*" class="field-file"></div>
+          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName2" class="field-input"></div>
+          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto2" accept="image/*" class="field-file"></div>
           <div class="field-group">
             <label class="field-label">فصيلة الدم</label>
             <select id="bloodType2" class="field-select"><option value="">اختر...</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="غير معروف">غير معروف</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الحالة الاجتماعية <span class="req-star">*</span></label>
-            <select id="socialStatus2" class="field-select" required><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
+            <select id="socialStatus2" class="field-select"><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الديانة <span class="req-star">*</span></label>
-            <select id="religion2" class="field-select" required><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
+            <select id="religion2" class="field-select"><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
           </div>
 
+          <!-- الحالة الوظيفية 2 -->
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
-            <select id="jobStatus2" onchange="toggleLeaveDetails('2')" class="field-select" required>
+            <select id="jobStatus2" onchange="toggleLeaveDetails('2')" class="field-select">
               <option value="">اختر...</option>
               <option value="مستمر">مستمر</option>
               <option value="في اجازة امومة">في اجازة امومة</option>
@@ -348,61 +365,68 @@
             <input type="text" id="jobStatusOther2" placeholder="اكتب نوع وتفاصيل الإجازة..." class="field-input">
           </div>
 
+          <!-- التحصيل الدراسي 2 -->
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
-            <input type="text" id="qualification2" class="field-input" required>
+            <input type="text" id="qualification2" class="field-input">
             <p class="warning-note">⚠️ تنبيه: يُقصد بها آخر شهادة دراسية حصل عليها الموظف وتم احتسابها واعتمادها رسمياً من قبل وزارة التربية في ملفه الوظيفي.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">إسم الكلية / المعهد <span class="req-star">*</span></label><input type="text" id="college2" class="field-input" required></div>
-          <div class="field-group"><label class="field-label">الإختصاص <span class="req-star">*</span></label><input type="text" id="specialization2" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">إسم الكلية / المعهد <span class="req-star">*</span></label><input type="text" id="college2" class="field-input"></div>
+          <div class="field-group"><label class="field-label">الإختصاص <span class="req-star">*</span></label><input type="text" id="specialization2" class="field-input"></div>
 
+          <!-- تاريخ التخرج 2 -->
           <div class="field-group">
             <label class="field-label">تاريخ التخرج <span class="req-star">*</span></label>
-            <input type="text" id="gradDate2" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input" required>
+            <input type="text" id="gradDate2" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
+          <!-- صورة وثيقة التخرج 2 -->
           <div class="sample-block field-group">
-            <label class="field-label">صورة لوثيقة التخرج <span class="req-star">*</span></label>
+            <label class="field-label">صورة لوثيقة التخرج</label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="gradDoc2" accept="image/*" class="field-file" required>
+            <input type="file" id="gradDoc2" accept="image/*" class="field-file">
           </div>
 
+          <!-- تاريخ أول تعيين 2 -->
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
-            <input type="date" id="firstAppDate2" class="field-input" required>
+            <input type="date" id="firstAppDate2" class="field-input">
             <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
+          <!-- صورة الأمر الإداري 2 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الامامي للامر الاداري <span class="req-star">*</span></label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="adminOrder2" accept="image/*" class="field-file" required>
+            <input type="file" id="adminOrder2" accept="image/*" class="field-file">
           </div>
 
+          <!-- رقم الهاتف 2 -->
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
-            <input type="text" id="phone2" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input" required>
+            <input type="text" id="phone2" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
             <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address2" class="field-input" required></div>
-          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark2" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address2" class="field-input"></div>
+          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark2" class="field-input"></div>
 
+          <!-- صورة أمر المباشرة 2 -->
           <div class="sample-block field-group">
-            <label class="field-label">صورة الوجه الخلفي للمباشرة <span class="req-star">*</span></label>
+            <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="commencementOrder2" accept="image/*" class="field-file" required>
+            <input type="file" id="commencementOrder2" accept="image/*" class="field-file">
           </div>
 
           <div class="flex gap-2 pt-2">
@@ -421,46 +445,49 @@
             </div>
           </div>
 
-          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName3" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName3" class="field-input"></div>
 
+          <!-- اللقب 3 -->
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
-            <input type="text" id="title3" class="field-input" required>
+            <input type="text" id="title3" class="field-input">
             <p class="note-text">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob3" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob3" class="field-input"></div>
           <div class="field-group">
             <label class="field-label">الجنس <span class="req-star">*</span></label>
-            <select id="gender3" class="field-select" required><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
+            <select id="gender3" class="field-select"><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
           </div>
-          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName3" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName3" class="field-input"></div>
 
+          <!-- رقم البطاقة الموحدة 3 -->
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
-            <input type="text" id="idNumber3" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input" required>
+            <input type="text" id="idNumber3" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
             <p class="note-text">تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront3" accept="image/*" class="field-file" required></div>
-          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack3" accept="image/*" class="field-file" required></div>
-          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto3" accept="image/*" class="field-file" required></div>
+          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront3" accept="image/*" class="field-file"></div>
+          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack3" accept="image/*" class="field-file"></div>
+          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto3" accept="image/*" class="field-file"></div>
           <div class="field-group">
             <label class="field-label">فصيلة الدم</label>
             <select id="bloodType3" class="field-select"><option value="">اختر...</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="غير معروف">غير معروف</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الديانة <span class="req-star">*</span></label>
-            <select id="religion3" class="field-select" required><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
+            <select id="religion3" class="field-select"><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الحالة الاجتماعية <span class="req-star">*</span></label>
-            <select id="socialStatus3" class="field-select" required><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
+            <select id="socialStatus3" class="field-select"><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
           </div>
 
+          <!-- العنوان الوظيفي لقسم الموظف (قائمة منسدلة) -->
           <div class="field-group">
             <label class="field-label">العنوان الوظيفي <span class="req-star">*</span></label>
-            <select id="jobTitle3" class="field-select" required>
+            <select id="jobTitle3" class="field-select">
               <option value="">اختر العنوان الوظيفي...</option>
               <option value="كاتب">كاتب</option>
               <option value="ملاحظ">ملاحظ</option>
@@ -471,9 +498,10 @@
             </select>
           </div>
 
+          <!-- الحالة الوظيفية 3 -->
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
-            <select id="jobStatus3" onchange="toggleLeaveDetails('3')" class="field-select" required>
+            <select id="jobStatus3" onchange="toggleLeaveDetails('3')" class="field-select">
               <option value="">اختر...</option>
               <option value="مستمر">مستمر</option>
               <option value="في اجازة امومة">في اجازة امومة</option>
@@ -486,21 +514,24 @@
             <input type="text" id="jobStatusOther3" placeholder="اكتب نوع وتفاصيل الإجازة..." class="field-input">
           </div>
 
+          <!-- التحصيل الدراسي 3 -->
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
-            <input type="text" id="qualification3" class="field-input" required>
+            <input type="text" id="qualification3" class="field-input">
             <p class="warning-note">⚠️ تنبيه: يُقصد بها آخر شهادة دراسية حصل عليها الموظف وتم احتسابها واعتمادها رسمياً من قبل وزارة التربية في ملفه الوظيفي.</p>
           </div>
 
           <div class="field-group"><label class="field-label">إسم الكلية / المعهد</label><input type="text" id="college3" class="field-input"></div>
           <div class="field-group"><label class="field-label">الإختصاص</label><input type="text" id="specialization3" class="field-input"></div>
 
+          <!-- تاريخ التخرج 3 -->
           <div class="field-group">
             <label class="field-label">تاريخ التخرج</label>
             <input type="text" id="gradDate3" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
+          <!-- صورة وثيقة التخرج 3 (اختياري) -->
           <div class="sample-block field-group">
             <label class="field-label">صورة لوثيقة التخرج (إن وجد)</label>
             <div class="my-2 text-center">
@@ -510,37 +541,41 @@
             <input type="file" id="gradDoc3" accept="image/*" class="field-file">
           </div>
 
+          <!-- رقم الهاتف 3 -->
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
-            <input type="text" id="phone3" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input" required>
+            <input type="text" id="phone3" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
             <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
+          <!-- تاريخ أول تعيين 3 -->
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
-            <input type="date" id="firstAppDate3" class="field-input" required>
+            <input type="date" id="firstAppDate3" class="field-input">
             <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
+          <!-- صورة الأمر الإداري 3 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الامامي للامر الاداري <span class="req-star">*</span></label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="adminOrder3" accept="image/*" class="field-file" required>
+            <input type="file" id="adminOrder3" accept="image/*" class="field-file">
           </div>
 
-          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address3" class="field-input" required></div>
-          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark3" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address3" class="field-input"></div>
+          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark3" class="field-input"></div>
 
+          <!-- صورة أمر المباشرة 3 -->
           <div class="sample-block field-group">
-            <label class="field-label">صورة الوجه الخلفي للمباشرة <span class="req-star">*</span></label>
+            <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="commencementOrder3" accept="image/*" class="field-file" required>
+            <input type="file" id="commencementOrder3" accept="image/*" class="field-file">
           </div>
 
           <div class="flex gap-2 pt-2">
@@ -549,7 +584,7 @@
           </div>
         </div>
 
-        <!-- القسم 4: مراجعة المعلومات -->
+        <!-- القسم 4: مراجعة المعلومات قبل الإرسال النهائي -->
         <div id="reviewSection" class="space-y-1 hidden-section">
           <div class="section-title">
             <div class="badge">٣</div>
@@ -569,7 +604,7 @@
           </div>
         </div>
 
-        <!-- شريط التحميل -->
+        <!-- واجهة شريط التحميل والنسبة المئوية -->
         <div id="loading" class="hidden-section text-center py-8 px-2 space-y-4">
           <div class="progress-track">
             <div id="progressBar" class="progress-fill" style="width: 0%"></div>
@@ -578,7 +613,7 @@
           <p class="font-semibold text-sm sm:text-base animate-pulse" style="color: var(--muted);" id="progressStatus">جاري تجهيز البيانات...</p>
         </div>
 
-        <!-- واجهة النجاح -->
+        <!-- واجهة النجاح الأنيقة -->
         <div id="successCard" class="hidden-section text-center py-8 px-2 space-y-4 rounded-2xl border" style="background: var(--success-bg); border-color:#cdeade;">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full text-3xl font-bold mb-2" style="background:#d7f0e2; color: var(--success);">
             ✓
@@ -594,6 +629,7 @@
     </div>
   </div>
 
+  <!-- نافذة تنبيه مخصصة تحل محل alert الافتراضي -->
   <div id="customAlertOverlay" class="custom-alert-overlay hidden-section">
     <div class="custom-alert-card">
       <div class="custom-alert-icon">⚠️</div>
@@ -603,6 +639,7 @@
   </div>
 
   <script>
+    // رابط سكربت Cloudflare Worker المحدث
     const SCRIPT_URL = "https://shiny-wind-9857.hassanfaleh2018.workers.dev/";
 
     let activeSection = 1;
@@ -665,17 +702,11 @@
     function toggleLeaveDetails(sec) {
       const statusSelect = document.getElementById(`jobStatus${sec}`).value;
       const leaveGroup = document.getElementById(`leaveDetailsGroup${sec}`);
-      const otherInput = document.getElementById(`jobStatusOther${sec}`);
-      
       if (statusSelect === "اجازة اخرى") {
         leaveGroup.classList.remove('hidden-section');
-        if (otherInput) otherInput.required = true;
       } else {
         leaveGroup.classList.add('hidden-section');
-        if (otherInput) {
-          otherInput.required = false;
-          otherInput.value = "";
-        }
+        document.getElementById(`jobStatusOther${sec}`).value = "";
       }
     }
 
@@ -748,7 +779,7 @@
       }
     }
 
-    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 ميجابايت
 
     function drawToJpegBlob(img, scale, quality) {
       return new Promise((resolve) => {
@@ -816,44 +847,61 @@
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => {
-          // استخراج Base64 نقي بدون بادئة البيانات
-          const base64String = reader.result.split(',')[1];
-          resolve({ data: base64String, name: file.name });
-        };
+        reader.onload = () => resolve({ data: reader.result, name: file.name });
         reader.onerror = error => reject(error);
         reader.readAsDataURL(file);
       });
     }
 
+    // المعالجة الآمنة لعملية إرسال النموذج والانتقال للمراجعة مع حماية ضد الأخطاء
     function handleFormSubmit(e) {
       e.preventDefault();
-      const sec = activeSection;
+      try {
+        const sec = activeSection;
 
-      const phoneVal = document.getElementById(`phone${sec}`).value.trim();
-      if (phoneVal.length !== 11) {
-        showCustomAlert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقماً وباللغة الإنجليزية.');
-        return;
+        if (sec === 2) {
+          const gradDateVal = document.getElementById('gradDate2').value.trim();
+          if (!gradDateVal) {
+            showCustomAlert('يرجى إدخال تاريخ التخرج.');
+            return;
+          }
+        }
+
+        if (sec === 3) {
+          const jobTitleVal = document.getElementById('jobTitle3').value;
+          if (!jobTitleVal) {
+            showCustomAlert('يرجى اختيار العنوان الوظيفي.');
+            return;
+          }
+        }
+
+        const phoneVal = document.getElementById(`phone${sec}`).value.trim();
+        if (phoneVal.length !== 11) {
+          showCustomAlert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقماً وباللغة الإنجليزية.');
+          return;
+        }
+
+        const idVal = document.getElementById(`idNumber${sec}`).value.trim();
+        if (idVal.length !== 12) {
+          showCustomAlert('يرجى إدخال رقم بطاقة موحدة صحيح يتكون من 12 رقماً وباللغة الإنجليزية.');
+          return;
+        }
+
+        const jobStatus = document.getElementById(`jobStatus${sec}`).value;
+        const jobStatusOther = document.getElementById(`jobStatusOther${sec}`).value.trim();
+        if (jobStatus === "اجازة اخرى" && !jobStatusOther) {
+          showCustomAlert('يرجى كتابة نوع وتفاصيل الإجازة.');
+          return;
+        }
+
+        renderReview(sec);
+        document.getElementById('section' + sec).classList.add('hidden-section');
+        document.getElementById('reviewSection').classList.remove('hidden-section');
+        setStep(3);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        showCustomAlert("حدث خطأ أثناء الانتقال لصفحة المراجعة: " + err.message);
       }
-
-      const idVal = document.getElementById(`idNumber${sec}`).value.trim();
-      if (idVal.length !== 12) {
-        showCustomAlert('يرجى إدخال رقم بطاقة موحدة صحيح يتكون من 12 رقماً وباللغة الإنجليزية.');
-        return;
-      }
-
-      const jobStatus = document.getElementById(`jobStatus${sec}`).value;
-      const jobStatusOther = document.getElementById(`jobStatusOther${sec}`).value.trim();
-      if (jobStatus === "اجازة اخرى" && !jobStatusOther) {
-        showCustomAlert('يرجى كتابة نوع وتفاصيل الإجازة.');
-        return;
-      }
-
-      renderReview(sec);
-      document.getElementById('section' + sec).classList.add('hidden-section');
-      document.getElementById('reviewSection').classList.remove('hidden-section');
-      setStep(3);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function backToEdit() {
@@ -978,12 +1026,12 @@
         landmark: getVal(`landmark${sec}`)
       };
 
-      await animateProgressTo(20, 300);
-      setProgressStatus("جاري معالجة الصور وضغطها...");
+      await animateProgressTo(15, 300);
+      setProgressStatus("جاري ضغط الصور الكبيرة ومعالجة المرفقات...");
 
       const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
       const filesData = {};
-      const filesStart = 20, filesEnd = 60;
+      const filesStart = 15, filesEnd = 45;
       for (let i = 0; i < fileOrder.length; i++) {
         const key = fileOrder[i];
         filesData[key] = await fileToBase64(`${key}${sec}`);
@@ -991,13 +1039,13 @@
         await animateProgressTo(target, 220);
       }
 
-      setProgressStatus("جاري إرسال البيانات ورفع الصور إلى السيرفر...");
+      setProgressStatus("جاري رفع البيانات والمستمسكات إلى الخادم...");
       startProgressCreep(92);
 
       fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "application/json;charset=utf-8" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ formData: formData, filesData: filesData })
       })
       .then(async () => {
