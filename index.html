@@ -203,8 +203,18 @@
     .btn-success:hover{ background:#175f3d; }
 
     /* ---- progress ---- */
-    .progress-track{ background: var(--border); border-radius:999px; height: 10px; overflow:hidden; }
-    .progress-fill{ background: linear-gradient(90deg, var(--ink), var(--brass)); height:100%; border-radius:999px; transition: width .3s ease; }
+    .progress-track{ background: var(--border); border-radius:999px; height: 12px; overflow:hidden; }
+    .progress-fill{
+      height:100%; border-radius:999px;
+      background: linear-gradient(90deg, var(--ink), var(--brass), var(--ink));
+      background-size: 220% 100%;
+      transition: width .3s cubic-bezier(.4,0,.2,1);
+      animation: progressShimmer 1.8s linear infinite;
+    }
+    @keyframes progressShimmer{
+      0% { background-position: 0% 0; }
+      100% { background-position: -220% 0; }
+    }
 
     /* ---- custom alert modal ---- */
     .custom-alert-overlay{
@@ -521,6 +531,16 @@
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
+          <!-- صورة وثيقة التخرج 3 (اختياري) -->
+          <div class="sample-block field-group">
+            <label class="field-label">صورة لوثيقة التخرج (إن وجد)</label>
+            <div class="my-2 text-center">
+              <span class="sample-chip">📷 نموذج توضيحي</span>
+              <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-44 rounded-lg border shadow-sm mx-auto">
+            </div>
+            <input type="file" id="gradDoc3" accept="image/*" class="field-file">
+          </div>
+
           <!-- رقم الهاتف 3 -->
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
@@ -619,7 +639,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjVq4gruieAZLDpjsB-FrD33-KUIN54jV4cK6OGc1jm-AABppkHPe2oEVicJhoKQv_/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX3VzBCBBm4lDeoSdxW8mDNcbVlCAYnMp8LYHHcQkRVICq_DVQSah_AkCMQwK1mBWy/exec";
 
     let activeSection = 1;
 
@@ -703,21 +723,130 @@
       input.value = val.replace(/[^0-9-]/g, '');
     }
 
-    function updateProgress(percent, text) {
+    let currentProgress = 0;
+    let progressRAF = null;
+    let progressCreepTimer = null;
+
+    function setProgressStatus(text) {
+      const pStatus = document.getElementById('progressStatus');
+      if (pStatus) pStatus.innerText = text;
+    }
+
+    function paintProgress(value) {
       const pBar = document.getElementById('progressBar');
       const pText = document.getElementById('progressPercentage');
-      const pStatus = document.getElementById('progressStatus');
+      if (pBar) pBar.style.width = value + '%';
+      if (pText) pText.innerText = Math.round(value) + '%';
+    }
 
-      if (pBar) pBar.style.width = percent + '%';
-      if (pText) pText.innerText = percent + '%';
-      if (pStatus) pStatus.innerText = text;
+    // يحرّك الشريط والنسبة بسلاسة من القيمة الحالية إلى قيمة هدف، بدل القفز المفاجئ
+    function animateProgressTo(target, duration) {
+      return new Promise((resolve) => {
+        if (progressRAF) cancelAnimationFrame(progressRAF);
+        const start = currentProgress;
+        const startTime = performance.now();
+
+        function step(now) {
+          const t = Math.min(1, (now - startTime) / duration);
+          const eased = 1 - Math.pow(1 - t, 3); // تباطؤ ناعم قرب النهاية
+          currentProgress = start + (target - start) * eased;
+          paintProgress(currentProgress);
+          if (t < 1) {
+            progressRAF = requestAnimationFrame(step);
+          } else {
+            currentProgress = target;
+            resolve();
+          }
+        }
+        progressRAF = requestAnimationFrame(step);
+      });
+    }
+
+    // أثناء انتظار استجابة الخادم (لا يمكن معرفة نسبة الرفع الفعلية بدقة)، يتقدّم الشريط
+    // ببطء ويتباطأ كلما اقترب من السقف، بدل أن يبقى ثابتاً بلا حراك
+    function startProgressCreep(ceiling) {
+      stopProgressCreep();
+      progressCreepTimer = setInterval(() => {
+        const remaining = ceiling - currentProgress;
+        if (remaining <= 0.3) return;
+        currentProgress += Math.max(remaining * 0.05, 0.1);
+        paintProgress(currentProgress);
+      }, 200);
+    }
+
+    function stopProgressCreep() {
+      if (progressCreepTimer) {
+        clearInterval(progressCreepTimer);
+        progressCreepTimer = null;
+      }
+    }
+
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 ميجابايت
+
+    function drawToJpegBlob(img, scale, quality) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        if (canvas.toBlob) {
+          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
+        } else {
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          const bin = atob(dataUrl.split(',')[1]);
+          const arr = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+          resolve(new Blob([arr], { type: 'image/jpeg' }));
+        }
+      });
+    }
+
+    async function compressImageIfNeeded(file) {
+      if (!file.type || !file.type.startsWith('image/') || file.size <= MAX_IMAGE_SIZE) {
+        return file;
+      }
+
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const img = await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = dataUrl;
+      });
+
+      let quality = 0.9;
+      let scale = 1;
+      let blob = await drawToJpegBlob(img, scale, quality);
+
+      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.4) {
+        quality -= 0.1;
+        blob = await drawToJpegBlob(img, scale, quality);
+      }
+      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.3) {
+        scale -= 0.15;
+        blob = await drawToJpegBlob(img, scale, quality);
+      }
+
+      if (!blob) return file; // فشل الضغط لأي سبب: أرسل الملف الأصلي كما هو
+
+      const newName = file.name ? file.name.replace(/\.[^./\\]+$/, '') + '.jpg' : 'image.jpg';
+      return new File([blob], newName, { type: 'image/jpeg' });
     }
 
     async function fileToBase64(fileInputId) {
       const input = document.getElementById(fileInputId);
       if (!input || !input.files || input.files.length === 0) return null;
 
-      const file = input.files[0];
+      const original = input.files[0];
+      const file = await compressImageIfNeeded(original);
+
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve({ data: reader.result, name: file.name });
@@ -824,6 +953,7 @@
         ['personalPhoto', 'صورة شخصية للموظف']
       ];
       if (sec === 2) fileFields.push(['gradDoc', 'صورة وثيقة التخرج']);
+      else fileFields.push(['gradDoc', 'صورة وثيقة التخرج (إن وجد)']);
       fileFields.push(['adminOrder', 'الأمر الإداري'], ['commencementOrder', 'أمر المباشرة']);
 
       let html = '<div class="review-heading">البيانات الأساسية</div>';
@@ -855,8 +985,11 @@
 
       document.getElementById('reviewSection').classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
+      currentProgress = 0;
+      paintProgress(0);
 
-      updateProgress(10, "جاري قراءة وتجهيز البيانات...");
+      await animateProgressTo(8, 400);
+      setProgressStatus("جاري قراءة وتجهيز البيانات...");
 
       const getVal = (id) => {
         const el = document.getElementById(id);
@@ -890,18 +1023,21 @@
         landmark: getVal(`landmark${sec}`)
       };
 
-      updateProgress(30, "جاري معالجة ورفع المستمسكات...");
+      await animateProgressTo(15, 300);
+      setProgressStatus("جاري ضغط الصور الكبيرة ومعالجة المرفقات...");
 
-      const filesData = {
-        idFront: await fileToBase64(`idFront${sec}`),
-        idBack: await fileToBase64(`idBack${sec}`),
-        personalPhoto: await fileToBase64(`personalPhoto${sec}`),
-        gradDoc: await fileToBase64(`gradDoc${sec}`),
-        adminOrder: await fileToBase64(`adminOrder${sec}`),
-        commencementOrder: await fileToBase64(`commencementOrder${sec}`)
-      };
+      const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
+      const filesData = {};
+      const filesStart = 15, filesEnd = 45;
+      for (let i = 0; i < fileOrder.length; i++) {
+        const key = fileOrder[i];
+        filesData[key] = await fileToBase64(`${key}${sec}`);
+        const target = filesStart + (filesEnd - filesStart) * ((i + 1) / fileOrder.length);
+        await animateProgressTo(target, 220);
+      }
 
-      updateProgress(70, "جاري إرسال البيانات وحفظ المرفقات...");
+      setProgressStatus("جاري رفع البيانات والمستمسكات إلى الخادم...");
+      startProgressCreep(92);
 
       fetch(SCRIPT_URL, {
         method: "POST",
@@ -909,8 +1045,11 @@
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ formData: formData, filesData: filesData })
       })
-      .then(() => {
-        updateProgress(100, "تم إتمام الإرسال بنجاح!");
+      .then(async () => {
+        stopProgressCreep();
+        setProgressStatus("جاري إتمام الإرسال...");
+        await animateProgressTo(100, 450);
+        setProgressStatus("تم إتمام الإرسال بنجاح!");
         setTimeout(() => {
           document.getElementById('loading').classList.add('hidden-section');
           document.getElementById('successCard').classList.remove('hidden-section');
@@ -918,6 +1057,7 @@
         }, 500);
       })
       .catch((err) => {
+        stopProgressCreep();
         showCustomAlert("حدث خطأ أثناء الإرسال: " + err);
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
