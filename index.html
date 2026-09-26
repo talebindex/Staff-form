@@ -264,6 +264,7 @@
     <div class="form-body">
       <form id="mainForm" onsubmit="handleFormSubmit(event)">
 
+        <!-- القسم 1: نوع الكادر -->
         <div id="section1" class="space-y-1">
           <div class="section-title">
             <div class="badge">١</div>
@@ -285,6 +286,7 @@
           <button type="button" onclick="goToNextFromSection1()" class="btn btn-primary w-full mt-2">التالي</button>
         </div>
 
+        <!-- القسم 2: المدرسين -->
         <div id="section2" class="space-y-1 hidden-section">
           <div class="section-title">
             <div class="badge">٢</div>
@@ -294,46 +296,46 @@
             </div>
           </div>
 
-          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName2" class="field-input"></div>
+          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName2" class="field-input" required></div>
 
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
-            <input type="text" id="title2" class="field-input">
+            <input type="text" id="title2" class="field-input" required>
             <p class="note-text">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob2" class="field-input"></div>
+          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob2" class="field-input" required></div>
           <div class="field-group">
             <label class="field-label">الجنس <span class="req-star">*</span></label>
-            <select id="gender2" class="field-select"><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
+            <select id="gender2" class="field-select" required><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
           </div>
 
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
-            <input type="text" id="idNumber2" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
+            <input type="text" id="idNumber2" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input" required>
             <p class="note-text">تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront2" accept="image/*" class="field-file"></div>
-          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack2" accept="image/*" class="field-file"></div>
-          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName2" class="field-input"></div>
-          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto2" accept="image/*" class="field-file"></div>
+          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront2" accept="image/*" class="field-file" required></div>
+          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack2" accept="image/*" class="field-file" required></div>
+          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName2" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto2" accept="image/*" class="field-file" required></div>
           <div class="field-group">
             <label class="field-label">فصيلة الدم</label>
             <select id="bloodType2" class="field-select"><option value="">اختر...</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="غير معروف">غير معروف</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الحالة الاجتماعية <span class="req-star">*</span></label>
-            <select id="socialStatus2" class="field-select"><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
+            <select id="socialStatus2" class="field-select" required><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الديانة <span class="req-star">*</span></label>
-            <select id="religion2" class="field-select"><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
+            <select id="religion2" class="field-select" required><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
           </div>
 
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
-            <select id="jobStatus2" onchange="toggleLeaveDetails('2')" class="field-select">
+            <select id="jobStatus2" onchange="toggleLeaveDetails('2')" class="field-select" required>
               <option value="">اختر...</option>
               <option value="مستمر">مستمر</option>
               <option value="في اجازة امومة">في اجازة امومة</option>
@@ -348,31 +350,31 @@
 
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
-            <input type="text" id="qualification2" class="field-input">
+            <input type="text" id="qualification2" class="field-input" required>
             <p class="warning-note">⚠️ تنبيه: يُقصد بها آخر شهادة دراسية حصل عليها الموظف وتم احتسابها واعتمادها رسمياً من قبل وزارة التربية في ملفه الوظيفي.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">إسم الكلية / المعهد <span class="req-star">*</span></label><input type="text" id="college2" class="field-input"></div>
-          <div class="field-group"><label class="field-label">الإختصاص <span class="req-star">*</span></label><input type="text" id="specialization2" class="field-input"></div>
+          <div class="field-group"><label class="field-label">إسم الكلية / المعهد <span class="req-star">*</span></label><input type="text" id="college2" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">الإختصاص <span class="req-star">*</span></label><input type="text" id="specialization2" class="field-input" required></div>
 
           <div class="field-group">
             <label class="field-label">تاريخ التخرج <span class="req-star">*</span></label>
-            <input type="text" id="gradDate2" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
+            <input type="text" id="gradDate2" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input" required>
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
           <div class="sample-block field-group">
-            <label class="field-label">صورة لوثيقة التخرج</label>
+            <label class="field-label">صورة لوثيقة التخرج <span class="req-star">*</span></label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="gradDoc2" accept="image/*" class="field-file">
+            <input type="file" id="gradDoc2" accept="image/*" class="field-file" required>
           </div>
 
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
-            <input type="date" id="firstAppDate2" class="field-input">
+            <input type="date" id="firstAppDate2" class="field-input" required>
             <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
@@ -382,25 +384,25 @@
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="adminOrder2" accept="image/*" class="field-file">
+            <input type="file" id="adminOrder2" accept="image/*" class="field-file" required>
           </div>
 
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
-            <input type="text" id="phone2" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
+            <input type="text" id="phone2" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input" required>
             <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address2" class="field-input"></div>
-          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark2" class="field-input"></div>
+          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address2" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark2" class="field-input" required></div>
 
           <div class="sample-block field-group">
-            <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
+            <label class="field-label">صورة الوجه الخلفي للمباشرة <span class="req-star">*</span></label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="commencementOrder2" accept="image/*" class="field-file">
+            <input type="file" id="commencementOrder2" accept="image/*" class="field-file" required>
           </div>
 
           <div class="flex gap-2 pt-2">
@@ -409,6 +411,7 @@
           </div>
         </div>
 
+        <!-- القسم 3: الموظفين -->
         <div id="section3" class="space-y-1 hidden-section">
           <div class="section-title">
             <div class="badge">٣</div>
@@ -418,46 +421,46 @@
             </div>
           </div>
 
-          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName3" class="field-input"></div>
+          <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName3" class="field-input" required></div>
 
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
-            <input type="text" id="title3" class="field-input">
+            <input type="text" id="title3" class="field-input" required>
             <p class="note-text">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob3" class="field-input"></div>
+          <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob3" class="field-input" required></div>
           <div class="field-group">
             <label class="field-label">الجنس <span class="req-star">*</span></label>
-            <select id="gender3" class="field-select"><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
+            <select id="gender3" class="field-select" required><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
           </div>
-          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName3" class="field-input"></div>
+          <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName3" class="field-input" required></div>
 
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
-            <input type="text" id="idNumber3" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
+            <input type="text" id="idNumber3" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input" required>
             <p class="note-text">تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront3" accept="image/*" class="field-file"></div>
-          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack3" accept="image/*" class="field-file"></div>
-          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto3" accept="image/*" class="field-file"></div>
+          <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront3" accept="image/*" class="field-file" required></div>
+          <div class="field-group"><label class="field-label">الوجه الخلفي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idBack3" accept="image/*" class="field-file" required></div>
+          <div class="field-group"><label class="field-label">صورة شخصية للموظف <span class="req-star">*</span></label><input type="file" id="personalPhoto3" accept="image/*" class="field-file" required></div>
           <div class="field-group">
             <label class="field-label">فصيلة الدم</label>
             <select id="bloodType3" class="field-select"><option value="">اختر...</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="غير معروف">غير معروف</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الديانة <span class="req-star">*</span></label>
-            <select id="religion3" class="field-select"><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
+            <select id="religion3" class="field-select" required><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
           </div>
           <div class="field-group">
             <label class="field-label">الحالة الاجتماعية <span class="req-star">*</span></label>
-            <select id="socialStatus3" class="field-select"><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
+            <select id="socialStatus3" class="field-select" required><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
           </div>
 
           <div class="field-group">
             <label class="field-label">العنوان الوظيفي <span class="req-star">*</span></label>
-            <select id="jobTitle3" class="field-select">
+            <select id="jobTitle3" class="field-select" required>
               <option value="">اختر العنوان الوظيفي...</option>
               <option value="كاتب">كاتب</option>
               <option value="ملاحظ">ملاحظ</option>
@@ -470,7 +473,7 @@
 
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
-            <select id="jobStatus3" onchange="toggleLeaveDetails('3')" class="field-select">
+            <select id="jobStatus3" onchange="toggleLeaveDetails('3')" class="field-select" required>
               <option value="">اختر...</option>
               <option value="مستمر">مستمر</option>
               <option value="في اجازة امومة">في اجازة امومة</option>
@@ -485,7 +488,7 @@
 
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
-            <input type="text" id="qualification3" class="field-input">
+            <input type="text" id="qualification3" class="field-input" required>
             <p class="warning-note">⚠️ تنبيه: يُقصد بها آخر شهادة دراسية حصل عليها الموظف وتم احتسابها واعتمادها رسمياً من قبل وزارة التربية في ملفه الوظيفي.</p>
           </div>
 
@@ -509,13 +512,13 @@
 
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
-            <input type="text" id="phone3" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
+            <input type="text" id="phone3" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input" required>
             <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
-            <input type="date" id="firstAppDate3" class="field-input">
+            <input type="date" id="firstAppDate3" class="field-input" required>
             <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
@@ -525,19 +528,19 @@
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="adminOrder3" accept="image/*" class="field-file">
+            <input type="file" id="adminOrder3" accept="image/*" class="field-file" required>
           </div>
 
-          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address3" class="field-input"></div>
-          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark3" class="field-input"></div>
+          <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address3" class="field-input" required></div>
+          <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark3" class="field-input" required></div>
 
           <div class="sample-block field-group">
-            <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
+            <label class="field-label">صورة الوجه الخلفي للمباشرة <span class="req-star">*</span></label>
             <div class="my-2 text-center">
               <span class="sample-chip">📷 نموذج توضيحي</span>
               <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج المباشرة" class="max-h-44 rounded-lg border shadow-sm mx-auto">
             </div>
-            <input type="file" id="commencementOrder3" accept="image/*" class="field-file">
+            <input type="file" id="commencementOrder3" accept="image/*" class="field-file" required>
           </div>
 
           <div class="flex gap-2 pt-2">
@@ -546,6 +549,7 @@
           </div>
         </div>
 
+        <!-- القسم 4: مراجعة المعلومات -->
         <div id="reviewSection" class="space-y-1 hidden-section">
           <div class="section-title">
             <div class="badge">٣</div>
@@ -565,6 +569,7 @@
           </div>
         </div>
 
+        <!-- شريط التحميل -->
         <div id="loading" class="hidden-section text-center py-8 px-2 space-y-4">
           <div class="progress-track">
             <div id="progressBar" class="progress-fill" style="width: 0%"></div>
@@ -573,12 +578,13 @@
           <p class="font-semibold text-sm sm:text-base animate-pulse" style="color: var(--muted);" id="progressStatus">جاري تجهيز البيانات...</p>
         </div>
 
+        <!-- واجهة النجاح -->
         <div id="successCard" class="hidden-section text-center py-8 px-2 space-y-4 rounded-2xl border" style="background: var(--success-bg); border-color:#cdeade;">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full text-3xl font-bold mb-2" style="background:#d7f0e2; color: var(--success);">
             ✓
           </div>
           <h2 class="font-display text-xl sm:text-2xl font-extrabold" style="color:#155c3a;">تم إرسال البيانات والمستمسكات بنجاح!</h2>
-          <p class="text-sm" style="color:#3f6f57;">شكراً لك، تم تسجيل معلوماتك بنجاح في قاعدة بيانات ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين وتليجرام.</p>
+          <p class="text-sm" style="color:#3f6f57;">شكراً لك، تم تسجيل معلوماتك بنجاح في قاعدة بيانات ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين.</p>
           <button type="button" onclick="location.reload()" class="btn btn-primary mt-2">
             إرسال استمارة جديدة
           </button>
@@ -597,7 +603,6 @@
   </div>
 
   <script>
-    // ضع رابط سكريبت الـ Cloudflare Worker الخاص بك هنا
     const SCRIPT_URL = "https://shiny-wind-9857.hassanfaleh2018.workers.dev/";
 
     let activeSection = 1;
@@ -660,11 +665,17 @@
     function toggleLeaveDetails(sec) {
       const statusSelect = document.getElementById(`jobStatus${sec}`).value;
       const leaveGroup = document.getElementById(`leaveDetailsGroup${sec}`);
+      const otherInput = document.getElementById(`jobStatusOther${sec}`);
+      
       if (statusSelect === "اجازة اخرى") {
         leaveGroup.classList.remove('hidden-section');
+        if (otherInput) otherInput.required = true;
       } else {
         leaveGroup.classList.add('hidden-section');
-        document.getElementById(`jobStatusOther${sec}`).value = "";
+        if (otherInput) {
+          otherInput.required = false;
+          otherInput.value = "";
+        }
       }
     }
 
@@ -737,9 +748,31 @@
       }
     }
 
-    // دالة ضغط الصور لتصغير حجمها لأقل من 150KB - 200KB بغض النظر عن حجم الصورة الأصلي (حتى لو 20MB)
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+    function drawToJpegBlob(img, scale, quality) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        if (canvas.toBlob) {
+          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
+        } else {
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          const bin = atob(dataUrl.split(',')[1]);
+          const arr = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+          resolve(new Blob([arr], { type: 'image/jpeg' }));
+        }
+      });
+    }
+
     async function compressImageIfNeeded(file) {
-      if (!file.type || !file.type.startsWith('image/')) return file;
+      if (!file.type || !file.type.startsWith('image/') || file.size <= MAX_IMAGE_SIZE) {
+        return file;
+      }
 
       const dataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -755,33 +788,17 @@
         image.src = dataUrl;
       });
 
-      // تقليل الأبعاد القصوى للصورة لتناسب الغرض والسرعة
-      let maxDim = 1000;
-      let width = img.naturalWidth;
-      let height = img.naturalHeight;
-      if (width > maxDim || height > maxDim) {
-        if (width > height) {
-          height = Math.round((height * maxDim) / width);
-          width = maxDim;
-        } else {
-          width = Math.round((width * maxDim) / height);
-          height = maxDim;
-        }
+      let quality = 0.9;
+      let scale = 1;
+      let blob = await drawToJpegBlob(img, scale, quality);
+
+      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.4) {
+        quality -= 0.1;
+        blob = await drawToJpegBlob(img, scale, quality);
       }
-
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // تجربة تقليل الجودة لضمان أن حجم الصورة بحدود 150KB - 200KB
-      let quality = 0.75;
-      let blob = await new Promise(resolve => canvas.toBlob(b => resolve(b), 'image/jpeg', quality));
-
-      while (blob && blob.size > 200 * 1024 && quality > 0.3) {
-        quality -= 0.15;
-        blob = await new Promise(resolve => canvas.toBlob(b => resolve(b), 'image/jpeg', quality));
+      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.3) {
+        scale -= 0.15;
+        blob = await drawToJpegBlob(img, scale, quality);
       }
 
       if (!blob) return file;
@@ -799,7 +816,11 @@
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve({ data: reader.result, name: file.name });
+        reader.onload = () => {
+          // استخراج Base64 نقي بدون بادئة البيانات
+          const base64String = reader.result.split(',')[1];
+          resolve({ data: base64String, name: file.name });
+        };
         reader.onerror = error => reject(error);
         reader.readAsDataURL(file);
       });
@@ -808,22 +829,6 @@
     function handleFormSubmit(e) {
       e.preventDefault();
       const sec = activeSection;
-
-      if (sec === 2) {
-        const gradDateVal = document.getElementById('gradDate2').value.trim();
-        if (!gradDateVal) {
-          showCustomAlert('يرجى إدخال تاريخ التخرج.');
-          return;
-        }
-      }
-
-      if (sec === 3) {
-        const jobTitleVal = document.getElementById('jobTitle3').value;
-        if (!jobTitleVal) {
-          showCustomAlert('يرجى اختيار العنوان الوظيفي.');
-          return;
-        }
-      }
 
       const phoneVal = document.getElementById(`phone${sec}`).value.trim();
       if (phoneVal.length !== 11) {
@@ -973,12 +978,12 @@
         landmark: getVal(`landmark${sec}`)
       };
 
-      await animateProgressTo(15, 300);
-      setProgressStatus("جاري ضغط الصور الكبيرة ومعالجة المرفقات...");
+      await animateProgressTo(20, 300);
+      setProgressStatus("جاري معالجة الصور وضغطها...");
 
       const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
       const filesData = {};
-      const filesStart = 15, filesEnd = 65;
+      const filesStart = 20, filesEnd = 60;
       for (let i = 0; i < fileOrder.length; i++) {
         const key = fileOrder[i];
         filesData[key] = await fileToBase64(`${key}${sec}`);
@@ -986,16 +991,16 @@
         await animateProgressTo(target, 220);
       }
 
-      setProgressStatus("جاري رفع البيانات والمستمسكات إلى تيليجرام...");
+      setProgressStatus("جاري إرسال البيانات ورفع الصور إلى السيرفر...");
       startProgressCreep(92);
 
       fetch(SCRIPT_URL, {
         method: "POST",
-        mode: "cors",
-        headers: { "Content-Type": "application/json" },
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json;charset=utf-8" },
         body: JSON.stringify({ formData: formData, filesData: filesData })
       })
-      .then(async (response) => {
+      .then(async () => {
         stopProgressCreep();
         setProgressStatus("جاري إتمام الإرسال...");
         await animateProgressTo(100, 450);
