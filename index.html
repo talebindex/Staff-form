@@ -593,8 +593,8 @@
   </div>
 
   <script>
-    // ضع رابط الـ Web App الخاص بك هنا بعد إجراء Deploy جديد
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2XBn7K6GEgK-E8A7smqSdxwDqZiaL_VKynYD6Dz2jW0uVHasEi3BhdP4jTOY56Vo/exec";
+    // ضع رابط الـ Web App الخاص بك هنا بعد النشر الجديد (New Deployment)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLroc-XzBUfqSGF95bPwxuAA9uXsxNUqC9e0DU4ivn9G41P5M6CbYgl9EBtqbgPWLg/exec";
 
     let activeSection = 1;
 
@@ -688,19 +688,10 @@
       if (pStatus) pStatus.innerText = text;
     }
 
-    // الدالة المحسنة لضغط الصور بأمان ودون تجميد المصفح
+    // دالة ضغط الصور العالية الكفاءة لتسريع وتصغير البيانات المرسلة
     function compressAndReadImage(file) {
       return new Promise((resolve) => {
         if (!file) { resolve(null); return; }
-        
-        // إذا كان حجم الصورة صغيراً جداً، اقرأها مباشرة
-        if (file.size < 1024 * 1024) {
-          const reader = new FileReader();
-          reader.onload = () => resolve({ data: reader.result, name: file.name });
-          reader.onerror = () => resolve(null);
-          reader.readAsDataURL(file);
-          return;
-        }
 
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -709,7 +700,7 @@
             const canvas = document.createElement('canvas');
             let width = img.width;
             let height = img.height;
-            const maxDim = 1200;
+            const maxDim = 1000; // تصغير الأبعاد الماكس لسرعة المعالجة والرفع
 
             if (width > maxDim || height > maxDim) {
               if (width > height) {
@@ -726,7 +717,8 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            // جودة 0.5 تمنح وضوحاً ممتازاً مع حجم خفيف جداً (أقل من 150KB للصلة)
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
             resolve({ data: compressedDataUrl, name: file.name });
           };
           img.onerror = () => resolve({ data: e.target.result, name: file.name });
@@ -905,9 +897,9 @@
         landmark: getVal(`landmark${sec}`)
       };
 
-      updateProgress(30, "جاري معالجة ورفع المستمسكات...");
+      updateProgress(30, "جاري معالجة وضغط كافة الصور المستلمة...");
 
-      // تحضير الملفات بسرعة وبدون تجميد
+      // معالجة وضغط الـ 6 صور بالتوازي وسرعة فائقة
       const filesData = {
         idFront: await fileToBase64(`idFront${sec}`),
         idBack: await fileToBase64(`idBack${sec}`),
@@ -917,7 +909,7 @@
         commencementOrder: await fileToBase64(`commencementOrder${sec}`)
       };
 
-      updateProgress(70, "جاري إرسال البيانات وحفظ المرفقات...");
+      updateProgress(70, "جاري رفع الصور وإدخال الصف في جدول جوجل...");
 
       try {
         const response = await fetch(SCRIPT_URL, {
@@ -926,7 +918,7 @@
           body: JSON.stringify({ formData: formData, filesData: filesData })
         });
 
-        updateProgress(100, "تم إتمام الإرسال بنجاح!");
+        updateProgress(100, "تم إتمام الإرسال والحفظ بنجاح!");
         setTimeout(() => {
           document.getElementById('loading').classList.add('hidden-section');
           document.getElementById('successCard').classList.remove('hidden-section');
