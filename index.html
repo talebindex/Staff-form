@@ -94,6 +94,59 @@
     .step-labels{ display:flex; justify-content:center; gap: 1.1rem; margin-top:0.4rem; }
     .step-labels span{ font-size: 0.62rem; color: var(--muted); font-weight:600; width:64px; text-align:center; line-height:1.3; }
 
+    /* ---- required documents notice ---- */
+    .docs-required{
+      margin: 1.1rem 1.25rem 0;
+      background: linear-gradient(180deg, #faf8fd, #f3eef9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.1rem 1.1rem;
+    }
+    .docs-required-header{ display:flex; align-items:flex-start; gap:0.7rem; flex:1; min-width:0; }
+    .docs-required-toggle{ display:flex; align-items:center; justify-content:space-between; gap:0.65rem; cursor:pointer; }
+    .docs-required-hint{
+      flex-shrink:0; display:flex; align-items:center; gap:4px;
+      font-size:0.68rem; font-weight:700; color: var(--brass); white-space:nowrap;
+    }
+    .docs-required-chevron{ display:inline-block; font-size:0.85rem; transition: transform .25s ease; }
+    .docs-required-icon{
+      flex-shrink:0; width:38px; height:38px; border-radius:10px;
+      background: var(--ink); color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.05rem;
+      box-shadow: 0 8px 16px -8px rgba(58,33,88,0.55);
+    }
+    .docs-required-header h3{ font-family:'Cairo',sans-serif; font-weight:800; font-size:0.98rem; color: var(--ink); }
+    .docs-required-header p{ font-size:0.72rem; color: var(--muted); margin-top:2px; line-height:1.4; }
+    .docs-required-list{ list-style:none; margin:0.9rem 0 0; padding:0; display:flex; flex-direction:column; gap:0.5rem; }
+    .docs-item{
+      background:#fff; border:1px solid var(--border); border-radius:10px;
+      padding:0.55rem 0.75rem; transition: border-color .15s ease, box-shadow .15s ease;
+      cursor:pointer;
+    }
+    .docs-item:hover{ border-color: var(--brass); }
+    .docs-item.is-open{ border-color: var(--ink); box-shadow: 0 0 0 3px rgba(58,33,88,0.08); }
+    .docs-item-row{ display:flex; align-items:center; gap:0.65rem; }
+    .docs-item-text{ flex:1; font-size:0.85rem; font-weight:600; color: var(--text); }
+    .docs-item-hint{
+      flex-shrink:0; display:flex; align-items:center; gap:2px;
+      font-size:0.66rem; font-weight:700; color: var(--brass); white-space:nowrap;
+    }
+    .docs-item-chevron{ display:inline-block; transition: transform .2s ease; font-size:0.6rem; color: var(--brass); }
+    .docs-item.is-open .docs-item-chevron{ transform: rotate(180deg); }
+    .docs-item-detail{ margin-top:0.7rem; padding-top:0.7rem; border-top:1px dashed var(--border); }
+    .docs-item-image{ max-width:100%; max-height:190px; border-radius:10px; border:1px solid var(--border); display:block; margin:0 auto; }
+    .docs-item-tip{ font-size:0.78rem; color: var(--muted); line-height:1.65; text-align:center; }
+    .docs-required-num{
+      flex-shrink:0; width:24px; height:24px; border-radius:9999px;
+      background: var(--brass-light); color:#8a651f;
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.72rem; font-weight:800;
+    }
+    .docs-required-list li span.docs-required-sub{
+      display:block; font-weight:500; color: var(--muted); font-size:0.75rem; margin-top:1px;
+    }
+
     /* ---- body padding ---- */
     .form-body{ padding: 1.5rem 1.25rem 1.75rem; }
 
@@ -150,10 +203,6 @@
       cursor:pointer;
     }
 
-    .note-text{
-      color: var(--muted); font-size: 0.78rem; margin-top: 5px; line-height: 1.5;
-      border-right: 2px solid var(--border); padding-right: 8px;
-    }
     .warning-note{
       color: var(--warn-text); background-color: var(--warn-bg);
       padding: 8px 10px; border-radius: 8px; border: 1px solid var(--warn-border);
@@ -182,6 +231,40 @@
     .review-label{ color: var(--muted); font-weight: 600; flex-shrink: 0; }
     .review-value{ color: var(--text); font-weight: 700; text-align: left; word-break: break-word; }
     .review-value.is-empty{ color: #c0392b; font-weight: 600; }
+
+    /* ---- review file thumbnails ---- */
+    .review-file-grid{
+      display:grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;
+      padding: 0.9rem;
+    }
+    .review-file-item{ display:flex; flex-direction:column; align-items:center; }
+    .review-file-thumb-wrap{
+      width:100%; aspect-ratio: 4 / 3; border-radius: 10px; overflow:hidden;
+      border: 1px solid var(--border); background:#f7f5fa;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .review-file-thumb{ width:100%; height:100%; object-fit: cover; display:block; cursor: zoom-in; }
+    .review-file-empty{
+      width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+      color:#c0392b; font-size:0.68rem; font-weight:600; text-align:center; padding:0.5rem;
+      background: #fdf3f2;
+    }
+    .review-file-label{ font-size:0.74rem; font-weight:700; color: var(--text); margin-top:0.5rem; text-align:center; line-height:1.35; }
+    .review-file-label.is-empty{ color:#c0392b; }
+
+    /* ---- image lightbox preview ---- */
+    .lightbox-overlay{
+      position: fixed; inset:0; z-index:70; background: rgba(20,12,30,0.82);
+      display:flex; align-items:center; justify-content:center; padding: 1.25rem;
+    }
+    .lightbox-overlay img{
+      max-width: 100%; max-height: 85vh; border-radius: 12px;
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6);
+    }
+    .lightbox-close{
+      position:absolute; top:18px; left:18px; width:38px; height:38px; border-radius:9999px;
+      background:#fff; color: var(--ink); font-weight:800; border:none; font-size:1.1rem; cursor:pointer;
+    }
 
     /* ---- leave detail callout ---- */
     .leave-callout{
@@ -244,6 +327,84 @@
       line-height: 1.7; margin-bottom: 1.35rem;
     }
     .custom-alert-card .btn{ width: 100%; }
+
+    /* ---- welcome modal (shown on page open) ---- */
+    .welcome-modal-card{
+      background:#fff; width:100%; max-width:380px;
+      border-radius:20px; overflow:hidden;
+      border:1px solid var(--border);
+      box-shadow: 0 24px 55px -18px rgba(40,19,65,0.55);
+      animation: alertPop .22s ease-out;
+    }
+    .welcome-modal-top{
+      position:relative;
+      background: linear-gradient(160deg, var(--ink) 0%, var(--ink-dark) 100%);
+      padding: 1.9rem 1.25rem 1.5rem;
+      text-align:center;
+    }
+    .welcome-modal-top::after{
+      content:""; position:absolute; left:0; right:0; bottom:0; height:4px;
+      background: linear-gradient(90deg, var(--brass), var(--brass-light), var(--brass));
+    }
+    .welcome-modal-icon{
+      width:56px; height:56px; border-radius:9999px;
+      background: rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.6rem; color:#fff; margin: 0 auto 0.85rem;
+    }
+    .welcome-modal-top h3{ font-family:'Cairo',sans-serif; color:#fff; font-weight:800; font-size:1.05rem; }
+    .welcome-modal-body{ padding: 1.3rem 1.35rem 1.4rem; text-align:center; }
+    .welcome-modal-body p{ font-size:0.92rem; font-weight:600; color: var(--text); line-height:1.85; margin-bottom:1.3rem; }
+    .welcome-modal-body .btn{ width:100%; }
+
+    /* ---- inline file preview (right after choosing a file) ---- */
+    .file-preview-wrap{ margin-top:0.55rem; }
+    .file-preview-row{ display:flex; align-items:center; gap:0.6rem; }
+    .file-preview-thumb-wrap{
+      flex-shrink:0; width:64px; height:64px; border-radius:10px; overflow:hidden;
+      border:1px solid var(--border); background:#f7f5fa; cursor:zoom-in;
+    }
+    .file-preview-img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .file-preview-ok{ font-size:0.78rem; font-weight:700; color: var(--success); }
+    .file-preview-warn{
+      margin-top:0.4rem; font-size:0.72rem; color: var(--warn-text);
+      background: var(--warn-bg); border:1px solid var(--warn-border);
+      border-radius:8px; padding:0.4rem 0.55rem; line-height:1.5;
+    }
+
+    /* ---- live form-completion progress (separate from upload progress) ---- */
+    .form-progress{ margin: 0 1.25rem 1.1rem; }
+    .form-progress-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem; }
+    .form-progress-label{ font-size:0.75rem; font-weight:700; color: var(--ink-soft); }
+    .form-progress-pct{ font-size:0.82rem; font-weight:800; color: var(--ink); font-family:'Cairo',sans-serif; }
+    .form-progress-track{ background: var(--border); border-radius:999px; height:10px; overflow:hidden; }
+    .form-progress-fill{ height:100%; border-radius:999px; background: linear-gradient(90deg, var(--ink), var(--brass)); transition: width .35s ease; }
+
+    /* ---- scroll-to-top button ---- */
+    .scroll-top-btn{
+      position:fixed; bottom:22px; left:22px; z-index:40;
+      width:46px; height:46px; border-radius:9999px;
+      background: var(--ink); color:#fff; border:none; font-size:1.3rem; font-weight:800;
+      box-shadow:0 10px 24px -8px rgba(58,33,88,0.55); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .scroll-top-btn:hover{ transform: translateY(-3px); }
+
+    /* ---- reference number + share buttons on success screen ---- */
+    .ref-number-box{
+      margin: 0.9rem auto 0; max-width: 280px;
+      background:#fff; border:1.5px dashed #b7dcc7; border-radius:12px;
+      padding:0.75rem 1rem; display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+    }
+    .ref-number-label{ font-size:0.72rem; font-weight:700; color:#3f6f57; }
+    .ref-number-value{ font-family:'Cairo',sans-serif; font-size:1.05rem; font-weight:800; color:#155c3a; letter-spacing:0.5px; direction:ltr; }
+    .ref-copy-btn{
+      margin-top:0.15rem; font-size:0.7rem; font-weight:700; color:#155c3a;
+      background:#eaf6f0; border:1px solid #cdeade; border-radius:999px; padding:0.25rem 0.75rem; cursor:pointer;
+    }
+    .success-share-row{ display:flex; gap:0.5rem; margin-top:0.7rem; }
+    .success-share-row .btn{ font-size:0.82rem; padding:0.65rem 0.5rem; }
   </style>
 </head>
 <body class="p-2 sm:p-5 md:p-8">
@@ -273,6 +434,89 @@
       <span>نوع الكادر</span>
       <span>البيانات والمستمسكات</span>
       <span>المراجعة والتأكيد</span>
+    </div>
+
+    <!-- المستمسكات المطلوبة -->
+    <div class="docs-required">
+      <div class="docs-required-toggle" onclick="toggleDocsSection()">
+        <div class="docs-required-header">
+          <div class="docs-required-icon">📋</div>
+          <div>
+            <h3>المستمسكات المطلوبة</h3>
+            <p>يُرجى تجهيز صور واضحة للمستمسكات المطلوبة قبل البدء، وملء كافة البيانات بدقة</p>
+          </div>
+        </div>
+        <div class="docs-required-hint">
+          <span id="docsHintText">اضغط هنا للعرض</span>
+          <span id="docsChevron" class="docs-required-chevron">▾</span>
+        </div>
+      </div>
+      <ul id="docsRequiredList" class="docs-required-list hidden-section">
+        <li class="docs-item" onclick="toggleDocItem(this)">
+          <div class="docs-item-row">
+            <span class="docs-required-num">١</span>
+            <span class="docs-item-text">البطاقة الموحدة</span>
+            <span class="docs-item-hint"><span class="docs-item-hint-text">اضغط هنا للعرض</span><span class="docs-item-chevron">▾</span></span>
+          </div>
+          <div class="docs-item-detail hidden-section">
+            <p class="docs-item-tip">يُرجى إرفاق صورة واضحة لكِلا وجهي البطاقة الموحدة (الأمامي والخلفي)، بحيث تكون جميع البيانات مقروءة بوضوح.</p>
+          </div>
+        </li>
+        <li class="docs-item" onclick="toggleDocItem(this)">
+          <div class="docs-item-row">
+            <span class="docs-required-num">٢</span>
+            <span class="docs-item-text">
+              الأمر الإداري
+              <span class="docs-required-sub">(أول أمر إداري صادر من التربية)</span>
+            </span>
+            <span class="docs-item-hint"><span class="docs-item-hint-text">اضغط هنا للعرض</span><span class="docs-item-chevron">▾</span></span>
+          </div>
+          <div class="docs-item-detail hidden-section">
+            <img src="https://lh3.googleusercontent.com/d/1BsVX9wLbOWxZipAmbeZoIQR0N45HqFJ6" alt="نموذج الأمر الإداري" class="docs-item-image">
+          </div>
+        </li>
+        <li class="docs-item" onclick="toggleDocItem(this)">
+          <div class="docs-item-row">
+            <span class="docs-required-num">٣</span>
+            <span class="docs-item-text">الوجه الخلفي لأمر المباشرة</span>
+            <span class="docs-item-hint"><span class="docs-item-hint-text">اضغط هنا للعرض</span><span class="docs-item-chevron">▾</span></span>
+          </div>
+          <div class="docs-item-detail hidden-section">
+            <img src="https://lh3.googleusercontent.com/d/1XavJaCoZ7K8F80qi3LyE4ev7rvnoOo2q" alt="نموذج أمر المباشرة" class="docs-item-image">
+          </div>
+        </li>
+        <li class="docs-item" onclick="toggleDocItem(this)">
+          <div class="docs-item-row">
+            <span class="docs-required-num">٤</span>
+            <span class="docs-item-text">صورة شخصية</span>
+            <span class="docs-item-hint"><span class="docs-item-hint-text">اضغط هنا للعرض</span><span class="docs-item-chevron">▾</span></span>
+          </div>
+          <div class="docs-item-detail hidden-section">
+            <p class="docs-item-tip">يُرجى إرفاق صورة شخصية حديثة وواضحة، تكون خلفيتها فاتحة قدر الإمكان.</p>
+          </div>
+        </li>
+        <li class="docs-item" onclick="toggleDocItem(this)">
+          <div class="docs-item-row">
+            <span class="docs-required-num">٥</span>
+            <span class="docs-item-text">وثيقة التخرج</span>
+            <span class="docs-item-hint"><span class="docs-item-hint-text">اضغط هنا للعرض</span><span class="docs-item-chevron">▾</span></span>
+          </div>
+          <div class="docs-item-detail hidden-section">
+            <img src="https://lh3.googleusercontent.com/d/1p0LXlTMAV18YZu5Sp4qcyMC-9ViXdHR6" alt="نموذج وثيقة التخرج" class="docs-item-image">
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- شريط تقدم إكمال البيانات المطلوبة -->
+    <div id="formProgressWrap" class="form-progress hidden-section">
+      <div class="form-progress-top">
+        <span class="form-progress-label">نسبة اكتمال البيانات المطلوبة</span>
+        <span id="formProgressPct" class="form-progress-pct">0%</span>
+      </div>
+      <div class="form-progress-track">
+        <div id="formProgressBar" class="form-progress-fill" style="width:0%"></div>
+      </div>
     </div>
 
     <div class="form-body">
@@ -316,7 +560,7 @@
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
             <input type="text" id="title2" class="field-input">
-            <p class="note-text">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
+            <p class="warning-note">⚠️ ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
           </div>
 
           <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob2" class="field-input"></div>
@@ -329,7 +573,7 @@
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
             <input type="text" id="idNumber2" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
-            <p class="note-text">تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
+            <p class="warning-note">⚠️ تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
           <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront2" accept="image/*" class="field-file"></div>
@@ -379,7 +623,7 @@
           <div class="field-group">
             <label class="field-label">تاريخ التخرج <span class="req-star">*</span></label>
             <input type="text" id="gradDate2" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
-            <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
+            <p class="warning-note">⚠️ تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
           <!-- صورة وثيقة التخرج 2 -->
@@ -396,7 +640,7 @@
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
             <input type="date" id="firstAppDate2" class="field-input">
-            <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
+            <p class="warning-note">⚠️ ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
           <!-- صورة الأمر الإداري 2 -->
@@ -413,7 +657,7 @@
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
             <input type="text" id="phone2" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
-            <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
+            <p class="warning-note">⚠️ تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
           <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address2" class="field-input"></div>
@@ -451,7 +695,7 @@
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
             <input type="text" id="title3" class="field-input">
-            <p class="note-text">ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
+            <p class="warning-note">⚠️ ملاحظة: إذا كان الموظف لا يمتلك لقباً، يُرجى كتابة (اسم الجد الرابع) في خانة اللقب.</p>
           </div>
 
           <div class="field-group"><label class="field-label">تاريخ التولّد <span class="req-star">*</span></label><input type="date" id="dob3" class="field-input"></div>
@@ -465,7 +709,7 @@
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
             <input type="text" id="idNumber3" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
-            <p class="note-text">تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
+            <p class="warning-note">⚠️ تنبيه: يجب أن يتكون الرقم من 12 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
           <div class="field-group"><label class="field-label">الوجه الأمامي للبطاقة الموحدة <span class="req-star">*</span></label><input type="file" id="idFront3" accept="image/*" class="field-file"></div>
@@ -528,7 +772,7 @@
           <div class="field-group">
             <label class="field-label">تاريخ التخرج</label>
             <input type="text" id="gradDate3" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
-            <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
+            <p class="warning-note">⚠️ تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
           <!-- صورة وثيقة التخرج 3 (اختياري) -->
@@ -545,14 +789,14 @@
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
             <input type="text" id="phone3" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
-            <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
+            <p class="warning-note">⚠️ تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
           <!-- تاريخ أول تعيين 3 -->
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
             <input type="date" id="firstAppDate3" class="field-input">
-            <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
+            <p class="warning-note">⚠️ ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
           <!-- صورة الأمر الإداري 3 -->
@@ -600,7 +844,7 @@
 
           <div class="flex gap-2 pt-2">
             <button type="button" onclick="backToEdit()" class="btn btn-secondary w-1/2">تعديل المعلومات</button>
-            <button type="button" onclick="confirmAndSubmit()" class="btn btn-success w-1/2">تأكيد وإرسال البيانات</button>
+            <button type="button" id="confirmSubmitBtn" onclick="confirmAndSubmit()" class="btn btn-success w-1/2">تأكيد وإرسال البيانات</button>
           </div>
         </div>
 
@@ -620,6 +864,18 @@
           </div>
           <h2 class="font-display text-xl sm:text-2xl font-extrabold" style="color:#155c3a;">تم إرسال البيانات والمستمسكات بنجاح!</h2>
           <p class="text-sm" style="color:#3f6f57;">شكراً لك، تم تسجيل معلوماتك بنجاح في قاعدة بيانات ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين.</p>
+
+          <div class="ref-number-box">
+            <span class="ref-number-label">الرقم المرجعي للطلب</span>
+            <span id="referenceNumberValue" class="ref-number-value">—</span>
+            <button type="button" class="ref-copy-btn" onclick="copyReferenceNumber()">نسخ الرقم</button>
+          </div>
+
+          <div class="success-share-row">
+            <button type="button" class="btn btn-secondary w-1/2" onclick="shareViaWhatsApp()">إرسال نسخة عبر واتساب</button>
+            <button type="button" class="btn btn-secondary w-1/2" onclick="shareViaEmail()">إرسال نسخة عبر البريد</button>
+          </div>
+
           <button type="button" onclick="location.reload()" class="btn btn-primary mt-2">
             إرسال استمارة جديدة
           </button>
@@ -627,6 +883,43 @@
 
       </form>
     </div>
+  </div>
+
+  <!-- نافذة استعادة بيانات محفوظة مسبقاً -->
+  <div id="draftRestoreOverlay" class="custom-alert-overlay hidden-section">
+    <div class="welcome-modal-card">
+      <div class="welcome-modal-top">
+        <div class="welcome-modal-icon">💾</div>
+        <h3>توجد بيانات محفوظة مسبقاً</h3>
+      </div>
+      <div class="welcome-modal-body">
+        <p>عثرنا على بيانات لم تكمل إرسالها في وقت سابق. هل تريد استعادتها والمتابعة من حيث توقفت؟</p>
+        <div class="flex gap-2">
+          <button type="button" class="btn btn-secondary w-1/2" onclick="dismissDraft()">تجاهل والبدء من جديد</button>
+          <button type="button" class="btn btn-primary w-1/2" onclick="applyDraftRestore()">استعادة البيانات</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة ترحيبية تظهر عند فتح الاستمارة -->
+  <div id="welcomeModalOverlay" class="custom-alert-overlay hidden-section">
+    <div class="welcome-modal-card">
+      <div class="welcome-modal-top">
+        <div class="welcome-modal-icon">📝</div>
+        <h3>قبل البدء بتعبئة الاستمارة</h3>
+      </div>
+      <div class="welcome-modal-body">
+        <p>يُرجى ملء كافة البيانات والمعلومات المطلوبة بدقة</p>
+        <button type="button" class="btn btn-primary" onclick="closeWelcomeModal()">حسنًا، سأبدأ الآن</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة معاينة الصورة بالحجم الكامل -->
+  <div id="lightboxOverlay" class="lightbox-overlay hidden-section" onclick="closeLightbox()">
+    <button type="button" class="lightbox-close" onclick="event.stopPropagation(); closeLightbox();">✕</button>
+    <img id="lightboxImage" src="" alt="معاينة الصورة">
   </div>
 
   <!-- نافذة تنبيه مخصصة تحل محل alert الافتراضي -->
@@ -637,6 +930,9 @@
       <button type="button" class="btn btn-primary" onclick="closeCustomAlert()">حسنًا</button>
     </div>
   </div>
+
+  <!-- زر الرجوع لأعلى -->
+  <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
   <script>
     // رابط سكربت Cloudflare Worker المحدث
@@ -654,6 +950,48 @@
 
     function closeCustomAlert() {
       const overlay = document.getElementById('customAlertOverlay');
+      if (overlay) overlay.classList.add('hidden-section');
+    }
+
+    function toggleDocsSection() {
+      const list = document.getElementById('docsRequiredList');
+      const hintText = document.getElementById('docsHintText');
+      const chevron = document.getElementById('docsChevron');
+      const nowHidden = list.classList.toggle('hidden-section');
+      const isOpen = !nowHidden;
+      if (hintText) hintText.textContent = isOpen ? 'اضغط لإخفاء' : 'اضغط هنا للعرض';
+      if (chevron) chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    function toggleDocItem(li) {
+      const isOpen = li.classList.toggle('is-open');
+      const detail = li.querySelector('.docs-item-detail');
+      const hintText = li.querySelector('.docs-item-hint-text');
+      if (detail) detail.classList.toggle('hidden-section', !isOpen);
+      if (hintText) hintText.textContent = isOpen ? 'اضغط لإخفاء' : 'اضغط هنا للعرض';
+    }
+
+    function showWelcomeModal() {
+      const overlay = document.getElementById('welcomeModalOverlay');
+      if (overlay) overlay.classList.remove('hidden-section');
+    }
+
+    function closeWelcomeModal() {
+      const overlay = document.getElementById('welcomeModalOverlay');
+      if (overlay) overlay.classList.add('hidden-section');
+      checkForSavedDraft();
+    }
+
+    function openLightbox(src) {
+      const overlay = document.getElementById('lightboxOverlay');
+      const img = document.getElementById('lightboxImage');
+      if (!overlay || !img) return;
+      img.src = src;
+      overlay.classList.remove('hidden-section');
+    }
+
+    function closeLightbox() {
+      const overlay = document.getElementById('lightboxOverlay');
       if (overlay) overlay.classList.add('hidden-section');
     }
 
@@ -683,6 +1021,17 @@
       document.getElementById('section' + sectionNum).classList.remove('hidden-section');
       activeSection = sectionNum;
       setStep(sectionNum === 1 ? 1 : 2);
+
+      const progressWrap = document.getElementById('formProgressWrap');
+      if (progressWrap) {
+        if (sectionNum === 2 || sectionNum === 3) {
+          progressWrap.classList.remove('hidden-section');
+          updateFormProgress();
+        } else {
+          progressWrap.classList.add('hidden-section');
+        }
+      }
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -875,9 +1224,15 @@
           }
         }
 
+        const dobVal = document.getElementById(`dob${sec}`).value;
+        if (dobVal && !isAgeAtLeast18(dobVal)) {
+          showCustomAlert('يجب أن يكون عمر الموظف 18 سنة على الأقل. يرجى التحقق من تاريخ التولّد.');
+          return;
+        }
+
         const phoneVal = document.getElementById(`phone${sec}`).value.trim();
-        if (phoneVal.length !== 11) {
-          showCustomAlert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقماً وباللغة الإنجليزية.');
+        if (phoneVal.length !== 11 || !phoneVal.startsWith('07')) {
+          showCustomAlert('يرجى إدخال رقم هاتف عراقي صحيح مكوّن من 11 رقماً ويبدأ بـ 07.');
           return;
         }
 
@@ -897,6 +1252,8 @@
         renderReview(sec);
         document.getElementById('section' + sec).classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
+        const progressWrap = document.getElementById('formProgressWrap');
+        if (progressWrap) progressWrap.classList.add('hidden-section');
         setStep(3);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } catch (err) {
@@ -907,6 +1264,11 @@
     function backToEdit() {
       document.getElementById('reviewSection').classList.add('hidden-section');
       document.getElementById('section' + activeSection).classList.remove('hidden-section');
+      const progressWrap = document.getElementById('formProgressWrap');
+      if (progressWrap) {
+        progressWrap.classList.remove('hidden-section');
+        updateFormProgress();
+      }
       setStep(2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -974,17 +1336,43 @@
       html += reviewRow('الحالة الوظيفية', jobStatusVal);
 
       html += '<div class="review-heading">المستمسكات المرفقة</div>';
+      html += '<div class="review-file-grid">';
       fileFields.forEach(([id, label]) => {
         const input = document.getElementById(id + sec);
-        const fileName = (input && input.files && input.files[0]) ? input.files[0].name : '';
-        html += reviewRow(label, fileName, true);
+        const file = (input && input.files && input.files[0]) ? input.files[0] : null;
+
+        if (file) {
+          const objectUrl = URL.createObjectURL(file);
+          html += `
+            <div class="review-file-item">
+              <div class="review-file-thumb-wrap">
+                <img class="review-file-thumb" src="${objectUrl}" alt="${escapeHtml(label)}" onclick="openLightbox('${objectUrl}')">
+              </div>
+              <div class="review-file-label">${escapeHtml(label)}</div>
+            </div>`;
+        } else {
+          html += `
+            <div class="review-file-item">
+              <div class="review-file-thumb-wrap">
+                <div class="review-file-empty">لم يتم إرفاق ملف</div>
+              </div>
+              <div class="review-file-label is-empty">${escapeHtml(label)}</div>
+            </div>`;
+        }
       });
+      html += '</div>';
 
       document.getElementById('reviewList').innerHTML = html;
     }
 
     async function confirmAndSubmit() {
       const sec = activeSection;
+      const submitBtn = document.getElementById('confirmSubmitBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.style.cursor = 'not-allowed';
+      }
 
       document.getElementById('reviewSection').classList.add('hidden-section');
       document.getElementById('loading').classList.remove('hidden-section');
@@ -1001,8 +1389,10 @@
 
       const jobStatus = getVal(`jobStatus${sec}`);
       const jobStatusOther = getVal(`jobStatusOther${sec}`);
+      const referenceNumber = generateReferenceNumber();
 
       const formData = {
+        referenceNumber: referenceNumber,
         employeeType: document.getElementById('employeeType').value,
         fullName: getVal(`fullName${sec}`),
         title: getVal(`title${sec}`),
@@ -1025,6 +1415,9 @@
         address: getVal(`address${sec}`),
         landmark: getVal(`landmark${sec}`)
       };
+
+      lastReferenceNumber = referenceNumber;
+      lastSummaryText = buildSummaryText(formData);
 
       await animateProgressTo(15, 300);
       setProgressStatus("جاري ضغط الصور الكبيرة ومعالجة المرفقات...");
@@ -1053,6 +1446,9 @@
         setProgressStatus("جاري إتمام الإرسال...");
         await animateProgressTo(100, 450);
         setProgressStatus("تم إتمام الإرسال بنجاح!");
+        clearDraft();
+        const refEl = document.getElementById('referenceNumberValue');
+        if (refEl) refEl.textContent = referenceNumber;
         setTimeout(() => {
           document.getElementById('loading').classList.add('hidden-section');
           document.getElementById('successCard').classList.remove('hidden-section');
@@ -1064,8 +1460,302 @@
         showCustomAlert("حدث خطأ أثناء الإرسال: " + err);
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '';
+          submitBtn.style.cursor = '';
+        }
       });
     }
+
+    /* ======================= إضافات جديدة ======================= */
+
+    // ---------- 1) معاينة الصورة فور اختيارها + التحقق من الصيغة والحجم ----------
+    const MIN_IMAGE_DIMENSION = 400; // بكسل، تحذير فقط إن كانت الصورة أصغر من هذا
+    const MAX_UPLOAD_SIZE_HINT = 15 * 1024 * 1024; // 15 ميجابايت كحد أقصى قبل الرفض الفوري
+
+    function ensureFilePreviewWrap(input) {
+      let wrap = input.nextElementSibling;
+      if (wrap && wrap.classList && wrap.classList.contains('file-preview-wrap')) return wrap;
+      wrap = document.createElement('div');
+      wrap.className = 'file-preview-wrap hidden-section';
+      wrap.innerHTML =
+        '<div class="file-preview-row">' +
+          '<div class="file-preview-thumb-wrap"><img class="file-preview-img" src="" alt="معاينة الصورة"></div>' +
+          '<span class="file-preview-ok">✓ تم اختيار الصورة</span>' +
+        '</div>' +
+        '<p class="file-preview-warn hidden-section"></p>';
+      input.insertAdjacentElement('afterend', wrap);
+      const thumb = wrap.querySelector('.file-preview-img');
+      thumb.addEventListener('click', () => openLightbox(thumb.src));
+      return wrap;
+    }
+
+    function handleFilePreview(input) {
+      const wrap = ensureFilePreviewWrap(input);
+      const img = wrap.querySelector('.file-preview-img');
+      const warnEl = wrap.querySelector('.file-preview-warn');
+      const file = input.files && input.files[0];
+
+      warnEl.classList.add('hidden-section');
+      warnEl.textContent = '';
+
+      if (!file) {
+        wrap.classList.add('hidden-section');
+        return;
+      }
+
+      if (!file.type || !file.type.startsWith('image/')) {
+        showCustomAlert('يرجى اختيار ملف صورة بصيغة صحيحة (JPG أو PNG).');
+        input.value = '';
+        wrap.classList.add('hidden-section');
+        return;
+      }
+
+      if (file.size > MAX_UPLOAD_SIZE_HINT) {
+        showCustomAlert('حجم الصورة كبير جداً، يرجى اختيار صورة أصغر (أقل من 15 ميجابايت).');
+        input.value = '';
+        wrap.classList.add('hidden-section');
+        return;
+      }
+
+      const objectUrl = URL.createObjectURL(file);
+      img.src = objectUrl;
+      wrap.classList.remove('hidden-section');
+      updateFormProgress();
+      saveDraft();
+
+      const testImg = new Image();
+      testImg.onload = () => {
+        if (testImg.naturalWidth < MIN_IMAGE_DIMENSION || testImg.naturalHeight < MIN_IMAGE_DIMENSION) {
+          warnEl.textContent = '⚠️ دقة الصورة منخفضة وقد تظهر غير واضحة، يفضل اختيار صورة أوضح إن أمكن.';
+          warnEl.classList.remove('hidden-section');
+        }
+      };
+      testImg.src = objectUrl;
+    }
+
+    function setupFilePreviews() {
+      document.querySelectorAll('.field-file').forEach((input) => {
+        input.addEventListener('change', () => handleFilePreview(input));
+      });
+    }
+
+    // ---------- 2) حفظ تلقائي مؤقت في localStorage ----------
+    const DRAFT_STORAGE_KEY = 'staffFormDraft_v1';
+    const DRAFT_FIELD_IDS = [
+      'employeeType',
+      'fullName2', 'title2', 'dob2', 'gender2', 'idNumber2', 'motherName2', 'bloodType2',
+      'socialStatus2', 'religion2', 'jobStatus2', 'jobStatusOther2', 'qualification2',
+      'college2', 'specialization2', 'gradDate2', 'firstAppDate2', 'phone2', 'address2', 'landmark2',
+      'fullName3', 'title3', 'dob3', 'gender3', 'motherName3', 'idNumber3', 'bloodType3',
+      'socialStatus3', 'jobTitle3', 'jobStatus3', 'jobStatusOther3', 'qualification3',
+      'college3', 'specialization3', 'gradDate3', 'firstAppDate3', 'phone3', 'address3', 'landmark3'
+    ];
+    let pendingDraftData = null;
+
+    function saveDraft() {
+      const data = {};
+      DRAFT_FIELD_IDS.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      data.__activeSection = activeSection;
+      try { localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* تجاهل بصمت */ }
+    }
+
+    function clearDraft() {
+      try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) { /* تجاهل بصمت */ }
+    }
+
+    function setupAutoSaveListeners() {
+      DRAFT_FIELD_IDS.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', saveDraft);
+        el.addEventListener('change', saveDraft);
+      });
+    }
+
+    function checkForSavedDraft() {
+      let raw;
+      try { raw = localStorage.getItem(DRAFT_STORAGE_KEY); } catch (e) { raw = null; }
+      if (!raw) return;
+      let data;
+      try { data = JSON.parse(raw); } catch (e) { return; }
+      if (!data || Object.keys(data).length === 0) return;
+
+      const hasContent = DRAFT_FIELD_IDS.some((id) => data[id] && String(data[id]).trim() !== '');
+      if (!hasContent) return;
+
+      pendingDraftData = data;
+      const overlay = document.getElementById('draftRestoreOverlay');
+      if (overlay) overlay.classList.remove('hidden-section');
+    }
+
+    function dismissDraft() {
+      clearDraft();
+      pendingDraftData = null;
+      const overlay = document.getElementById('draftRestoreOverlay');
+      if (overlay) overlay.classList.add('hidden-section');
+    }
+
+    function applyDraftRestore() {
+      if (!pendingDraftData) return;
+      DRAFT_FIELD_IDS.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && pendingDraftData[id] !== undefined) el.value = pendingDraftData[id];
+      });
+      toggleLeaveDetails('2');
+      toggleLeaveDetails('3');
+
+      const empType = document.getElementById('employeeType').value;
+      if (empType === 'مدرس') showSection(2);
+      else if (empType === 'موظف') showSection(3);
+
+      const overlay = document.getElementById('draftRestoreOverlay');
+      if (overlay) overlay.classList.add('hidden-section');
+      pendingDraftData = null;
+    }
+
+    // ---------- 3) شريط تقدم إكمال البيانات المطلوبة ----------
+    const REQUIRED_FIELDS = {
+      2: ['fullName2', 'title2', 'dob2', 'gender2', 'idNumber2', 'idFront2', 'idBack2', 'motherName2',
+          'personalPhoto2', 'socialStatus2', 'religion2', 'jobStatus2', 'qualification2', 'college2',
+          'specialization2', 'gradDate2', 'firstAppDate2', 'adminOrder2', 'phone2', 'address2', 'landmark2'],
+      3: ['fullName3', 'title3', 'dob3', 'gender3', 'motherName3', 'idNumber3', 'idFront3', 'idBack3',
+          'personalPhoto3', 'religion3', 'socialStatus3', 'jobTitle3', 'jobStatus3', 'qualification3',
+          'phone3', 'firstAppDate3', 'adminOrder3', 'address3', 'landmark3']
+    };
+
+    function updateFormProgress() {
+      const sec = activeSection;
+      const pctEl = document.getElementById('formProgressPct');
+      const barEl = document.getElementById('formProgressBar');
+      if (!pctEl || !barEl) return;
+      if (sec !== 2 && sec !== 3) return;
+
+      const fields = REQUIRED_FIELDS[sec] || [];
+      let total = fields.length;
+      let filled = 0;
+
+      fields.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.type === 'file') {
+          if (el.files && el.files.length > 0) filled++;
+        } else if (el.value && el.value.trim() !== '') {
+          filled++;
+        }
+      });
+
+      const leaveGroup = document.getElementById('leaveDetailsGroup' + sec);
+      const jobStatusOtherEl = document.getElementById('jobStatusOther' + sec);
+      if (leaveGroup && jobStatusOtherEl && !leaveGroup.classList.contains('hidden-section')) {
+        total++;
+        if (jobStatusOtherEl.value.trim() !== '') filled++;
+      }
+
+      const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
+      pctEl.textContent = pct + '%';
+      barEl.style.width = pct + '%';
+    }
+
+    function setupProgressListeners() {
+      const form = document.getElementById('mainForm');
+      if (!form) return;
+      form.addEventListener('input', updateFormProgress);
+      form.addEventListener('change', updateFormProgress);
+    }
+
+    // ---------- 4) التحقق من عمر الموظف (18 سنة فأكثر) ----------
+    function isAgeAtLeast18(dobString) {
+      const dob = new Date(dobString);
+      if (isNaN(dob.getTime())) return true; // لا نمنع إن تعذّر تحليل التاريخ
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+      return age >= 18;
+    }
+
+    function setupDobValidation() {
+      ['dob2', 'dob3'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('change', () => {
+          if (el.value && !isAgeAtLeast18(el.value)) {
+            showCustomAlert('يجب أن يكون عمر الموظف 18 سنة على الأقل. يرجى التحقق من تاريخ التولّد.');
+          }
+        });
+      });
+    }
+
+    // ---------- 5) رقم مرجعي للطلب + مشاركة ملخص عبر واتساب/البريد ----------
+    let lastReferenceNumber = '';
+    let lastSummaryText = '';
+
+    function generateReferenceNumber() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const stamp = now.getTime().toString().slice(-6);
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      return `REQ-${y}-${stamp}${rand}`;
+    }
+
+    function buildSummaryText(formData) {
+      return [
+        'ملخص استمارة معلومات الكادر - ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين',
+        `الرقم المرجعي: ${formData.referenceNumber}`,
+        `نوع الموظف: ${formData.employeeType}`,
+        `الاسم الرباعي: ${formData.fullName}`,
+        `اللقب: ${formData.title}`,
+        `رقم البطاقة الموحدة: ${formData.idNumber}`,
+        `رقم الهاتف: ${formData.phone}`,
+        `العنوان الوظيفي: ${formData.jobTitle}`,
+        `الحالة الوظيفية: ${formData.jobStatus}${formData.jobStatusOther ? ' - ' + formData.jobStatusOther : ''}`
+      ].join('\n');
+    }
+
+    function copyReferenceNumber() {
+      if (!lastReferenceNumber) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lastReferenceNumber).catch(() => {});
+      }
+    }
+
+    function shareViaWhatsApp() {
+      if (!lastSummaryText) return;
+      const text = encodeURIComponent(lastSummaryText);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    function shareViaEmail() {
+      if (!lastSummaryText) return;
+      const subject = encodeURIComponent('نسخة من بيانات الاستمارة - ' + lastReferenceNumber);
+      const body = encodeURIComponent(lastSummaryText);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    // ---------- 6) زر الرجوع لأعلى ----------
+    function setupScrollTopButton() {
+      const btn = document.getElementById('scrollTopBtn');
+      if (!btn) return;
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) btn.classList.remove('hidden-section');
+        else btn.classList.add('hidden-section');
+      });
+    }
+
+    // ---------- تهيئة كل الإضافات عند تحميل الصفحة ----------
+    window.addEventListener('DOMContentLoaded', () => {
+      setupFilePreviews();
+      setupAutoSaveListeners();
+      setupProgressListeners();
+      setupDobValidation();
+      setupScrollTopButton();
+      setTimeout(showWelcomeModal, 300);
+    });
   </script>
 </body>
 </html>
