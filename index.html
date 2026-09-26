@@ -31,7 +31,6 @@
 
     .hidden-section { display: none !important; }
 
-    /* ---- shell / card ---- */
     .form-shell{
       background: #fff;
       border-radius: 22px;
@@ -40,7 +39,6 @@
       border: 1px solid var(--border);
     }
 
-    /* ---- header banner ---- */
     .form-header{
       position: relative;
       background: linear-gradient(160deg, var(--ink) 0%, var(--ink-dark) 100%);
@@ -74,7 +72,6 @@
     }
     .school-emblem img{ width: 100%; height: 100%; object-fit: cover; }
 
-    /* ---- step indicator ---- */
     .step-track{
       display:flex; align-items:center; justify-content:center; gap:0.5rem;
       margin-top: -1.4rem; position:relative; z-index:2;
@@ -94,10 +91,8 @@
     .step-labels{ display:flex; justify-content:center; gap: 1.1rem; margin-top:0.4rem; }
     .step-labels span{ font-size: 0.62rem; color: var(--muted); font-weight:600; width:64px; text-align:center; line-height:1.3; }
 
-    /* ---- body padding ---- */
     .form-body{ padding: 1.5rem 1.25rem 1.75rem; }
 
-    /* ---- section title bar ---- */
     .section-title{
       display:flex; align-items:center; gap:0.65rem;
       padding: 0.85rem 1rem;
@@ -115,7 +110,6 @@
     .section-title h2{ font-size: 1rem; font-weight:700; color: var(--ink); }
     .section-title p{ font-size: 0.72rem; color: var(--muted); margin-top:1px; }
 
-    /* ---- fields ---- */
     .field-group{ margin-bottom: 1rem; }
     .field-label{ display:block; font-weight:600; font-size:0.88rem; color: var(--text); margin-bottom:0.4rem; }
     .req-star{ color:#c0392b; margin-right:2px; }
@@ -160,7 +154,6 @@
       font-size: 0.78rem; margin-top: 6px; line-height: 1.5;
     }
 
-    /* ---- sample image blocks ---- */
     .sample-block{
       border: 1px dashed var(--border);
       border-radius: 12px;
@@ -174,7 +167,6 @@
       margin-bottom: 0.5rem;
     }
 
-    /* ---- review summary ---- */
     .review-list{ border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
     .review-heading{ padding: 0.55rem 0.9rem; background: #efe9f7; font-weight: 700; font-size: 0.78rem; color: var(--ink); }
     .review-row{ display:flex; justify-content:space-between; align-items:baseline; gap: 0.75rem; padding: 0.6rem 0.9rem; font-size: 0.85rem; border-top: 1px solid var(--border); }
@@ -183,12 +175,10 @@
     .review-value{ color: var(--text); font-weight: 700; text-align: left; word-break: break-word; }
     .review-value.is-empty{ color: #c0392b; font-weight: 600; }
 
-    /* ---- leave detail callout ---- */
     .leave-callout{
       background: #f6f2fb; border: 1px solid #e2d5f2; border-radius: 12px; padding: 0.85rem;
     }
 
-    /* ---- buttons ---- */
     .btn{
       border-radius: 12px; font-weight:700; font-size:0.92rem;
       padding: 0.8rem 1rem; transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
@@ -202,11 +192,9 @@
     .btn-success{ background: var(--success); color:#fff; box-shadow: 0 10px 22px -10px rgba(31,122,77,0.55); }
     .btn-success:hover{ background:#175f3d; }
 
-    /* ---- progress ---- */
     .progress-track{ background: var(--border); border-radius:999px; height: 10px; overflow:hidden; }
     .progress-fill{ background: linear-gradient(90deg, var(--ink), var(--brass)); height:100%; border-radius:999px; transition: width .3s ease; }
 
-    /* ---- custom alert modal ---- */
     .custom-alert-overlay{
       position: fixed; inset: 0; z-index: 60;
       background: rgba(37,26,53,0.55);
@@ -240,7 +228,6 @@
 
   <div class="max-w-xl mx-auto form-shell">
 
-    <!-- الهيدر وشعار المدرسة -->
     <div class="form-header">
       <div class="header-inner">
         <div class="school-emblem">
@@ -251,7 +238,6 @@
       </div>
     </div>
 
-    <!-- مؤشر الخطوات -->
     <div id="stepTrack" class="step-track">
       <div id="stepDot1" class="step-dot is-active">١</div>
       <div id="stepLine1" class="step-line"></div>
@@ -302,7 +288,6 @@
 
           <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName2" class="field-input"></div>
 
-          <!-- اللقب 2 -->
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
             <input type="text" id="title2" class="field-input">
@@ -315,7 +300,6 @@
             <select id="gender2" class="field-select"><option value="">اختر...</option><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
           </div>
 
-          <!-- رقم البطاقة الموحدة 2 -->
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
             <input type="text" id="idNumber2" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
@@ -339,7 +323,6 @@
             <select id="religion2" class="field-select"><option value="">اختر...</option><option value="مسلم">مسلم</option><option value="مسيحي">مسيحي</option><option value="صابئي">صابئي</option><option value="إيزيدي">إيزيدي</option><option value="أخرى">أخرى</option></select>
           </div>
 
-          <!-- الحالة الوظيفية 2 -->
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
             <select id="jobStatus2" onchange="toggleLeaveDetails('2')" class="field-select">
@@ -355,7 +338,6 @@
             <input type="text" id="jobStatusOther2" placeholder="اكتب نوع وتفاصيل الإجازة..." class="field-input">
           </div>
 
-          <!-- التحصيل الدراسي 2 -->
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
             <input type="text" id="qualification2" class="field-input">
@@ -365,14 +347,12 @@
           <div class="field-group"><label class="field-label">إسم الكلية / المعهد <span class="req-star">*</span></label><input type="text" id="college2" class="field-input"></div>
           <div class="field-group"><label class="field-label">الإختصاص <span class="req-star">*</span></label><input type="text" id="specialization2" class="field-input"></div>
 
-          <!-- تاريخ التخرج 2 -->
           <div class="field-group">
             <label class="field-label">تاريخ التخرج <span class="req-star">*</span></label>
             <input type="text" id="gradDate2" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
-          <!-- صورة وثيقة التخرج 2 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة لوثيقة التخرج</label>
             <div class="my-2 text-center">
@@ -382,14 +362,12 @@
             <input type="file" id="gradDoc2" accept="image/*" class="field-file">
           </div>
 
-          <!-- تاريخ أول تعيين 2 -->
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
             <input type="date" id="firstAppDate2" class="field-input">
             <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
-          <!-- صورة الأمر الإداري 2 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الامامي للامر الاداري <span class="req-star">*</span></label>
             <div class="my-2 text-center">
@@ -399,7 +377,6 @@
             <input type="file" id="adminOrder2" accept="image/*" class="field-file">
           </div>
 
-          <!-- رقم الهاتف 2 -->
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
             <input type="text" id="phone2" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
@@ -409,7 +386,6 @@
           <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address2" class="field-input"></div>
           <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark2" class="field-input"></div>
 
-          <!-- صورة أمر المباشرة 2 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
             <div class="my-2 text-center">
@@ -437,7 +413,6 @@
 
           <div class="field-group"><label class="field-label">الاسم الرباعي <span class="req-star">*</span></label><input type="text" id="fullName3" class="field-input"></div>
 
-          <!-- اللقب 3 -->
           <div class="field-group">
             <label class="field-label">اللقب <span class="req-star">*</span></label>
             <input type="text" id="title3" class="field-input">
@@ -451,7 +426,6 @@
           </div>
           <div class="field-group"><label class="field-label">اسم الأم الثلاثي <span class="req-star">*</span></label><input type="text" id="motherName3" class="field-input"></div>
 
-          <!-- رقم البطاقة الموحدة 3 -->
           <div class="field-group">
             <label class="field-label">رقم البطاقة الموحدة <span class="req-star">*</span></label>
             <input type="text" id="idNumber3" maxlength="12" oninput="formatEnglishDigits(this)" placeholder="مثال: 123456789012" class="field-input">
@@ -474,7 +448,6 @@
             <select id="socialStatus3" class="field-select"><option value="">اختر...</option><option value="أعزب/عزباء">أعزب / عزباء</option><option value="متزوج/متزوجة">متزوج / متزوجة</option></select>
           </div>
 
-          <!-- العنوان الوظيفي لقسم الموظف (قائمة منسدلة) -->
           <div class="field-group">
             <label class="field-label">العنوان الوظيفي <span class="req-star">*</span></label>
             <select id="jobTitle3" class="field-select">
@@ -488,7 +461,6 @@
             </select>
           </div>
 
-          <!-- الحالة الوظيفية 3 -->
           <div class="field-group">
             <label class="field-label">الحالة الوظيفية <span class="req-star">*</span></label>
             <select id="jobStatus3" onchange="toggleLeaveDetails('3')" class="field-select">
@@ -504,7 +476,6 @@
             <input type="text" id="jobStatusOther3" placeholder="اكتب نوع وتفاصيل الإجازة..." class="field-input">
           </div>
 
-          <!-- التحصيل الدراسي 3 -->
           <div class="field-group">
             <label class="field-label">التحصيل الدراسي <span class="req-star">*</span></label>
             <input type="text" id="qualification3" class="field-input">
@@ -514,14 +485,12 @@
           <div class="field-group"><label class="field-label">إسم الكلية / المعهد</label><input type="text" id="college3" class="field-input"></div>
           <div class="field-group"><label class="field-label">الإختصاص</label><input type="text" id="specialization3" class="field-input"></div>
 
-          <!-- تاريخ التخرج 3 -->
           <div class="field-group">
             <label class="field-label">تاريخ التخرج</label>
             <input type="text" id="gradDate3" oninput="formatGradDate(this)" placeholder="مثال: 2015-2016" class="field-input">
             <p class="note-text">تنبيه: يُرجى إدخال سنة التخرج بالأرقام الإنجليزية فقط (مثال: 2015-2016).</p>
           </div>
 
-          <!-- صورة وثيقة التخرج 3 (اختياري) -->
           <div class="sample-block field-group">
             <label class="field-label">صورة لوثيقة التخرج (إن وجد)</label>
             <div class="my-2 text-center">
@@ -531,21 +500,18 @@
             <input type="file" id="gradDoc3" accept="image/*" class="field-file">
           </div>
 
-          <!-- رقم الهاتف 3 -->
           <div class="field-group">
             <label class="field-label">رقم الهاتف <span class="req-star">*</span></label>
             <input type="text" id="phone3" maxlength="11" oninput="formatEnglishDigits(this)" placeholder="مثال: 07701234567" class="field-input">
             <p class="note-text">تنبيه: يجب أن يتكون رقم الهاتف من 11 رقماً وباللغة الإنجليزية حصراً.</p>
           </div>
 
-          <!-- تاريخ أول تعيين 3 -->
           <div class="field-group">
             <label class="field-label">تاريخ اول تعيين <span class="req-star">*</span></label>
             <input type="date" id="firstAppDate3" class="field-input">
             <p class="note-text">ملاحظه: تاريخ اول امر اداري صادر من التربيه.</p>
           </div>
 
-          <!-- صورة الأمر الإداري 3 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الامامي للامر الاداري <span class="req-star">*</span></label>
             <div class="my-2 text-center">
@@ -558,7 +524,6 @@
           <div class="field-group"><label class="field-label">عنوان السكن (المدينة / القرية) <span class="req-star">*</span></label><input type="text" id="address3" class="field-input"></div>
           <div class="field-group"><label class="field-label">أقرب نقطة دالة <span class="req-star">*</span></label><input type="text" id="landmark3" class="field-input"></div>
 
-          <!-- صورة أمر المباشرة 3 -->
           <div class="sample-block field-group">
             <label class="field-label">صورة الوجه الخلفي للمباشرة</label>
             <div class="my-2 text-center">
@@ -574,7 +539,7 @@
           </div>
         </div>
 
-        <!-- القسم 4: مراجعة المعلومات قبل الإرسال النهائي -->
+        <!-- القسم 4: المراجعة -->
         <div id="reviewSection" class="space-y-1 hidden-section">
           <div class="section-title">
             <div class="badge">٣</div>
@@ -594,7 +559,7 @@
           </div>
         </div>
 
-        <!-- واجهة شريط التحميل والنسبة المئوية -->
+        <!-- واجهة التحميل -->
         <div id="loading" class="hidden-section text-center py-8 px-2 space-y-4">
           <div class="progress-track">
             <div id="progressBar" class="progress-fill" style="width: 0%"></div>
@@ -603,7 +568,7 @@
           <p class="font-semibold text-sm sm:text-base animate-pulse" style="color: var(--muted);" id="progressStatus">جاري تجهيز البيانات...</p>
         </div>
 
-        <!-- واجهة النجاح الأنيقة -->
+        <!-- واجهة النجاح -->
         <div id="successCard" class="hidden-section text-center py-8 px-2 space-y-4 rounded-2xl border" style="background: var(--success-bg); border-color:#cdeade;">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full text-3xl font-bold mb-2" style="background:#d7f0e2; color: var(--success);">
             ✓
@@ -619,7 +584,6 @@
     </div>
   </div>
 
-  <!-- نافذة تنبيه مخصصة تحل محل alert الافتراضي -->
   <div id="customAlertOverlay" class="custom-alert-overlay hidden-section">
     <div class="custom-alert-card">
       <div class="custom-alert-icon">⚠️</div>
@@ -629,7 +593,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwijehrqpWLfnUXYPkPvgcJEKdRreZr4bp3gmFwzWYKpHVRNsMGiZ7G8--kfuUm6KSG/exec";
+    // ضع رابط الـ Web App الخاص بك هنا بعد إجراء Deploy جديد
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2XBn7K6GEgK-E8A7smqSdxwDqZiaL_VKynYD6Dz2jW0uVHasEi3BhdP4jTOY56Vo/exec";
 
     let activeSection = 1;
 
@@ -723,78 +688,59 @@
       if (pStatus) pStatus.innerText = text;
     }
 
-    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 ميجابايت
-
-    function drawToJpegBlob(img, scale, quality) {
+    // الدالة المحسنة لضغط الصور بأمان ودون تجميد المصفح
+    function compressAndReadImage(file) {
       return new Promise((resolve) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
-        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        if (canvas.toBlob) {
-          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
-        } else {
-          const dataUrl = canvas.toDataURL('image/jpeg', quality);
-          const bin = atob(dataUrl.split(',')[1]);
-          const arr = new Uint8Array(bin.length);
-          for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-          resolve(new Blob([arr], { type: 'image/jpeg' }));
+        if (!file) { resolve(null); return; }
+        
+        // إذا كان حجم الصورة صغيراً جداً، اقرأها مباشرة
+        if (file.size < 1024 * 1024) {
+          const reader = new FileReader();
+          reader.onload = () => resolve({ data: reader.result, name: file.name });
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(file);
+          return;
         }
-      });
-    }
 
-    async function compressImageIfNeeded(file) {
-      if (!file.type || !file.type.startsWith('image/') || file.size <= MAX_IMAGE_SIZE) {
-        return file;
-      }
-
-      const dataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            const maxDim = 1200;
+
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            resolve({ data: compressedDataUrl, name: file.name });
+          };
+          img.onerror = () => resolve({ data: e.target.result, name: file.name });
+          img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(null);
         reader.readAsDataURL(file);
       });
-
-      const img = await new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = dataUrl;
-      });
-
-      let quality = 0.9;
-      let scale = 1;
-      let blob = await drawToJpegBlob(img, scale, quality);
-
-      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.4) {
-        quality -= 0.1;
-        blob = await drawToJpegBlob(img, scale, quality);
-      }
-      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.3) {
-        scale -= 0.15;
-        blob = await drawToJpegBlob(img, scale, quality);
-      }
-
-      if (!blob) return file; // فشل الضغط لأي سبب: أرسل الملف الأصلي كما هو
-
-      const newName = file.name ? file.name.replace(/\.[^./\\]+$/, '') + '.jpg' : 'image.jpg';
-      return new File([blob], newName, { type: 'image/jpeg' });
     }
 
     async function fileToBase64(fileInputId) {
       const input = document.getElementById(fileInputId);
       if (!input || !input.files || input.files.length === 0) return null;
-
-      const original = input.files[0];
-      const file = await compressImageIfNeeded(original);
-
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve({ data: reader.result, name: file.name });
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-      });
+      return await compressAndReadImage(input.files[0]);
     }
 
     function handleFormSubmit(e) {
@@ -935,9 +881,6 @@
         return el ? el.value.trim() : "";
       };
 
-      const jobStatus = getVal(`jobStatus${sec}`);
-      const jobStatusOther = getVal(`jobStatusOther${sec}`);
-
       const formData = {
         employeeType: document.getElementById('employeeType').value,
         fullName: getVal(`fullName${sec}`),
@@ -950,8 +893,8 @@
         socialStatus: getVal(`socialStatus${sec}`),
         religion: getVal(`religion${sec}`),
         jobTitle: sec === 2 ? 'مدرس' : getVal('jobTitle3'),
-        jobStatus: jobStatus,
-        jobStatusOther: jobStatusOther,
+        jobStatus: getVal(`jobStatus${sec}`),
+        jobStatusOther: getVal(`jobStatusOther${sec}`),
         qualification: getVal(`qualification${sec}`),
         college: getVal(`college${sec}`),
         specialization: getVal(`specialization${sec}`),
@@ -964,6 +907,7 @@
 
       updateProgress(30, "جاري معالجة ورفع المستمسكات...");
 
+      // تحضير الملفات بسرعة وبدون تجميد
       const filesData = {
         idFront: await fileToBase64(`idFront${sec}`),
         idBack: await fileToBase64(`idBack${sec}`),
@@ -975,25 +919,25 @@
 
       updateProgress(70, "جاري إرسال البيانات وحفظ المرفقات...");
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ formData: formData, filesData: filesData })
-      })
-      .then(() => {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ formData: formData, filesData: filesData })
+        });
+
         updateProgress(100, "تم إتمام الإرسال بنجاح!");
         setTimeout(() => {
           document.getElementById('loading').classList.add('hidden-section');
           document.getElementById('successCard').classList.remove('hidden-section');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 500);
-      })
-      .catch((err) => {
-        showCustomAlert("حدث خطأ أثناء الإرسال: " + err);
+
+      } catch (err) {
+        showCustomAlert("حدث خطأ أثناء الإرسال: " + err.message);
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
-      });
+      }
     }
   </script>
 </body>
