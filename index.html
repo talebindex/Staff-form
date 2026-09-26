@@ -779,11 +779,11 @@
       }
     }
 
-    // --- الدوال المعالجة والمعدلة لرفع الصور وقراءتها بدون تجمد ---
+    // --- ضغط وقراءة الصور بسلاسة ---
 
-    function processImageInput(fileInputId) {
+    function processImageInput(elementId) {
       return new Promise((resolve) => {
-        const input = document.getElementById(fileInputId);
+        const input = document.getElementById(elementId);
         if (!input || !input.files || input.files.length === 0) {
           resolve(null);
           return;
@@ -799,7 +799,6 @@
             let width = img.width;
             let height = img.height;
 
-            // تصغير الأبعاد لضمان معالجة خفيفة ومباشرة
             const MAX_SIZE = 1200;
             if (width > height) {
               if (width > MAX_SIZE) {
@@ -818,7 +817,6 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            // تحويل لـ JPEG بجودة مناسبة
             const dataUrl = canvas.toDataURL('image/jpeg', 0.65);
             resolve({
               data: dataUrl,
@@ -1006,14 +1004,18 @@
       await animateProgressTo(15, 300);
       setProgressStatus("جاري ضغط الصور الكبيرة ومعالجة المرفقات...");
 
-      const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
+      // قائمة الصور المطلوبة
+      const fileKeys = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
       const filesData = {};
       const filesStart = 15, filesEnd = 45;
 
-      for (let i = 0; i < fileOrder.length; i++) {
-        const key = fileOrder[i];
-        filesData[key] = await processImageInput(`${key}${sec}`);
-        const target = filesStart + (filesEnd - filesStart) * ((i + 1) / fileOrder.length);
+      for (let i = 0; i < fileKeys.length; i++) {
+        const key = fileKeys[i];
+        // المعرّف الفعلي في الواجهة يضم رقم القسم (2 للمدرس و 3 للموظف)
+        const elementId = `${key}${sec}`;
+        filesData[key] = await processImageInput(elementId);
+        
+        const target = filesStart + (filesEnd - filesStart) * ((i + 1) / fileKeys.length);
         await animateProgressTo(target, 200);
       }
 
@@ -1022,8 +1024,7 @@
 
       fetch(SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData: formData, filesData: filesData })
       })
       .then(async () => {
