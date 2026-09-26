@@ -1128,7 +1128,8 @@
       }
     }
 
-    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 ميجابايت
+    // تم التعديل هنا: تحديد الحجم الأقصى للضغط بـ 800 كيلو بايت (800 * 1024 بايت)
+    const MAX_IMAGE_SIZE = 800 * 1024; 
 
     function drawToJpegBlob(img, scale, quality) {
       return new Promise((resolve) => {
@@ -1168,15 +1169,15 @@
         image.src = dataUrl;
       });
 
-      let quality = 0.9;
+      let quality = 0.85;
       let scale = 1;
       let blob = await drawToJpegBlob(img, scale, quality);
 
-      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.4) {
+      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.3) {
         quality -= 0.1;
         blob = await drawToJpegBlob(img, scale, quality);
       }
-      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.3) {
+      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.2) {
         scale -= 0.15;
         blob = await drawToJpegBlob(img, scale, quality);
       }
@@ -1202,7 +1203,6 @@
       });
     }
 
-    // المعالجة الآمنة لعملية إرسال النموذج والانتقال للمراجعة مع حماية ضد الأخطاء
     function handleFormSubmit(e) {
       e.preventDefault();
       try {
@@ -1420,7 +1420,7 @@
       lastSummaryText = buildSummaryText(formData);
 
       await animateProgressTo(15, 300);
-      setProgressStatus("جاري ضغط الصور الكبيرة ومعالجة المرفقات...");
+      setProgressStatus("جاري ضغط الصور ومعالجة المرفقات بحد أقصى 800KB...");
 
       const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
       const filesData = {};
@@ -1468,11 +1468,8 @@
       });
     }
 
-    /* ======================= إضافات جديدة ======================= */
-
-    // ---------- 1) معاينة الصورة فور اختيارها + التحقق من الصيغة والحجم ----------
-    const MIN_IMAGE_DIMENSION = 400; // بكسل، تحذير فقط إن كانت الصورة أصغر من هذا
-    const MAX_UPLOAD_SIZE_HINT = 15 * 1024 * 1024; // 15 ميجابايت كحد أقصى قبل الرفض الفوري
+    const MIN_IMAGE_DIMENSION = 400;
+    const MAX_UPLOAD_SIZE_HINT = 15 * 1024 * 1024;
 
     function ensureFilePreviewWrap(input) {
       let wrap = input.nextElementSibling;
@@ -1541,7 +1538,6 @@
       });
     }
 
-    // ---------- 2) حفظ تلقائي مؤقت في localStorage ----------
     const DRAFT_STORAGE_KEY = 'staffFormDraft_v1';
     const DRAFT_FIELD_IDS = [
       'employeeType',
@@ -1561,11 +1557,11 @@
         if (el) data[id] = el.value;
       });
       data.__activeSection = activeSection;
-      try { localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* تجاهل بصمت */ }
+      try { localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
     }
 
     function clearDraft() {
-      try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) { /* تجاهل بصمت */ }
+      try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) {}
     }
 
     function setupAutoSaveListeners() {
@@ -1618,7 +1614,6 @@
       pendingDraftData = null;
     }
 
-    // ---------- 3) شريط تقدم إكمال البيانات المطلوبة ----------
     const REQUIRED_FIELDS = {
       2: ['fullName2', 'title2', 'dob2', 'gender2', 'idNumber2', 'idFront2', 'idBack2', 'motherName2',
           'personalPhoto2', 'socialStatus2', 'religion2', 'jobStatus2', 'qualification2', 'college2',
@@ -1668,10 +1663,9 @@
       form.addEventListener('change', updateFormProgress);
     }
 
-    // ---------- 4) التحقق من عمر الموظف (18 سنة فأكثر) ----------
     function isAgeAtLeast18(dobString) {
       const dob = new Date(dobString);
-      if (isNaN(dob.getTime())) return true; // لا نمنع إن تعذّر تحليل التاريخ
+      if (isNaN(dob.getTime())) return true;
       const today = new Date();
       let age = today.getFullYear() - dob.getFullYear();
       const m = today.getMonth() - dob.getMonth();
@@ -1691,7 +1685,6 @@
       });
     }
 
-    // ---------- 5) رقم مرجعي للطلب + مشاركة ملخص عبر واتساب/البريد ----------
     let lastReferenceNumber = '';
     let lastSummaryText = '';
 
@@ -1737,7 +1730,6 @@
       window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
 
-    // ---------- 6) زر الرجوع لأعلى ----------
     function setupScrollTopButton() {
       const btn = document.getElementById('scrollTopBtn');
       if (!btn) return;
@@ -1747,7 +1739,6 @@
       });
     }
 
-    // ---------- تهيئة كل الإضافات عند تحميل الصفحة ----------
     window.addEventListener('DOMContentLoaded', () => {
       setupFilePreviews();
       setupAutoSaveListeners();
