@@ -594,7 +594,7 @@
 
   <script>
     // ضع رابط الـ Web App الخاص بك هنا بعد النشر الجديد (New Deployment)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLroc-XzBUfqSGF95bPwxuAA9uXsxNUqC9e0DU4ivn9G41P5M6CbYgl9EBtqbgPWLg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjVq4gruieAZLDpjsB-FrD33-KUIN54jV4cK6OGc1jm-AABppkHPe2oEVicJhoKQv_/exec";
 
     let activeSection = 1;
 
@@ -688,10 +688,10 @@
       if (pStatus) pStatus.innerText = text;
     }
 
-    // دالة ضغط الصور العالية الكفاءة لتسريع وتصغير البيانات المرسلة
+    // دالة ضغط الصور العالية الكفاءة والآمنة
     function compressAndReadImage(file) {
       return new Promise((resolve) => {
-        if (!file) { resolve(null); return; }
+        if (!file) { resolve({ data: null, name: "" }); return; }
 
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -700,7 +700,7 @@
             const canvas = document.createElement('canvas');
             let width = img.width;
             let height = img.height;
-            const maxDim = 1000; // تصغير الأبعاد الماكس لسرعة المعالجة والرفع
+            const maxDim = 800; // تقليل مقاس الأبعاد إلى 800px لتسريع الإرسال
 
             if (width > maxDim || height > maxDim) {
               if (width > height) {
@@ -717,21 +717,22 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            // جودة 0.5 تمنح وضوحاً ممتازاً مع حجم خفيف جداً (أقل من 150KB للصلة)
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.4);
             resolve({ data: compressedDataUrl, name: file.name });
           };
-          img.onerror = () => resolve({ data: e.target.result, name: file.name });
+          img.onerror = () => resolve({ data: null, name: "" });
           img.src = e.target.result;
         };
-        reader.onerror = () => resolve(null);
+        reader.onerror = () => resolve({ data: null, name: "" });
         reader.readAsDataURL(file);
       });
     }
 
     async function fileToBase64(fileInputId) {
       const input = document.getElementById(fileInputId);
-      if (!input || !input.files || input.files.length === 0) return null;
+      if (!input || !input.files || input.files.length === 0) {
+        return { data: null, name: "" };
+      }
       return await compressAndReadImage(input.files[0]);
     }
 
@@ -899,7 +900,6 @@
 
       updateProgress(30, "جاري معالجة وضغط كافة الصور المستلمة...");
 
-      // معالجة وضغط الـ 6 صور بالتوازي وسرعة فائقة
       const filesData = {
         idFront: await fileToBase64(`idFront${sec}`),
         idBack: await fileToBase64(`idBack${sec}`),
