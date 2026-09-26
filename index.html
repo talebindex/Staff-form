@@ -639,7 +639,7 @@
   </div>
 
   <script>
-    // ضع رابط الخادم / Worker الخادمي هنا
+    // ضع رابط الـ Cloudflare Worker الخا ص بك هنا بعد نشره
     const SCRIPT_URL = "https://shiny-wind-9857.hassanfaleh2018.workers.dev/";
 
     let activeSection = 1;
@@ -779,36 +779,30 @@
       }
     }
 
-    // --- ضغط وقراءة الصور بسلاسة ---
-
-    function processImageInput(elementId) {
-      return new Promise((resolve) => {
-        const input = document.getElementById(elementId);
-        if (!input || !input.files || input.files.length === 0) {
-          resolve(null);
-          return;
-        }
-
-        const file = input.files[0];
+    // دالة تحجيم وضغط الصور تلقائياً لتقليل الدقة والحجم للأبعاد المناسبة للتليجرام
+    async function compressImage(file) {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
-
-        reader.onload = function(e) {
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
           const img = new Image();
-          img.onload = function() {
+          img.src = event.target.result;
+          img.onload = () => {
             const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1280;
+            const MAX_HEIGHT = 1280;
             let width = img.width;
             let height = img.height;
 
-            const MAX_SIZE = 1200;
             if (width > height) {
-              if (width > MAX_SIZE) {
-                height *= MAX_SIZE / width;
-                width = MAX_SIZE;
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
               }
             } else {
-              if (height > MAX_SIZE) {
-                width *= MAX_SIZE / height;
-                height = MAX_SIZE;
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
               }
             }
 
@@ -817,20 +811,20 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.65);
-            resolve({
-              data: dataUrl,
-              name: file.name || 'image.jpg'
-            });
+            // تحويل الصورة لدقة 0.6 وتقليل حجمها بشكل كبير
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+            resolve({ data: dataUrl, name: file.name });
           };
-
-          img.onerror = function() { resolve(null); };
-          img.src = e.target.result;
+          img.onerror = (err) => reject(err);
         };
-
-        reader.onerror = function() { resolve(null); };
-        reader.readAsDataURL(file);
+        reader.onerror = (err) => reject(err);
       });
+    }
+
+    async function fileToBase64(fileInputId) {
+      const input = document.getElementById(fileInputId);
+      if (!input || !input.files || input.files.length === 0) return null;
+      return await compressImage(input.files[0]);
     }
 
     function handleFormSubmit(e) {
@@ -1002,21 +996,16 @@
       };
 
       await animateProgressTo(15, 300);
-      setProgressStatus("جاري ضغط الصور الكبيرة ومعالجة المرفقات...");
+      setProgressStatus("جاري ضغط الصور الكبيرة وتقليل أبعادها...");
 
-      // قائمة الصور المطلوبة
-      const fileKeys = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
+      const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
       const filesData = {};
       const filesStart = 15, filesEnd = 45;
-
-      for (let i = 0; i < fileKeys.length; i++) {
-        const key = fileKeys[i];
-        // المعرّف الفعلي في الواجهة يضم رقم القسم (2 للمدرس و 3 للموظف)
-        const elementId = `${key}${sec}`;
-        filesData[key] = await processImageInput(elementId);
-        
-        const target = filesStart + (filesEnd - filesStart) * ((i + 1) / fileKeys.length);
-        await animateProgressTo(target, 200);
+      for (let i = 0; i < fileOrder.length; i++) {
+        const key = fileOrder[i];
+        filesData[key] = await fileToBase64(`${key}${sec}`);
+        const target = filesStart + (filesEnd - filesStart) * ((i + 1) / fileOrder.length);
+        await animateProgressTo(target, 220);
       }
 
       setProgressStatus("جاري رفع البيانات والمستمسكات إلى الخادم...");
@@ -1027,16 +1016,20 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData: formData, filesData: filesData })
       })
-      .then(async () => {
+      .then(async (response) => {
         stopProgressCreep();
-        setProgressStatus("جاري إتمام الإرسال...");
-        await animateProgressTo(100, 450);
-        setProgressStatus("تم إتمام الإرسال بنجاح!");
-        setTimeout(() => {
-          document.getElementById('loading').classList.add('hidden-section');
-          document.getElementById('successCard').classList.remove('hidden-section');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 500);
+        if(response.ok) {
+          setProgressStatus("جاري إتمام الإرسال...");
+          await animateProgressTo(100, 450);
+          setProgressStatus("تم إتمام الإرسال بنجاح!");
+          setTimeout(() => {
+            document.getElementById('loading').classList.add('hidden-section');
+            document.getElementById('successCard').classList.remove('hidden-section');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 500);
+        } else {
+          throw new Error("حدث خطأ في الخادم أثناء معالجة الطلب.");
+        }
       })
       .catch((err) => {
         stopProgressCreep();
