@@ -1198,24 +1198,24 @@
       return { fullName, nationalId };
     }
 
-    function proxyUploadToWorker(file, fileKey, folderName, onProgress) {
+    function proxyUploadToWorker(file, fileKey, folderName, uploadKey, onProgress) {
       return new Promise((resolve, reject) => {
-        const { fullName, nationalId } = extractFolderIdentity(folderName);
-        if (!fullName || !nationalId) {
-          reject(new Error('بيانات الموظف أو رقم البطاقة الموحدة غير موجودة.'));
+        if (!uploadKey) {
+          reject(new Error('مفتاح ملف الرفع غير موجود.'));
           return;
         }
 
         const xhr = new XMLHttpRequest();
-        const form = new FormData();
-        form.append('file', file, file.name);
-        form.append('fileKey', fileKey);
-        form.append('fullName', fullName);
-        form.append('nationalId', nationalId);
-        form.append('originalName', file.name);
-        form.append('contentType', file.type || 'application/octet-stream');
+        const params = new URLSearchParams({
+          action: 'proxyUpload',
+          key: uploadKey,
+          fileKey,
+          contentType: file.type || 'application/octet-stream',
+          size: String(file.size),
+          originalName: file.name || ''
+        });
 
-        xhr.open('POST', SCRIPT_URL + '?action=proxyUpload', true);
+        xhr.open('POST', SCRIPT_URL + '?' + params.toString(), true);
         xhr.timeout = 15 * 60 * 1000;
 
         xhr.upload.onprogress = (event) => {
@@ -1249,12 +1249,15 @@
         xhr.ontimeout = () => reject(new Error('انتهت مهلة الرفع البديل. تحقق من الإنترنت وحاول مرة أخرى.'));
         xhr.onabort = () => reject(new Error('تم إلغاء الرفع.'));
 
-        // لا نضع Content-Type يدويًا هنا؛ المتصفح يضع multipart/form-data مع boundary.
-        xhr.send(form);
+        // مهم للآيفون: text/plain طلب CORS بسيط ولا يحتاج preflight،
+        // ونرسل محتوى الملف نفسه كـ binary body. نوع الملف الحقيقي
+        // يرسل في query ويستخدمه Worker عند الكتابة إلى R2.
+        xhr.setRequestHeader('Content-Type', 'text/plain');
+        xhr.send(file);
       });
     }
 
-    function putFileToR2(file, uploadUrl, fileKey, folderName, onProgress) {
+    function putFileToR2(file, uploadUrl, fileKey, folderName, uploadKey, onProgress) {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         let settled = false;
@@ -1263,7 +1266,7 @@
           if (settled) return;
           settled = true;
           try {
-            const result = await proxyUploadToWorker(file, fileKey, folderName, onProgress);
+            const result = await proxyUploadToWorker(file, fileKey, folderName, uploadKey, onProgress);
             resolve(result);
           } catch (fallbackError) {
             reject(fallbackError);
@@ -1301,7 +1304,7 @@
 
     async function uploadFileToR2(file, fileKey, folderName, onProgress) {
       const signed = await requestR2UploadUrl(file, fileKey, folderName);
-      const result = await putFileToR2(file, signed.uploadUrl, fileKey, folderName, onProgress);
+      const result = await putFileToR2(file, signed.uploadUrl, fileKey, folderName, signed.key, onProgress);
 
       // إذا تم الرفع مباشرة إلى R2 نستخدم المفتاح الذي أنشأه Worker.
       // وإذا نجح المسار الاحتياطي نستخدم مفتاحه بدلًا منه.
