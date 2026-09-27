@@ -934,9 +934,35 @@
   <!-- زر الرجوع لأعلى -->
   <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
-  <script>
-    // رابط سكربت Cloudflare Worker المحدث
-    const SCRIPT_URL = "https://shiny-wind-9857.hassanfaleh2018.workers.dev/";
+  <script type="module">
+    // Firebase: رفع الصور الأصلية مباشرة بدون ضغط أو تغيير في الدقة
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+    import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCsLN_g2BkxmhLzI862fe-QxBxRlkKmKAI",
+      authDomain: "staf-9343f.firebaseapp.com",
+      projectId: "staf-9343f",
+      storageBucket: "staf-9343f.firebasestorage.app",
+      messagingSenderId: "625432938896",
+      appId: "1:625432938896:web:10136cf583256820ff0b15",
+      measurementId: "G-WNSGQFGCHM"
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const storage = getStorage(firebaseApp);
+    const db = getFirestore(firebaseApp);
+    let firebaseReady = false;
+
+    signInAnonymously(auth)
+      .then(() => { firebaseReady = true; })
+      .catch((err) => {
+        console.error("Firebase Anonymous Auth error:", err);
+        showCustomAlert("تعذر الاتصال بخدمة Firebase. يرجى المحاولة مرة أخرى.");
+      });
 
     let activeSection = 1;
 
@@ -1128,81 +1154,10 @@
       }
     }
 
-    // تم التعديل هنا: تحديد الحجم الأقصى للضغط بـ 800 كيلو بايت (800 * 1024 بايت)
-    const MAX_IMAGE_SIZE = 800 * 1024; 
+    // لا يوجد ضغط أو تصغير للصور. يتم الاحتفاظ بالملف الأصلي كما اختاره الموظف.
+    const MAX_UPLOAD_SIZE_HINT = 30 * 1024 * 1024; // 30 ميجابايت
 
-    function drawToJpegBlob(img, scale, quality) {
-      return new Promise((resolve) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
-        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        if (canvas.toBlob) {
-          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
-        } else {
-          const dataUrl = canvas.toDataURL('image/jpeg', quality);
-          const bin = atob(dataUrl.split(',')[1]);
-          const arr = new Uint8Array(bin.length);
-          for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-          resolve(new Blob([arr], { type: 'image/jpeg' }));
-        }
-      });
-    }
-
-    async function compressImageIfNeeded(file) {
-      if (!file.type || !file.type.startsWith('image/') || file.size <= MAX_IMAGE_SIZE) {
-        return file;
-      }
-
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-
-      const img = await new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = dataUrl;
-      });
-
-      let quality = 0.85;
-      let scale = 1;
-      let blob = await drawToJpegBlob(img, scale, quality);
-
-      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.3) {
-        quality -= 0.1;
-        blob = await drawToJpegBlob(img, scale, quality);
-      }
-      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.2) {
-        scale -= 0.15;
-        blob = await drawToJpegBlob(img, scale, quality);
-      }
-
-      if (!blob) return file;
-
-      const newName = file.name ? file.name.replace(/\.[^./\\]+$/, '') + '.jpg' : 'image.jpg';
-      return new File([blob], newName, { type: 'image/jpeg' });
-    }
-
-    async function fileToBase64(fileInputId) {
-      const input = document.getElementById(fileInputId);
-      if (!input || !input.files || input.files.length === 0) return null;
-
-      const original = input.files[0];
-      const file = await compressImageIfNeeded(original);
-
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve({ data: reader.result, name: file.name });
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-      });
-    }
-
+    // المعالجة الآمنة لعملية إرسال النموذج والانتقال للمراجعة مع حماية ضد الأخطاء
     function handleFormSubmit(e) {
       e.preventDefault();
       try {
@@ -1365,6 +1320,34 @@
       document.getElementById('reviewList').innerHTML = html;
     }
 
+    function sanitizeFileName(name) {
+      return String(name || 'image').replace(/[^a-zA-Z0-9._-]/g, '_');
+    }
+
+    function uploadFileToFirebase(file, referenceNumber, key, sec, onProgress) {
+      return new Promise((resolve, reject) => {
+        if (!file) { resolve(null); return; }
+        const safeName = sanitizeFileName(file.name);
+        const path = `staff-submissions/${referenceNumber}/${key}${sec}_${safeName}`;
+        const fileRef = storageRef(storage, path);
+        const task = uploadBytesResumable(fileRef, file, {
+          contentType: file.type || 'application/octet-stream',
+          customMetadata: { originalName: file.name, referenceNumber: referenceNumber }
+        });
+        task.on('state_changed',
+          snapshot => {
+            const pct = snapshot.totalBytes ? (snapshot.bytesTransferred / snapshot.totalBytes) * 100 : 0;
+            if (onProgress) onProgress(pct);
+          },
+          reject,
+          async () => {
+            try { resolve(await getDownloadURL(task.snapshot.ref)); }
+            catch (err) { reject(err); }
+          }
+        );
+      });
+    }
+
     async function confirmAndSubmit() {
       const sec = activeSection;
       const submitBtn = document.getElementById('confirmSubmitBtn');
@@ -1374,76 +1357,94 @@
         submitBtn.style.cursor = 'not-allowed';
       }
 
-      document.getElementById('reviewSection').classList.add('hidden-section');
-      document.getElementById('loading').classList.remove('hidden-section');
-      currentProgress = 0;
-      paintProgress(0);
+      try {
+        if (!firebaseReady || !auth.currentUser) {
+          throw new Error('لم يتم الاتصال بـ Firebase بعد. انتظر لحظات ثم حاول مرة أخرى.');
+        }
 
-      await animateProgressTo(8, 400);
-      setProgressStatus("جاري قراءة وتجهيز البيانات...");
+        document.getElementById('reviewSection').classList.add('hidden-section');
+        document.getElementById('loading').classList.remove('hidden-section');
+        currentProgress = 0;
+        paintProgress(0);
 
-      const getVal = (id) => {
-        const el = document.getElementById(id);
-        return el ? el.value.trim() : "";
-      };
+        await animateProgressTo(8, 400);
+        setProgressStatus("جاري قراءة وتجهيز البيانات...");
 
-      const jobStatus = getVal(`jobStatus${sec}`);
-      const jobStatusOther = getVal(`jobStatusOther${sec}`);
-      const referenceNumber = generateReferenceNumber();
+        const getVal = (id) => {
+          const el = document.getElementById(id);
+          return el ? el.value.trim() : "";
+        };
 
-      const formData = {
-        referenceNumber: referenceNumber,
-        employeeType: document.getElementById('employeeType').value,
-        fullName: getVal(`fullName${sec}`),
-        title: getVal(`title${sec}`),
-        dob: getVal(`dob${sec}`),
-        gender: getVal(`gender${sec}`),
-        motherName: getVal(`motherName${sec}`),
-        idNumber: getVal(`idNumber${sec}`),
-        bloodType: getVal(`bloodType${sec}`),
-        socialStatus: getVal(`socialStatus${sec}`),
-        religion: getVal(`religion${sec}`),
-        jobTitle: sec === 2 ? 'مدرس' : getVal('jobTitle3'),
-        jobStatus: jobStatus,
-        jobStatusOther: jobStatusOther,
-        qualification: getVal(`qualification${sec}`),
-        college: getVal(`college${sec}`),
-        specialization: getVal(`specialization${sec}`),
-        gradDate: getVal(`gradDate${sec}`),
-        firstAppDate: getVal(`firstAppDate${sec}`),
-        phone: getVal(`phone${sec}`),
-        address: getVal(`address${sec}`),
-        landmark: getVal(`landmark${sec}`)
-      };
+        const jobStatus = getVal(`jobStatus${sec}`);
+        const jobStatusOther = getVal(`jobStatusOther${sec}`);
+        const referenceNumber = generateReferenceNumber();
 
-      lastReferenceNumber = referenceNumber;
-      lastSummaryText = buildSummaryText(formData);
+        const formData = {
+          referenceNumber,
+          employeeType: document.getElementById('employeeType').value,
+          fullName: getVal(`fullName${sec}`),
+          title: getVal(`title${sec}`),
+          dob: getVal(`dob${sec}`),
+          gender: getVal(`gender${sec}`),
+          motherName: getVal(`motherName${sec}`),
+          idNumber: getVal(`idNumber${sec}`),
+          bloodType: getVal(`bloodType${sec}`),
+          socialStatus: getVal(`socialStatus${sec}`),
+          religion: getVal(`religion${sec}`),
+          jobTitle: sec === 2 ? 'مدرس' : getVal('jobTitle3'),
+          jobStatus,
+          jobStatusOther,
+          qualification: getVal(`qualification${sec}`),
+          college: getVal(`college${sec}`),
+          specialization: getVal(`specialization${sec}`),
+          gradDate: getVal(`gradDate${sec}`),
+          firstAppDate: getVal(`firstAppDate${sec}`),
+          phone: getVal(`phone${sec}`),
+          address: getVal(`address${sec}`),
+          landmark: getVal(`landmark${sec}`),
+          submittedByUid: auth.currentUser.uid
+        };
 
-      await animateProgressTo(15, 300);
-      setProgressStatus("جاري ضغط الصور ومعالجة المرفقات بحد أقصى 800KB...");
+        lastReferenceNumber = referenceNumber;
+        lastSummaryText = buildSummaryText(formData);
 
-      const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
-      const filesData = {};
-      const filesStart = 15, filesEnd = 45;
-      for (let i = 0; i < fileOrder.length; i++) {
-        const key = fileOrder[i];
-        filesData[key] = await fileToBase64(`${key}${sec}`);
-        const target = filesStart + (filesEnd - filesStart) * ((i + 1) / fileOrder.length);
-        await animateProgressTo(target, 220);
-      }
+        await animateProgressTo(12, 250);
+        setProgressStatus("جاري رفع الصور الأصلية إلى Firebase بدون ضغط...");
 
-      setProgressStatus("جاري رفع البيانات والمستمسكات إلى الخادم...");
-      startProgressCreep(92);
+        const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
+        const filesData = {};
+        let uploadedCount = 0;
+        const filesToUpload = fileOrder.map(key => ({
+          key,
+          file: document.getElementById(`${key}${sec}`)?.files?.[0] || null
+        })).filter(x => x.file);
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ formData: formData, filesData: filesData })
-      })
-      .then(async () => {
-        stopProgressCreep();
-        setProgressStatus("جاري إتمام الإرسال...");
+        for (const item of filesToUpload) {
+          const url = await uploadFileToFirebase(item.file, referenceNumber, item.key, sec, pct => {
+            const base = 12 + (uploadedCount / Math.max(filesToUpload.length, 1)) * 78;
+            const part = (pct / 100) * (78 / Math.max(filesToUpload.length, 1));
+            paintProgress(base + part);
+            setProgressStatus(`جاري رفع ${item.file.name} — ${Math.round(pct)}%`);
+          });
+          filesData[item.key] = {
+            name: item.file.name,
+            type: item.file.type,
+            size: item.file.size,
+            url
+          };
+          uploadedCount++;
+          paintProgress(12 + (uploadedCount / Math.max(filesToUpload.length, 1)) * 78);
+        }
+
+        await animateProgressTo(94, 250);
+        setProgressStatus("جاري حفظ بيانات الموظف في Firestore...");
+
+        const docRef = await addDoc(collection(db, 'staffSubmissions'), {
+          ...formData,
+          files: filesData,
+          createdAt: serverTimestamp()
+        });
+
         await animateProgressTo(100, 450);
         setProgressStatus("تم إتمام الإرسال بنجاح!");
         clearDraft();
@@ -1454,10 +1455,10 @@
           document.getElementById('successCard').classList.remove('hidden-section');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 500);
-      })
-      .catch((err) => {
+      } catch (err) {
+        console.error('Firebase submission error:', err);
         stopProgressCreep();
-        showCustomAlert("حدث خطأ أثناء الإرسال: " + err);
+        showCustomAlert("حدث خطأ أثناء الإرسال: " + (err?.message || err));
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
         if (submitBtn) {
@@ -1465,11 +1466,14 @@
           submitBtn.style.opacity = '';
           submitBtn.style.cursor = '';
         }
-      });
+      }
     }
 
-    const MIN_IMAGE_DIMENSION = 400;
-    const MAX_UPLOAD_SIZE_HINT = 15 * 1024 * 1024;
+    /* ======================= إضافات جديدة ======================= */
+
+    // ---------- 1) معاينة الصورة فور اختيارها + التحقق من الصيغة والحجم ----------
+    const MIN_IMAGE_DIMENSION = 400; // بكسل، تحذير فقط إن كانت الصورة أصغر من هذا
+    const MAX_UPLOAD_SIZE_HINT = 30 * 1024 * 1024; // 30 ميجابايت كحد أقصى
 
     function ensureFilePreviewWrap(input) {
       let wrap = input.nextElementSibling;
@@ -1479,7 +1483,7 @@
       wrap.innerHTML =
         '<div class="file-preview-row">' +
           '<div class="file-preview-thumb-wrap"><img class="file-preview-img" src="" alt="معاينة الصورة"></div>' +
-          '<span class="file-preview-ok">✓ تم اختيار الصورة</span>' +
+          '<span class="file-preview-ok">✓ تم اختيار الصورة — ستُرفع بالحجم والدقة الأصلية</span>' +
         '</div>' +
         '<p class="file-preview-warn hidden-section"></p>';
       input.insertAdjacentElement('afterend', wrap);
@@ -1510,7 +1514,7 @@
       }
 
       if (file.size > MAX_UPLOAD_SIZE_HINT) {
-        showCustomAlert('حجم الصورة كبير جداً، يرجى اختيار صورة أصغر (أقل من 15 ميجابايت).');
+        showCustomAlert('حجم الصورة كبير جداً، الحد الأقصى المسموح به 30 ميجابايت للصورة.');
         input.value = '';
         wrap.classList.add('hidden-section');
         return;
@@ -1538,6 +1542,7 @@
       });
     }
 
+    // ---------- 2) حفظ تلقائي مؤقت في localStorage ----------
     const DRAFT_STORAGE_KEY = 'staffFormDraft_v1';
     const DRAFT_FIELD_IDS = [
       'employeeType',
@@ -1557,11 +1562,11 @@
         if (el) data[id] = el.value;
       });
       data.__activeSection = activeSection;
-      try { localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+      try { localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* تجاهل بصمت */ }
     }
 
     function clearDraft() {
-      try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) {}
+      try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) { /* تجاهل بصمت */ }
     }
 
     function setupAutoSaveListeners() {
@@ -1614,6 +1619,7 @@
       pendingDraftData = null;
     }
 
+    // ---------- 3) شريط تقدم إكمال البيانات المطلوبة ----------
     const REQUIRED_FIELDS = {
       2: ['fullName2', 'title2', 'dob2', 'gender2', 'idNumber2', 'idFront2', 'idBack2', 'motherName2',
           'personalPhoto2', 'socialStatus2', 'religion2', 'jobStatus2', 'qualification2', 'college2',
@@ -1663,9 +1669,10 @@
       form.addEventListener('change', updateFormProgress);
     }
 
+    // ---------- 4) التحقق من عمر الموظف (18 سنة فأكثر) ----------
     function isAgeAtLeast18(dobString) {
       const dob = new Date(dobString);
-      if (isNaN(dob.getTime())) return true;
+      if (isNaN(dob.getTime())) return true; // لا نمنع إن تعذّر تحليل التاريخ
       const today = new Date();
       let age = today.getFullYear() - dob.getFullYear();
       const m = today.getMonth() - dob.getMonth();
@@ -1685,6 +1692,7 @@
       });
     }
 
+    // ---------- 5) رقم مرجعي للطلب + مشاركة ملخص عبر واتساب/البريد ----------
     let lastReferenceNumber = '';
     let lastSummaryText = '';
 
@@ -1730,6 +1738,7 @@
       window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
 
+    // ---------- 6) زر الرجوع لأعلى ----------
     function setupScrollTopButton() {
       const btn = document.getElementById('scrollTopBtn');
       if (!btn) return;
@@ -1739,6 +1748,7 @@
       });
     }
 
+    // ---------- تهيئة كل الإضافات عند تحميل الصفحة ----------
     window.addEventListener('DOMContentLoaded', () => {
       setupFilePreviews();
       setupAutoSaveListeners();
