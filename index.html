@@ -520,7 +520,7 @@
     </div>
 
     <div class="form-body">
-      <form id="mainForm" onsubmit="handleFormSubmit(event)">
+      <div id="mainForm">
 
         <!-- القسم 1: نوع الكادر -->
         <div id="section1" class="space-y-1">
@@ -675,7 +675,7 @@
 
           <div class="flex gap-2 pt-2">
             <button type="button" onclick="showSection(1)" class="btn btn-secondary w-1/2">السابق</button>
-            <button type="submit" class="btn btn-success w-1/2">مراجعة البيانات</button>
+            <button type="button" onclick="return window.reviewFormClick(event)" class="btn btn-success w-1/2">مراجعة البيانات</button>
           </div>
         </div>
 
@@ -824,7 +824,7 @@
 
           <div class="flex gap-2 pt-2">
             <button type="button" onclick="showSection(1)" class="btn btn-secondary w-1/2">السابق</button>
-            <button type="submit" class="btn btn-success w-1/2">مراجعة البيانات</button>
+            <button type="button" onclick="return window.reviewFormClick(event)" class="btn btn-success w-1/2">مراجعة البيانات</button>
           </div>
         </div>
 
@@ -881,7 +881,7 @@
           </button>
         </div>
 
-      </form>
+      </div>
     </div>
   </div>
 
@@ -934,35 +934,7 @@
   <!-- زر الرجوع لأعلى -->
   <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
-  <!-- حماية مستقلة لزر «مراجعة البيانات»: تمنع إرسال النموذج الافتراضي حتى لو تعذر تحميل Firebase -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var form = document.getElementById('mainForm');
-      if (!form) return;
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (typeof window.handleFormSubmit === 'function') {
-          window.handleFormSubmit(event);
-        } else {
-          var select = document.getElementById('employeeType');
-          var empType = select ? select.value : '';
-          if (!empType) {
-            window.alert('يرجى اختيار نوع الموظف أولاً.');
-            return;
-          }
-          var sec = empType === 'مدرس' ? 2 : 3;
-          [1,2,3].forEach(function(n){
-            var el=document.getElementById('section'+n);
-            if(el) el.classList.add('hidden-section');
-          });
-          var target=document.getElementById('section'+sec);
-          if(target) target.classList.remove('hidden-section');
-          window.scrollTo(0,0);
-        }
-      }, true);
-    });
-  </script>
+
 
   <!-- تنقل الخطوات الأساسي: يعمل حتى إذا تأخر أو تعذر تحميل Firebase -->
   <script>
@@ -1845,6 +1817,68 @@
       setupScrollTopButton();
       setTimeout(showWelcomeModal, 300);
     });
+  </script>
+
+  <!-- طبقة تنقل مستقلة: لا تعتمد على Firebase ولا على submit -->
+  <script>
+    (function () {
+      function basicReview() {
+        var employeeType = document.getElementById('employeeType');
+        var empType = employeeType ? employeeType.value : '';
+        if (!empType) {
+          window.alert('يرجى اختيار نوع الموظف أولاً.');
+          return false;
+        }
+        var sec = empType === 'مدرس' ? 2 : 3;
+        [1, 2, 3].forEach(function (n) {
+          var el = document.getElementById('section' + n);
+          if (el) el.classList.add('hidden-section');
+        });
+        var review = document.getElementById('reviewSection');
+        if (review) review.classList.remove('hidden-section');
+        var progress = document.getElementById('formProgressWrap');
+        if (progress) progress.classList.add('hidden-section');
+        [1, 2, 3].forEach(function (n) {
+          var dot = document.getElementById('stepDot' + n);
+          if (!dot) return;
+          dot.classList.remove('is-active', 'is-done');
+          if (n < 3) dot.classList.add('is-done');
+          if (n === 3) dot.classList.add('is-active');
+        });
+        [1, 2].forEach(function (n) {
+          var line = document.getElementById('stepLine' + n);
+          if (line) line.classList.toggle('is-done', n < 3);
+        });
+        window.scrollTo(0, 0);
+        return false;
+      }
+
+      window.reviewFormClick = function (event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        try {
+          if (typeof window.handleFormSubmit === 'function') {
+            window.handleFormSubmit(event || { preventDefault:function(){}, stopPropagation:function(){} });
+          } else {
+            basicReview();
+          }
+        } catch (err) {
+          console.error('Review navigation error:', err);
+          basicReview();
+        }
+        return false;
+      };
+
+      // إذا لم تُحمّل وحدة Firebase بعد، يبقى التنقل متاحاً فوراً.
+      if (typeof window.handleFormSubmit !== 'function') {
+        window.handleFormSubmit = function (event) {
+          if (event && event.preventDefault) event.preventDefault();
+          return basicReview();
+        };
+      }
+    })();
   </script>
 </body>
 </html>
