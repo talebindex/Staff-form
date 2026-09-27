@@ -934,6 +934,36 @@
   <!-- زر الرجوع لأعلى -->
   <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
+  <!-- حماية مستقلة لزر «مراجعة البيانات»: تمنع إرسال النموذج الافتراضي حتى لو تعذر تحميل Firebase -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var form = document.getElementById('mainForm');
+      if (!form) return;
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof window.handleFormSubmit === 'function') {
+          window.handleFormSubmit(event);
+        } else {
+          var select = document.getElementById('employeeType');
+          var empType = select ? select.value : '';
+          if (!empType) {
+            window.alert('يرجى اختيار نوع الموظف أولاً.');
+            return;
+          }
+          var sec = empType === 'مدرس' ? 2 : 3;
+          [1,2,3].forEach(function(n){
+            var el=document.getElementById('section'+n);
+            if(el) el.classList.add('hidden-section');
+          });
+          var target=document.getElementById('section'+sec);
+          if(target) target.classList.remove('hidden-section');
+          window.scrollTo(0,0);
+        }
+      }, true);
+    });
+  </script>
+
   <!-- تنقل الخطوات الأساسي: يعمل حتى إذا تأخر أو تعذر تحميل Firebase -->
   <script>
     (function () {
