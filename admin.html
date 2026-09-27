@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة إدارة استمارة الكادر</title>
+<style>
+  :root{--p:#3b1f5e;--g:#a67c3b;--bg:#f5f1f8;--card:#fff;--text:#20172b;--muted:#756b7d;--line:#e7e0eb}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  header{background:linear-gradient(135deg,#2b173f,#4b2a69);color:#fff;padding:22px 18px;position:sticky;top:0;z-index:5}
+  header h1{margin:0 0 7px;font-size:22px}
+  header p{margin:0;opacity:.82;font-size:13px}
+  main{max-width:1100px;margin:22px auto;padding:0 14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 5px 18px rgba(35,20,45,.06);margin-bottom:16px}
+  label{display:block;font-weight:700;margin-bottom:8px}
+  input{width:100%;padding:13px 14px;border:1px solid #d8cedf;border-radius:12px;font-size:16px;outline:none}
+  input:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(59,31,94,.1)}
+  button{border:0;border-radius:12px;padding:12px 17px;background:var(--p);color:#fff;font-weight:700;cursor:pointer;font-size:15px}
+  button.secondary{background:#eee8f1;color:var(--p)}
+  button.gold{background:var(--g)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .hidden{display:none!important}
+  .msg{margin-top:10px;padding:11px 13px;border-radius:10px;background:#fff5dc;color:#5c4519}
+  .error{background:#fdecec;color:#8a2020}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .stat{background:#f2edf5;border-radius:13px;padding:11px 14px;min-width:130px}
+  .stat b{display:block;font-size:20px;color:var(--p)}
+  .search{margin-bottom:12px}
+  .folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+  .folder{padding:15px;border:1px solid var(--line);border-radius:14px;background:#fff;cursor:pointer}
+  .folder:hover{border-color:var(--p);background:#fbf9fc}
+  .folder-name{font-weight:800;word-break:break-word}
+  .folder-sub{font-size:12px;color:var(--muted);margin-top:5px}
+  .detail-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+  .name{font-size:21px;font-weight:800}
+  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;margin-top:14px}
+  .field{border:1px solid var(--line);border-radius:12px;padding:10px}
+  .field small{display:block;color:var(--muted);margin-bottom:4px}
+  .files{display:grid;gap:9px;margin-top:14px}
+  .file{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:11px;flex-wrap:wrap}
+  .file-name{font-weight:700;word-break:break-word}
+  .file-size{font-size:12px;color:var(--muted)}
+  a.btn{display:inline-block;text-decoration:none;border-radius:10px;padding:9px 12px;background:#eee8f1;color:var(--p);font-weight:700}
+  .loading{padding:20px;text-align:center;color:var(--muted)}
+  .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+  @media(max-width:600px){header h1{font-size:18px}.card{padding:14px}.file{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header>
+  <h1>لوحة إدارة استمارة الكادر</h1>
+  <p>صفحة خاصة لعرض بيانات الموظفين والمستمسكات المخزنة في Cloudflare R2</p>
+</header>
+
+<main>
+  <section id="loginCard" class="card">
+    <h2 style="margin-top:0">دخول الإدارة</h2>
+    <label for="password">كلمة مرور الإدارة</label>
+    <input id="password" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور">
+    <div class="row" style="margin-top:12px">
+      <button id="loginBtn">دخول</button>
+    </div>
+    <div id="loginMsg" class="msg hidden"></div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="card">
+      <div class="top-actions">
+        <button id="refreshBtn">تحديث القائمة</button>
+        <button id="logoutBtn" class="secondary">تسجيل الخروج</button>
+      </div>
+      <div id="dashMsg" class="msg hidden"></div>
+    </div>
+
+    <div id="listCard" class="card">
+      <div class="stats">
+        <div class="stat"><b id="count">0</b><span>عدد الموظفين</span></div>
+      </div>
+      <input id="search" class="search" placeholder="بحث باسم الموظف أو رقم البطاقة...">
+      <div id="folders" class="folders"></div>
+      <div id="listLoading" class="loading hidden">جاري تحميل البيانات...</div>
+    </div>
+
+    <div id="detailCard" class="card hidden">
+      <div class="detail-head">
+        <div>
+          <div id="detailName" class="name"></div>
+          <div id="detailSub" style="color:var(--muted);font-size:13px;margin-top:4px"></div>
+        </div>
+        <button id="backBtn" class="secondary">العودة للقائمة</button>
+      </div>
+      <div id="meta" class="meta"></div>
+      <h3>المستمسكات والملفات</h3>
+      <div id="files" class="files"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const WORKER_URL = "https://small-thunder-126d.hassanfaleh2018.workers.dev/";
+let adminPassword = "";
+let folders = [];
+
+const labels = {
+  fullName:"الاسم الرباعي",
+  name:"الاسم",
+  employeeType:"نوع الموظف",
+  jobType:"نوع الموظف",
+  firstName:"الاسم الأول",
+  fatherName:"اسم الأب",
+  grandfatherName:"اسم الجد",
+  familyName:"اللقب",
+  gender:"الجنس",
+  birthDate:"تاريخ التولد",
+  birthPlace:"محل التولد",
+  motherName:"اسم الأم",
+  maritalStatus:"الحالة الاجتماعية",
+  phone:"رقم الهاتف",
+  mobile:"رقم الهاتف",
+  nationalId:"رقم البطاقة الموحدة",
+  cardNumber:"رقم البطاقة الموحدة",
+  jobTitle:"العنوان الوظيفي",
+  specialization:"الاختصاص",
+  qualification:"التحصيل الدراسي",
+  gradDate:"تاريخ التخرج",
+  university:"الجامعة",
+  college:"الكلية",
+  department:"القسم",
+  school:"المدرسة",
+  address:"العنوان",
+  governorate:"المحافظة",
+  district:"القضاء",
+  notes:"ملاحظات",
+  createdAt:"تاريخ الإرسال"
+};
+
+const fileLabels = {
+  idFront:"الوجه الأمامي للبطاقة الموحدة",
+  idBack:"الوجه الخلفي للبطاقة الموحدة",
+  personalPhoto:"الصورة الشخصية",
+  gradDoc:"وثيقة التخرج",
+  adminOrder:"الأمر الإداري",
+  commencementOrder:"أمر المباشرة",
+  submissionData:"بيانات الاستمارة"
+};
+
+const $ = id => document.getElementById(id);
+
+function showMsg(el, text, error=false){
+  el.textContent=text;
+  el.classList.remove("hidden");
+  el.classList.toggle("error", error);
+}
+function hideMsg(el){el.classList.add("hidden")}
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+}
+function bytes(n){
+  if(!Number.isFinite(n)) return "";
+  if(n>=1024*1024) return (n/1024/1024).toFixed(1)+" MB";
+  if(n>=1024) return Math.round(n/1024)+" KB";
+  return n+" B";
+}
+function humanKey(key){
+  const name=key.split("/").pop() || key;
+  const base=name.replace(/_\d+(?=\.[^.]+$)/,"");
+  const k=base.split("_")[0];
+  return fileLabels[k] || name;
+}
+
+async function api(body){
+  const res=await fetch(WORKER_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({...body,password:adminPassword})
+  });
+  const text=await res.text();
+  let data;
+  try{data=JSON.parse(text)}catch{throw new Error("استجابة غير صالحة من الخادم.");}
+  if(!res.ok) throw new Error(data.error || data.detail || "حدث خطأ.");
+  return data;
+}
+
+async function login(){
+  const p=$("password").value;
+  if(!p){showMsg($("loginMsg"),"أدخل كلمة المرور.",true);return}
+  adminPassword=p;
+  $("loginBtn").disabled=true;
+  hideMsg($("loginMsg"));
+  try{
+    const data=await api({action:"adminList"});
+    folders=data.folders||[];
+    $("loginCard").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    renderFolders();
+  }catch(e){
+    adminPassword="";
+    showMsg($("loginMsg"),e.message,true);
+  }finally{$("loginBtn").disabled=false}
+}
+
+async function loadList(){
+  $("listLoading").classList.remove("hidden");
+  try{
+    const data=await api({action:"adminList"});
+    folders=data.folders||[];
+    renderFolders();
+    hideMsg($("dashMsg"));
+  }catch(e){showMsg($("dashMsg"),e.message,true)}
+  finally{$("listLoading").classList.add("hidden")}
+}
+
+function renderFolders(){
+  const q=$("search").value.trim().toLowerCase();
+  const filtered=folders.filter(x=>x.toLowerCase().includes(q));
+  $("count").textContent=folders.length;
+  $("folders").innerHTML="";
+  if(!filtered.length){
+    $("folders").innerHTML='<div class="loading">لا توجد نتائج.</div>';
+    return;
+  }
+  filtered.forEach(folder=>{
+    const div=document.createElement("div");
+    div.className="folder";
+    div.innerHTML=`<div class="folder-name">${esc(folder)}</div><div class="folder-sub">اضغط لعرض البيانات والمستمسكات</div>`;
+    div.onclick=()=>openFolder(folder);
+    $("folders").appendChild(div);
+  });
+}
+
+async function openFolder(folder){
+  $("listCard").classList.add("hidden");
+  $("detailCard").classList.remove("hidden");
+  $("detailName").textContent=folder;
+  $("detailSub").textContent="جاري تحميل بيانات الموظف...";
+  $("meta").innerHTML='<div class="loading">جاري التحميل...</div>';
+  $("files").innerHTML="";
+  try{
+    const data=await api({action:"adminDetails",folder});
+    renderDetails(data);
+  }catch(e){
+    $("detailSub").textContent="";
+    $("meta").innerHTML=`<div class="msg error">${esc(e.message)}</div>`;
+  }
+}
+
+function renderDetails(data){
+  const m=data.metadata||{};
+  $("detailSub").textContent=m.createdAt ? "تاريخ الإرسال: "+new Date(m.createdAt).toLocaleString("ar-IQ") : "";
+  $("meta").innerHTML="";
+  const entries=Object.entries(m).filter(([k,v])=>k!=="files" && k!=="folderName" && k!=="metadataKey" && v!==null && v!=="" && typeof v!=="object");
+  if(!entries.length) $("meta").innerHTML='<div class="loading">لم يتم العثور على بيانات الاستمارة.</div>';
+  entries.forEach(([k,v])=>{
+    const div=document.createElement("div");
+    div.className="field";
+    div.innerHTML=`<small>${esc(labels[k]||k)}</small><strong>${esc(v)}</strong>`;
+    $("meta").appendChild(div);
+  });
+
+  $("files").innerHTML="";
+  (data.files||[]).forEach(f=>{
+    const div=document.createElement("div");
+    div.className="file";
+    const label=fileLabels[f.name.split("_")[0]] || humanKey(f.key);
+    div.innerHTML=`
+      <div>
+        <div class="file-name">${esc(label)}</div>
+        <div class="file-size">${esc(f.name)} — ${bytes(f.size)}</div>
+      </div>
+      <div class="row">
+        <a class="btn" target="_blank" rel="noopener" href="${esc(f.downloadUrl)}">فتح / تحميل</a>
+      </div>`;
+    $("files").appendChild(div);
+  });
+  if(!(data.files||[]).length) $("files").innerHTML='<div class="loading">لا توجد ملفات.</div>';
+}
+
+$("loginBtn").onclick=login;
+$("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+$("refreshBtn").onclick=loadList;
+$("search").oninput=renderFolders;
+$("backBtn").onclick=()=>{
+  $("detailCard").classList.add("hidden");
+  $("listCard").classList.remove("hidden");
+};
+$("logoutBtn").onclick=()=>{
+  adminPassword="";
+  folders=[];
+  $("dashboard").classList.add("hidden");
+  $("loginCard").classList.remove("hidden");
+  $("password").value="";
+};
+</script>
+</body>
+</html>
