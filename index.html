@@ -935,31 +935,10 @@
   <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCslnG2BkxmhLzI862fe-QxBxRlkKmKAI",
-      authDomain: "staf-9343f.firebaseapp.com",
-      projectId: "staf-9343f",
-      storageBucket: "staf-9343f.firebasestorage.app",
-      messagingSenderId: "625432938896",
-      appId: "1:625432938896:web:10136cf583256820ff0b15",
-      measurementId: "G-WNSGQFGCHM"
-    };
-
-    const firebaseApp = initializeApp(firebaseConfig);
-    const db = getFirestore(firebaseApp);
-    window.__staffDb = db;
-    window.__staffCollection = collection(db, "staffSubmissions");
-    window.__staffServerTimestamp = serverTimestamp;
-    window.__staffAddDoc = addDoc;
-  </script>
-
   <script>
     // رابط Cloudflare Worker المحدث
     const SCRIPT_URL = "https://small-thunder-126d.hassanfaleh2018.workers.dev/";
+    // التخزين بالكامل عبر Cloudflare R2؛ لا يعتمد الإرسال على Firebase.
 
     let activeSection = 1;
 
@@ -1524,21 +1503,39 @@
         }
 
         setProgressStatus("تم رفع المستمسكات. جاري حفظ بيانات الاستمارة...");
-        await animateProgressTo(92, 250);
+        await animateProgressTo(90, 250);
 
-        // حفظ البيانات الوصفية فقط في Firestore.
-        // الصور تبقى في R2 ولا تمر عبر Firestore.
-        if (!window.__staffDb || !window.__staffAddDoc || !window.__staffCollection) {
-          throw new Error("تعذر تهيئة Firebase Firestore. تأكد من اتصال الإنترنت وقواعد Firestore.");
-        }
-
-        const firestorePayload = {
+        // لا نستخدم Firebase هنا.
+        // يتم حفظ بيانات الاستمارة كملف JSON مستقل داخل R2،
+        // والصور تبقى أيضًا داخل R2 بجودتها الأصلية.
+        const submissionPayload = {
           ...formData,
           files: filesData,
-          createdAt: window.__staffServerTimestamp()
+          createdAt: new Date().toISOString(),
+          storage: "cloudflare-r2"
         };
 
-        await window.__staffAddDoc(window.__staffCollection, firestorePayload);
+        const jsonText = JSON.stringify(submissionPayload, null, 2);
+        const jsonFile = new File(
+          [jsonText],
+          `${referenceNumber}.json`,
+          { type: "application/json" }
+        );
+
+        setProgressStatus("جاري حفظ بيانات الاستمارة...");
+        const metadataResult = await uploadFileToR2(
+          jsonFile,
+          "submissionData",
+          referenceNumber,
+          (ratio) => {
+            const value = 90 + (5 * ratio);
+            currentProgress = value;
+            paintProgress(value);
+          }
+        );
+
+        // نحتفظ بمفتاح ملف البيانات أيضًا لسهولة الرجوع إليه.
+        submissionPayload.metadataKey = metadataResult.key;
 
         await animateProgressTo(100, 500);
         setProgressStatus("تم إتمام الإرسال بنجاح!");
