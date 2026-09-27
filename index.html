@@ -520,7 +520,7 @@
     </div>
 
     <div class="form-body">
-      <div id="mainForm">
+      <form id="mainForm" onsubmit="handleFormSubmit(event)">
 
         <!-- القسم 1: نوع الكادر -->
         <div id="section1" class="space-y-1">
@@ -675,7 +675,7 @@
 
           <div class="flex gap-2 pt-2">
             <button type="button" onclick="showSection(1)" class="btn btn-secondary w-1/2">السابق</button>
-            <button type="button" onclick="return window.reviewFormClick(event)" class="btn btn-success w-1/2">مراجعة البيانات</button>
+            <button type="submit" class="btn btn-success w-1/2">مراجعة البيانات</button>
           </div>
         </div>
 
@@ -824,7 +824,7 @@
 
           <div class="flex gap-2 pt-2">
             <button type="button" onclick="showSection(1)" class="btn btn-secondary w-1/2">السابق</button>
-            <button type="button" onclick="return window.reviewFormClick(event)" class="btn btn-success w-1/2">مراجعة البيانات</button>
+            <button type="submit" class="btn btn-success w-1/2">مراجعة البيانات</button>
           </div>
         </div>
 
@@ -881,7 +881,7 @@
           </button>
         </div>
 
-      </div>
+      </form>
     </div>
   </div>
 
@@ -934,63 +934,13 @@
   <!-- زر الرجوع لأعلى -->
   <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
+  <!-- Firebase: تمت الإضافة فقط لربط الاستمارة بالتخزين وقاعدة البيانات، دون تغيير HTML أو التصميم -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
-
-  <!-- تنقل الخطوات الأساسي: يعمل حتى إذا تأخر أو تعذر تحميل Firebase -->
   <script>
-    (function () {
-      function basicSetStep(step) {
-        [1,2,3].forEach(function(n) {
-          var dot = document.getElementById('stepDot' + n);
-          if (!dot) return;
-          dot.classList.remove('is-active', 'is-done');
-          if (n < step) dot.classList.add('is-done');
-          else if (n === step) dot.classList.add('is-active');
-        });
-        [1,2].forEach(function(n) {
-          var line = document.getElementById('stepLine' + n);
-          if (!line) return;
-          line.classList.toggle('is-done', n < step);
-        });
-      }
-
-      window.showSection = function(sectionNum) {
-        [1,2,3].forEach(function(n) {
-          var el = document.getElementById('section' + n);
-          if (el) el.classList.add('hidden-section');
-        });
-        var target = document.getElementById('section' + sectionNum);
-        if (!target) return;
-        target.classList.remove('hidden-section');
-        basicSetStep(sectionNum);
-        var progressWrap = document.getElementById('formProgressWrap');
-        if (progressWrap) {
-          if (sectionNum === 2 || sectionNum === 3) progressWrap.classList.remove('hidden-section');
-          else progressWrap.classList.add('hidden-section');
-        }
-        window.scrollTo(0, 0);
-      };
-
-      window.goToNextFromSection1 = function() {
-        var select = document.getElementById('employeeType');
-        var empType = select ? select.value : '';
-        if (!empType) {
-          alert('يرجى اختيار نوع الموظف أولاً.');
-          return false;
-        }
-        window.showSection(empType === 'مدرس' ? 2 : 3);
-        return false;
-      };
-    })();
-  </script>
-
-  <script type="module">
-    // Firebase: رفع الصور الأصلية مباشرة بدون ضغط أو تغيير في الدقة
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-    import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyCsLN_g2BkxmhLzI862fe-QxBxRlkKmKAI",
       authDomain: "staf-9343f.firebaseapp.com",
@@ -1001,18 +951,14 @@
       measurementId: "G-WNSGQFGCHM"
     };
 
-    const firebaseApp = initializeApp(firebaseConfig);
-    const auth = getAuth(firebaseApp);
-    const storage = getStorage(firebaseApp);
-    const db = getFirestore(firebaseApp);
-    let firebaseReady = false;
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const firebaseAuth = firebase.auth();
+    const firebaseStorage = firebase.storage();
+    const firebaseDb = firebase.firestore();
+    const firebaseReady = firebaseAuth.signInAnonymously();
 
-    signInAnonymously(auth)
-      .then(() => { firebaseReady = true; })
-      .catch((err) => {
-        console.error("Firebase Anonymous Auth error:", err);
-        showCustomAlert("تعذر الاتصال بخدمة Firebase. يرجى المحاولة مرة أخرى.");
-      });
+    // رابط سكربت Cloudflare Worker المحدث
+    const SCRIPT_URL = "https://shiny-wind-9857.hassanfaleh2018.workers.dev/";
 
     let activeSection = 1;
 
@@ -1204,8 +1150,79 @@
       }
     }
 
-    // لا يوجد ضغط أو تصغير للصور. يتم الاحتفاظ بالملف الأصلي كما اختاره الموظف.
-    const MAX_UPLOAD_SIZE_HINT = 30 * 1024 * 1024; // 30 ميجابايت
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 ميجابايت
+
+    function drawToJpegBlob(img, scale, quality) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        if (canvas.toBlob) {
+          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
+        } else {
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          const bin = atob(dataUrl.split(',')[1]);
+          const arr = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+          resolve(new Blob([arr], { type: 'image/jpeg' }));
+        }
+      });
+    }
+
+    async function compressImageIfNeeded(file) {
+      if (!file.type || !file.type.startsWith('image/') || file.size <= MAX_IMAGE_SIZE) {
+        return file;
+      }
+
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const img = await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = dataUrl;
+      });
+
+      let quality = 0.9;
+      let scale = 1;
+      let blob = await drawToJpegBlob(img, scale, quality);
+
+      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.4) {
+        quality -= 0.1;
+        blob = await drawToJpegBlob(img, scale, quality);
+      }
+      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.3) {
+        scale -= 0.15;
+        blob = await drawToJpegBlob(img, scale, quality);
+      }
+
+      if (!blob) return file;
+
+      const newName = file.name ? file.name.replace(/\.[^./\\]+$/, '') + '.jpg' : 'image.jpg';
+      return new File([blob], newName, { type: 'image/jpeg' });
+    }
+
+    async function fileToBase64(fileInputId) {
+      const input = document.getElementById(fileInputId);
+      if (!input || !input.files || input.files.length === 0) return null;
+
+      const original = input.files[0];
+      const file = await compressImageIfNeeded(original);
+
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ data: reader.result, name: file.name });
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
 
     // المعالجة الآمنة لعملية إرسال النموذج والانتقال للمراجعة مع حماية ضد الأخطاء
     function handleFormSubmit(e) {
@@ -1370,34 +1387,6 @@
       document.getElementById('reviewList').innerHTML = html;
     }
 
-    function sanitizeFileName(name) {
-      return String(name || 'image').replace(/[^a-zA-Z0-9._-]/g, '_');
-    }
-
-    function uploadFileToFirebase(file, referenceNumber, key, sec, onProgress) {
-      return new Promise((resolve, reject) => {
-        if (!file) { resolve(null); return; }
-        const safeName = sanitizeFileName(file.name);
-        const path = `staff-submissions/${referenceNumber}/${key}${sec}_${safeName}`;
-        const fileRef = storageRef(storage, path);
-        const task = uploadBytesResumable(fileRef, file, {
-          contentType: file.type || 'application/octet-stream',
-          customMetadata: { originalName: file.name, referenceNumber: referenceNumber }
-        });
-        task.on('state_changed',
-          snapshot => {
-            const pct = snapshot.totalBytes ? (snapshot.bytesTransferred / snapshot.totalBytes) * 100 : 0;
-            if (onProgress) onProgress(pct);
-          },
-          reject,
-          async () => {
-            try { resolve(await getDownloadURL(task.snapshot.ref)); }
-            catch (err) { reject(err); }
-          }
-        );
-      });
-    }
-
     async function confirmAndSubmit() {
       const sec = activeSection;
       const submitBtn = document.getElementById('confirmSubmitBtn');
@@ -1407,18 +1396,15 @@
         submitBtn.style.cursor = 'not-allowed';
       }
 
+      document.getElementById('reviewSection').classList.add('hidden-section');
+      document.getElementById('loading').classList.remove('hidden-section');
+      currentProgress = 0;
+      paintProgress(0);
+
       try {
-        if (!firebaseReady || !auth.currentUser) {
-          throw new Error('لم يتم الاتصال بـ Firebase بعد. انتظر لحظات ثم حاول مرة أخرى.');
-        }
-
-        document.getElementById('reviewSection').classList.add('hidden-section');
-        document.getElementById('loading').classList.remove('hidden-section');
-        currentProgress = 0;
-        paintProgress(0);
-
         await animateProgressTo(8, 400);
-        setProgressStatus("جاري قراءة وتجهيز البيانات...");
+        setProgressStatus("جاري الاتصال بـ Firebase...");
+        await firebaseReady;
 
         const getVal = (id) => {
           const el = document.getElementById(id);
@@ -1451,48 +1437,60 @@
           firstAppDate: getVal(`firstAppDate${sec}`),
           phone: getVal(`phone${sec}`),
           address: getVal(`address${sec}`),
-          landmark: getVal(`landmark${sec}`),
-          submittedByUid: auth.currentUser.uid
+          landmark: getVal(`landmark${sec}`)
         };
 
         lastReferenceNumber = referenceNumber;
         lastSummaryText = buildSummaryText(formData);
 
-        await animateProgressTo(12, 250);
-        setProgressStatus("جاري رفع الصور الأصلية إلى Firebase بدون ضغط...");
-
         const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
         const filesData = {};
-        let uploadedCount = 0;
-        const filesToUpload = fileOrder.map(key => ({
-          key,
-          file: document.getElementById(`${key}${sec}`)?.files?.[0] || null
-        })).filter(x => x.file);
 
-        for (const item of filesToUpload) {
-          const url = await uploadFileToFirebase(item.file, referenceNumber, item.key, sec, pct => {
-            const base = 12 + (uploadedCount / Math.max(filesToUpload.length, 1)) * 78;
-            const part = (pct / 100) * (78 / Math.max(filesToUpload.length, 1));
-            paintProgress(base + part);
-            setProgressStatus(`جاري رفع ${item.file.name} — ${Math.round(pct)}%`);
-          });
-          filesData[item.key] = {
-            name: item.file.name,
-            type: item.file.type,
-            size: item.file.size,
-            url
-          };
-          uploadedCount++;
-          paintProgress(12 + (uploadedCount / Math.max(filesToUpload.length, 1)) * 78);
+        setProgressStatus("جاري رفع المرفقات بالحجم والدقة الأصلية...");
+        for (let i = 0; i < fileOrder.length; i++) {
+          const key = fileOrder[i];
+          const input = document.getElementById(`${key}${sec}`);
+          const file = input && input.files && input.files[0];
+          if (file) {
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-؀-ۿ]/g, '_');
+            const path = `staff-submissions/${referenceNumber}/${key}_${safeName}`;
+            const ref = firebaseStorage.ref(path);
+            const uploadTask = ref.put(file, {
+              contentType: file.type || 'application/octet-stream',
+              customMetadata: {
+                originalName: file.name,
+                referenceNumber,
+                field: key
+              }
+            });
+
+            await new Promise((resolve, reject) => {
+              uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, (snapshot) => {
+                const percent = snapshot.totalBytes ? snapshot.bytesTransferred / snapshot.totalBytes : 0;
+                const base = 15 + (i / fileOrder.length) * 70;
+                const target = base + percent * (70 / fileOrder.length);
+                paintProgress(target);
+              }, reject, resolve);
+            });
+
+            const url = await ref.getDownloadURL();
+            filesData[key] = {
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              path,
+              url
+            };
+          } else {
+            filesData[key] = null;
+          }
         }
 
-        await animateProgressTo(94, 250);
-        setProgressStatus("جاري حفظ بيانات الموظف في Firestore...");
-
-        const docRef = await addDoc(collection(db, 'staffSubmissions'), {
-          ...formData,
-          files: filesData,
-          createdAt: serverTimestamp()
+        setProgressStatus("جاري حفظ بيانات الاستمارة...");
+        await firebaseDb.collection('staffSubmissions').doc(referenceNumber).set({
+          formData,
+          filesData,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
         await animateProgressTo(100, 450);
@@ -1500,6 +1498,7 @@
         clearDraft();
         const refEl = document.getElementById('referenceNumberValue');
         if (refEl) refEl.textContent = referenceNumber;
+
         setTimeout(() => {
           document.getElementById('loading').classList.add('hidden-section');
           document.getElementById('successCard').classList.remove('hidden-section');
@@ -1508,7 +1507,7 @@
       } catch (err) {
         console.error('Firebase submission error:', err);
         stopProgressCreep();
-        showCustomAlert("حدث خطأ أثناء الإرسال: " + (err?.message || err));
+        showCustomAlert('حدث خطأ أثناء رفع البيانات إلى Firebase: ' + (err && err.message ? err.message : err));
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
         if (submitBtn) {
@@ -1523,7 +1522,7 @@
 
     // ---------- 1) معاينة الصورة فور اختيارها + التحقق من الصيغة والحجم ----------
     const MIN_IMAGE_DIMENSION = 400; // بكسل، تحذير فقط إن كانت الصورة أصغر من هذا
-    const MAX_UPLOAD_SIZE_HINT = 30 * 1024 * 1024; // 30 ميجابايت كحد أقصى
+    const MAX_UPLOAD_SIZE_HINT = 30 * 1024 * 1024; // 30 ميجابايت كحد أقصى قبل الرفض الفوري
 
     function ensureFilePreviewWrap(input) {
       let wrap = input.nextElementSibling;
@@ -1533,7 +1532,7 @@
       wrap.innerHTML =
         '<div class="file-preview-row">' +
           '<div class="file-preview-thumb-wrap"><img class="file-preview-img" src="" alt="معاينة الصورة"></div>' +
-          '<span class="file-preview-ok">✓ تم اختيار الصورة — ستُرفع بالحجم والدقة الأصلية</span>' +
+          '<span class="file-preview-ok">✓ تم اختيار الصورة</span>' +
         '</div>' +
         '<p class="file-preview-warn hidden-section"></p>';
       input.insertAdjacentElement('afterend', wrap);
@@ -1564,7 +1563,7 @@
       }
 
       if (file.size > MAX_UPLOAD_SIZE_HINT) {
-        showCustomAlert('حجم الصورة كبير جداً، الحد الأقصى المسموح به 30 ميجابايت للصورة.');
+        showCustomAlert('حجم الصورة كبير جداً، يرجى اختيار صورة أصغر (أقل من 30 ميجابايت).');
         input.value = '';
         wrap.classList.add('hidden-section');
         return;
@@ -1798,16 +1797,6 @@
       });
     }
 
-    // مهم: لأن هذا الملف يعمل كـ ES Module، فإن دوال onclick داخل HTML لا تصبح عامة تلقائياً.
-    // نربط الدوال المستخدمة من أزرار HTML مع window حتى تعمل الأزرار بشكل طبيعي.
-    Object.assign(window, {
-      showCustomAlert, closeCustomAlert, toggleDocsSection, toggleDocItem,
-      showWelcomeModal, closeWelcomeModal, openLightbox, closeLightbox,
-      showSection, goToNextFromSection1, toggleLeaveDetails, formatEnglishDigits,
-      formatGradDate, handleFormSubmit, confirmAndSubmit, backToEdit, copyReferenceNumber,
-      shareViaWhatsApp, shareViaEmail, dismissDraft, applyDraftRestore
-    });
-
     // ---------- تهيئة كل الإضافات عند تحميل الصفحة ----------
     window.addEventListener('DOMContentLoaded', () => {
       setupFilePreviews();
@@ -1817,68 +1806,6 @@
       setupScrollTopButton();
       setTimeout(showWelcomeModal, 300);
     });
-  </script>
-
-  <!-- طبقة تنقل مستقلة: لا تعتمد على Firebase ولا على submit -->
-  <script>
-    (function () {
-      function basicReview() {
-        var employeeType = document.getElementById('employeeType');
-        var empType = employeeType ? employeeType.value : '';
-        if (!empType) {
-          window.alert('يرجى اختيار نوع الموظف أولاً.');
-          return false;
-        }
-        var sec = empType === 'مدرس' ? 2 : 3;
-        [1, 2, 3].forEach(function (n) {
-          var el = document.getElementById('section' + n);
-          if (el) el.classList.add('hidden-section');
-        });
-        var review = document.getElementById('reviewSection');
-        if (review) review.classList.remove('hidden-section');
-        var progress = document.getElementById('formProgressWrap');
-        if (progress) progress.classList.add('hidden-section');
-        [1, 2, 3].forEach(function (n) {
-          var dot = document.getElementById('stepDot' + n);
-          if (!dot) return;
-          dot.classList.remove('is-active', 'is-done');
-          if (n < 3) dot.classList.add('is-done');
-          if (n === 3) dot.classList.add('is-active');
-        });
-        [1, 2].forEach(function (n) {
-          var line = document.getElementById('stepLine' + n);
-          if (line) line.classList.toggle('is-done', n < 3);
-        });
-        window.scrollTo(0, 0);
-        return false;
-      }
-
-      window.reviewFormClick = function (event) {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        try {
-          if (typeof window.handleFormSubmit === 'function') {
-            window.handleFormSubmit(event || { preventDefault:function(){}, stopPropagation:function(){} });
-          } else {
-            basicReview();
-          }
-        } catch (err) {
-          console.error('Review navigation error:', err);
-          basicReview();
-        }
-        return false;
-      };
-
-      // إذا لم تُحمّل وحدة Firebase بعد، يبقى التنقل متاحاً فوراً.
-      if (typeof window.handleFormSubmit !== 'function') {
-        window.handleFormSubmit = function (event) {
-          if (event && event.preventDefault) event.preventDefault();
-          return basicReview();
-        };
-      }
-    })();
   </script>
 </body>
 </html>
