@@ -1,156 +1,129 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لوحة إدارة استمارة الكادر</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<style>
-  :root{--p:#3b1f5e;--g:#a67c3b;--bg:#f5f1f8;--card:#fff;--text:#20172b;--muted:#756b7d;--line:#e7e0eb}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
-  header{background:linear-gradient(135deg,#2b173f,#4b2a69);color:#fff;padding:22px 18px;position:sticky;top:0;z-index:5}
-  header h1{margin:0 0 7px;font-size:22px}
-  header p{margin:0;opacity:.82;font-size:13px}
-  main{max-width:1100px;margin:22px auto;padding:0 14px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 5px 18px rgba(35,20,45,.06);margin-bottom:16px}
-  label{display:block;font-weight:700;margin-bottom:8px}
-  input{width:100%;padding:13px 14px;border:1px solid #d8cedf;border-radius:12px;font-size:16px;outline:none}
-  input:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(59,31,94,.1)}
-  button{border:0;border-radius:12px;padding:12px 17px;background:var(--p);color:#fff;font-weight:700;cursor:pointer;font-size:15px}
-  button.secondary{background:#eee8f1;color:var(--p)}
-  button.gold{background:var(--g)}
-  button:disabled{opacity:.55;cursor:not-allowed}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .hidden{display:none!important}
-  .msg{margin-top:10px;padding:11px 13px;border-radius:10px;background:#fff5dc;color:#5c4519}
-  .error{background:#fdecec;color:#8a2020}
-  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-  .stat{background:#f2edf5;border-radius:13px;padding:11px 14px;min-width:130px}
-  .stat b{display:block;font-size:20px;color:var(--p)}
-  .search{margin-bottom:12px}
-  .folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
-  .folder{padding:15px;border:1px solid var(--line);border-radius:14px;background:#fff;cursor:pointer}
-  .folder:hover{border-color:var(--p);background:#fbf9fc}
-  .folder-name{font-weight:800;word-break:break-word}
-  .folder-sub{font-size:12px;color:var(--muted);margin-top:5px}
-  .detail-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-  .name{font-size:21px;font-weight:800}
-  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;margin-top:14px}
-  .field{border:1px solid var(--line);border-radius:12px;padding:10px}
-  .field small{display:block;color:var(--muted);margin-bottom:4px}
-  .files{display:grid;gap:9px;margin-top:14px}
-  .file{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:11px;flex-wrap:wrap}
-  .file-name{font-weight:700;word-break:break-word}
-  .file-size{font-size:12px;color:var(--muted)}
-  a.btn{display:inline-block;text-decoration:none;border-radius:10px;padding:9px 12px;background:#eee8f1;color:var(--p);font-weight:700}
-  .loading{padding:20px;text-align:center;color:var(--muted)}
-  .export-progress{margin-top:10px;padding:11px 13px;border-radius:10px;background:#f2edf5;color:var(--p)}
-  .export-progress.error{background:#fdecec;color:#8a2020}
-  .top-actions{display:flex;gap:8px;flex-wrap:wrap}
-  @media(max-width:600px){header h1{font-size:18px}.card{padding:14px}.file{align-items:flex-start}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>إدارة استمارات الموظفين</title>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    body{font-family:Arial,Tahoma,sans-serif;background:#f5f7fa;margin:0;color:#17202a}
+    .wrap{max-width:1200px;margin:30px auto;padding:0 16px}
+    .card{background:#fff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 3px 15px #00000012}
+    h1,h2{margin-top:0}
+    input,button{font:inherit}
+    input[type=password],input[type=search]{width:100%;box-sizing:border-box;padding:12px;border:1px solid #ccd3da;border-radius:9px}
+    button{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;margin:4px}
+    .primary{background:#166534;color:#fff}.secondary{background:#e9eef3}.danger{background:#b91c1c;color:#fff}
+    .hidden{display:none!important}
+    .msg{padding:10px;border-radius:9px;background:#eef4ff;margin-top:10px}
+    .error{background:#fee2e2;color:#991b1b}.ok{background:#dcfce7;color:#166534}
+    .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .toolbar input{flex:1;min-width:220px}
+    .folders button{display:block;width:100%;text-align:right;background:#f8fafc;border:1px solid #e2e8f0}
+    .folders button:hover{background:#eef4ff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+    .field{border:1px solid #e5e7eb;border-radius:10px;padding:10px;background:#fafafa}
+    .label{font-weight:bold;color:#475569;margin-bottom:5px}
+    .value{word-break:break-word}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:9px;border-bottom:1px solid #e5e7eb;text-align:right}
+    .file-actions a{display:inline-block;margin:3px;padding:7px 9px;background:#e2e8f0;border-radius:7px;color:#111;text-decoration:none}
+    .small{font-size:12px;color:#64748b}
+  </style>
 </head>
+
 <body>
-<header>
-  <h1>لوحة إدارة استمارة الكادر</h1>
-  <p>صفحة خاصة لعرض بيانات الموظفين والمستمسكات المخزنة في Cloudflare R2</p>
-</header>
+<div class="wrap">
 
-<main>
   <section id="loginCard" class="card">
-    <h2 style="margin-top:0">دخول الإدارة</h2>
-    <label for="password">كلمة مرور الإدارة</label>
-    <input id="password" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور">
-    <div class="row" style="margin-top:12px">
-      <button id="loginBtn">دخول</button>
+    <h1>دخول الإدارة</h1>
+    <p class="small">الوصول مخصص للمستخدم الإداري المصرح له.</p>
+    <input id="password" type="password" autocomplete="current-password" placeholder="كلمة مرور الإدارة">
+    <div style="margin-top:12px">
+      <div id="turnstileBox"></div>
     </div>
-    <div id="loginMsg" class="msg hidden"></div>
+    <button id="loginBtn" class="primary" onclick="login()">دخول</button>
+    <div id="loginMsg"></div>
   </section>
 
-  <section id="dashboard" class="hidden">
+  <section id="app" class="hidden">
     <div class="card">
-      <div class="top-actions">
-        <button id="refreshBtn">تحديث القائمة</button>
-        <button id="exportAllBtn" class="gold">⬇️ Excel — جميع الموظفين</button>
-        <button id="logoutBtn" class="secondary">تسجيل الخروج</button>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="بحث باسم الموظف أو رقم البطاقة الموحدة..." oninput="filterFolders()">
+        <button class="primary" onclick="loadFolders()">تحديث</button>
+        <button class="secondary" onclick="exportAllExcel()">⬇️ Excel — جميع الموظفين</button>
+        <button class="danger" onclick="logout()">خروج</button>
       </div>
-      <div id="dashMsg" class="msg hidden"></div>
     </div>
 
-    <div id="listCard" class="card">
-      <div class="stats">
-        <div class="stat"><b id="count">0</b><span>عدد الموظفين</span></div>
-      </div>
-      <input id="search" class="search" placeholder="بحث باسم الموظف أو رقم البطاقة الموحدة...">
+    <div class="card">
+      <h2>الموظفون</h2>
       <div id="folders" class="folders"></div>
-      <div id="listLoading" class="loading hidden">جاري تحميل البيانات...</div>
     </div>
 
-    <div id="detailCard" class="card hidden">
-      <div class="detail-head">
-        <div>
-          <div id="detailName" class="name"></div>
-          <div id="detailSub" style="color:var(--muted);font-size:13px;margin-top:4px"></div>
-        </div>
-        <div class="row">
-          <button id="exportOneBtn" class="gold">⬇️ Excel — هذا الموظف</button>
-          <button id="pdfOneBtn">📄 PDF — مستمسكات هذا الموظف</button>
-          <button id="backBtn" class="secondary">العودة للقائمة</button>
-        </div>
+    <div id="detailsCard" class="card hidden">
+      <div class="toolbar">
+        <h2 id="detailsTitle" style="flex:1"></h2>
+        <button class="secondary" onclick="exportOneExcel()">⬇️ Excel — هذا الموظف</button>
+        <button class="primary" onclick="exportOnePdf()">📄 PDF — مستمسكات هذا الموظف</button>
       </div>
-      <div id="meta" class="meta"></div>
-      <h3>المستمسكات والملفات</h3>
-      <div id="files" class="files"></div>
+      <div id="details"></div>
     </div>
   </section>
-</main>
+</div>
 
 <script>
 const WORKER_URL = "https://small-thunder-126d.hassanfaleh2018.workers.dev/";
-let adminPassword = "";
-let folders = [];
+const TURNSTILE_SITE_KEY = "0x4AAAAAAFE7bJsaCVZW-qxQ";
+
+let session = sessionStorage.getItem("adminSession") || "";
+let allFolders = [];
+let currentEmployeeData = null;
+let turnstileWidgetId = null;
 
 const labels = {
   referenceNumber:"رقم الاستمارة",
   fullName:"الاسم الرباعي",
-  name:"الاسم",
   employeeType:"نوع الموظف",
-  jobType:"نوع الموظف",
-  firstName:"الاسم الأول",
+  title:"اللقب",
+  firstName:"الاسم",
   fatherName:"اسم الأب",
   grandfatherName:"اسم الجد",
-  familyName:"اللقب",
-  title:"اللقب",
-  gender:"الجنس",
+  familyName:"اللقب العائلي",
   dob:"تاريخ التولد",
   birthDate:"تاريخ التولد",
   birthPlace:"محل التولد",
+  gender:"الجنس",
+  idNumber:"رقم البطاقة الموحدة",
+  nationalId:"رقم البطاقة الموحدة",
+  cardNumber:"رقم البطاقة",
   motherName:"اسم الأم",
   bloodType:"فصيلة الدم",
   socialStatus:"الحالة الاجتماعية",
+  maritalStatus:"الحالة الاجتماعية",
   religion:"الديانة",
-  phone:"رقم الهاتف",
-  mobile:"رقم الهاتف",
-  nationalId:"رقم البطاقة الموحدة",
-  idNumber:"رقم البطاقة الموحدة",
-  cardNumber:"رقم البطاقة الموحدة",
   jobTitle:"العنوان الوظيفي",
   jobStatus:"الحالة الوظيفية",
   jobStatusOther:"تفاصيل الحالة الوظيفية",
-  specialization:"الاختصاص",
   qualification:"التحصيل الدراسي",
-  gradDate:"تاريخ التخرج",
-  university:"الجامعة",
   college:"الكلية",
-  department:"القسم",
-  school:"المدرسة",
+  specialization:"الاختصاص",
+  gradDate:"تاريخ التخرج",
+  graduationDate:"تاريخ التخرج",
   firstAppDate:"تاريخ أول تعيين",
+  phone:"رقم الهاتف",
+  mobile:"رقم الهاتف",
   address:"عنوان السكن",
+  landmark:"أقرب نقطة دالة",
   governorate:"المحافظة",
   district:"القضاء",
-  landmark:"أقرب نقطة دالة",
+  university:"الجامعة",
+  department:"القسم",
+  school:"المدرسة",
   notes:"ملاحظات",
   createdAt:"تاريخ الإرسال"
 };
@@ -165,491 +138,336 @@ const fileLabels = {
   submissionData:"بيانات الاستمارة"
 };
 
-const $ = id => document.getElementById(id);
-
-function showMsg(el, text, error=false){
-  el.textContent=text;
-  el.classList.remove("hidden");
-  el.classList.toggle("error", error);
-}
-function hideMsg(el){el.classList.add("hidden")}
-function esc(v){
-  return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-}
-function bytes(n){
-  if(!Number.isFinite(n)) return "";
-  if(n>=1024*1024) return (n/1024/1024).toFixed(1)+" MB";
-  if(n>=1024) return Math.round(n/1024)+" KB";
-  return n+" B";
-}
-function humanKey(key){
-  const name=key.split("/").pop() || key;
-  const base=name.replace(/_\d+(?=\.[^.]+$)/,"");
-  const k=base.split("_")[0];
-  return fileLabels[k] || name;
+function setMsg(el, text, type="") {
+  el.className = "msg " + type;
+  el.textContent = text || "";
 }
 
-async function api(body){
-  const res=await fetch(WORKER_URL,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({...body,password:adminPassword})
+function mountTurnstile() {
+  if (TURNSTILE_SITE_KEY === "PUT_YOUR_TURNSTILE_SITE_KEY_HERE") {
+    setMsg(document.getElementById("loginMsg"),
+      "ضع Site Key الخاص بـ Turnstile داخل المتغير TURNSTILE_SITE_KEY أولًا.", "error");
+    return;
+  }
+  if (!window.turnstile) {
+    setTimeout(mountTurnstile, 500);
+    return;
+  }
+  if (turnstileWidgetId !== null) return;
+
+  turnstileWidgetId = turnstile.render("#turnstileBox", {
+    sitekey: TURNSTILE_SITE_KEY,
+    theme: "light",
+    callback: () => {},
+    "expired-callback": () => {}
   });
-  const text=await res.text();
-  let data;
-  try{data=JSON.parse(text)}catch{throw new Error("استجابة غير صالحة من الخادم.");}
-  if(!res.ok) throw new Error(data.error || data.detail || "حدث خطأ.");
+}
+
+async function login() {
+  const msg = document.getElementById("loginMsg");
+  const password = document.getElementById("password").value;
+
+  if (!password) {
+    setMsg(msg, "أدخل كلمة المرور.", "error");
+    return;
+  }
+  if (!window.turnstile || turnstileWidgetId === null) {
+    setMsg(msg, "تحقق من إعداد Turnstile أولًا.", "error");
+    return;
+  }
+
+  const turnstileToken = turnstile.getResponse(turnstileWidgetId);
+  if (!turnstileToken) {
+    setMsg(msg, "أكمل التحقق الأمني أولًا.", "error");
+    return;
+  }
+
+  try {
+    const r = await fetch(WORKER_URL + "?action=login", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({password, turnstileToken})
+    });
+    const data = await r.json();
+
+    if (!r.ok || !data.ok) {
+      setMsg(msg, data.error || "تعذر تسجيل الدخول.", "error");
+      turnstile.reset(turnstileWidgetId);
+      return;
+    }
+
+    session = data.session;
+    sessionStorage.setItem("adminSession", session);
+    document.getElementById("loginCard").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    await loadFolders();
+  } catch (e) {
+    setMsg(msg, "تعذر الاتصال بالخادم.", "error");
+  }
+}
+
+function logout() {
+  session = "";
+  sessionStorage.removeItem("adminSession");
+  currentEmployeeData = null;
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("loginCard").classList.remove("hidden");
+  document.getElementById("password").value = "";
+  if (window.turnstile && turnstileWidgetId !== null) turnstile.reset(turnstileWidgetId);
+}
+
+async function apiGet(action, params={}) {
+  const qs = new URLSearchParams({action, ...params});
+  const r = await fetch(WORKER_URL + "?" + qs.toString(), {
+    headers: {"Authorization":"Bearer " + session}
+  });
+
+  if (r.status === 401) {
+    logout();
+    throw new Error("انتهت جلسة الإدارة.");
+  }
+
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || "فشل الطلب.");
   return data;
 }
 
-async function login(){
-  const p=$("password").value;
-  if(!p){showMsg($("loginMsg"),"أدخل كلمة المرور.",true);return}
-  adminPassword=p;
-  $("loginBtn").disabled=true;
-  hideMsg($("loginMsg"));
-  try{
-    const data=await api({action:"adminList"});
-    folders=data.folders||[];
-    $("loginCard").classList.add("hidden");
-    $("dashboard").classList.remove("hidden");
-    renderFolders();
-  }catch(e){
-    adminPassword="";
-    showMsg($("loginMsg"),e.message,true);
-  }finally{$("loginBtn").disabled=false}
+async function loadFolders() {
+  const box = document.getElementById("folders");
+  box.innerHTML = "جاري التحميل...";
+  try {
+    const data = await apiGet("adminList");
+    allFolders = data.folders || [];
+    renderFolders(allFolders);
+  } catch (e) {
+    box.innerHTML = `<div class="msg error">${escapeHtml(e.message)}</div>`;
+  }
 }
 
-async function loadList(){
-  $("listLoading").classList.remove("hidden");
-  try{
-    const data=await api({action:"adminList"});
-    folders=data.folders||[];
-    renderFolders();
-    hideMsg($("dashMsg"));
-  }catch(e){showMsg($("dashMsg"),e.message,true)}
-  finally{$("listLoading").classList.add("hidden")}
+function filterFolders() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  renderFolders(allFolders.filter(x => x.toLowerCase().includes(q)));
 }
 
-function renderFolders(){
-  const q=$("search").value.trim().toLowerCase();
-  const filtered=folders.filter(x=>x.toLowerCase().includes(q));
-  $("count").textContent=folders.length;
-  $("folders").innerHTML="";
-  if(!filtered.length){
-    $("folders").innerHTML='<div class="loading">لا توجد نتائج.</div>';
+function renderFolders(list) {
+  const box = document.getElementById("folders");
+  if (!list.length) {
+    box.innerHTML = '<div class="small">لا توجد نتائج.</div>';
     return;
   }
-  filtered.forEach(folder=>{
-    const div=document.createElement("div");
-    div.className="folder";
-    div.innerHTML=`<div class="folder-name">${esc(folder)}</div><div class="folder-sub">اضغط لعرض البيانات والمستمسكات</div>`;
-    div.onclick=()=>openFolder(folder);
-    $("folders").appendChild(div);
-  });
-}
-
-async function openFolder(folder){
-  $("listCard").classList.add("hidden");
-  $("detailCard").classList.remove("hidden");
-  $("detailName").textContent=folder;
-  $("detailSub").textContent="جاري تحميل بيانات الموظف...";
-  $("meta").innerHTML='<div class="loading">جاري التحميل...</div>';
-  $("files").innerHTML="";
-  try{
-    const data=await api({action:"adminDetails",folder});
-    window.currentEmployeeData=data;
-    renderDetails(data);
-  }catch(e){
-    $("detailSub").textContent="";
-    $("meta").innerHTML=`<div class="msg error">${esc(e.message)}</div>`;
+  box.innerHTML = "";
+  for (const folder of list) {
+    const b = document.createElement("button");
+    b.textContent = folder;
+    b.onclick = () => showEmployee(folder);
+    box.appendChild(b);
   }
 }
 
-function renderDetails(data){
-  const m=data.metadata||{};
+async function showEmployee(folder) {
+  const card = document.getElementById("detailsCard");
+  const details = document.getElementById("details");
+  card.classList.remove("hidden");
+  details.innerHTML = "جاري تحميل بيانات الموظف...";
+  document.getElementById("detailsTitle").textContent = folder;
 
-  $("detailSub").textContent = m.createdAt
-    ? "تاريخ الإرسال: " + new Date(m.createdAt).toLocaleString("ar-IQ")
-    : "";
-
-  $("meta").innerHTML="";
-
-  // نعرض فقط الحقول التي لها عنوان عربي معروف.
-  // أي حقول تقنية أو غير معروفة يتم تجاهلها ولا يظهر اسمها البرمجي.
-  const preferredOrder = [
-    "referenceNumber",
-    "employeeType",
-    "fullName",
-    "title",
-    "dob",
-    "gender",
-    "idNumber",
-    "motherName",
-    "bloodType",
-    "socialStatus",
-    "religion",
-    "jobTitle",
-    "jobStatus",
-    "jobStatusOther",
-    "qualification",
-    "college",
-    "specialization",
-    "gradDate",
-    "firstAppDate",
-    "phone",
-    "address",
-    "landmark",
-    "governorate",
-    "district",
-    "university",
-    "department",
-    "school",
-    "notes",
-    "createdAt"
-  ];
-
-  const shown = new Set();
-
-  preferredOrder.forEach(k => {
-    const v = m[k];
-
-    if (
-      !(k in labels) ||
-      v === null ||
-      v === undefined ||
-      v === "" ||
-      typeof v === "object"
-    ) return;
-
-    shown.add(k);
-
-    const div=document.createElement("div");
-    div.className="field";
-    div.innerHTML =
-      `<small>${esc(labels[k])}</small>` +
-      `<strong>${esc(v)}</strong>`;
-
-    $("meta").appendChild(div);
-  });
-
-  // في حال كانت هناك حقول معروفة في القاموس لكنها لم تدخل في الترتيب أعلاه.
-  Object.entries(m).forEach(([k,v]) => {
-    if (
-      shown.has(k) ||
-      !(k in labels) ||
-      v === null ||
-      v === undefined ||
-      v === "" ||
-      typeof v === "object"
-    ) return;
-
-    const div=document.createElement("div");
-    div.className="field";
-    div.innerHTML =
-      `<small>${esc(labels[k])}</small>` +
-      `<strong>${esc(v)}</strong>`;
-
-    $("meta").appendChild(div);
-    shown.add(k);
-  });
-
-  if(!$("meta").children.length){
-    $("meta").innerHTML='<div class="loading">لم يتم العثور على بيانات الموظف.</div>';
-  }
-
-  $("files").innerHTML="";
-
-  (data.files||[]).forEach(f=>{
-    const div=document.createElement("div");
-    div.className="file";
-
-    // نحدد اسم المستند من مفتاح الملف، ولا نعرض اسم الملف البرمجي الخام.
-    const rawName = String(f.name || "");
-    const rawKey = String(f.key || "");
-
-    let fileKey = "";
-    for (const key of Object.keys(fileLabels)) {
-      if (
-        rawName.startsWith(key + "_") ||
-        rawKey.includes("/" + key + "_")
-      ) {
-        fileKey = key;
-        break;
-      }
-    }
-
-    const label = fileLabels[fileKey] || "مرفق";
-
-    div.innerHTML=`
-      <div>
-        <div class="file-name">${esc(label)}</div>
-        <div class="file-size">${bytes(f.size)}</div>
-      </div>
-      <div class="row">
-        <a class="btn" target="_blank" rel="noopener"
-           href="${esc(f.downloadUrl)}">فتح / تحميل</a>
-      </div>`;
-
-    $("files").appendChild(div);
-  });
-
-  if(!(data.files||[]).length){
-    $("files").innerHTML='<div class="loading">لا توجد مستمسكات أو ملفات.</div>';
+  try {
+    currentEmployeeData = await apiGet("adminDetails", {folder});
+    renderEmployee(currentEmployeeData);
+    card.scrollIntoView({behavior:"smooth"});
+  } catch (e) {
+    details.innerHTML = `<div class="msg error">${escapeHtml(e.message)}</div>`;
   }
 }
-async function downloadBlob(blob, filename){
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download=filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),2000);
+
+function renderEmployee(data) {
+  const metadata = data.metadata || {};
+  const details = document.getElementById("details");
+
+  let html = '<h3>بيانات الاستمارة</h3><div class="grid">';
+  for (const [key, value] of Object.entries(metadata)) {
+    if (!(key in labels)) continue;
+    if (value === null || value === undefined || value === "") continue;
+    html += `<div class="field"><div class="label">${escapeHtml(labels[key])}</div><div class="value">${escapeHtml(formatValue(value))}</div></div>`;
+  }
+  html += "</div>";
+
+  html += '<h3 style="margin-top:25px">المستمسكات</h3>';
+  html += '<table><thead><tr><th>المستمسك</th><th>الحجم</th><th>الإجراء</th></tr></thead><tbody>';
+
+  for (const file of (data.files || [])) {
+    const label = fileLabels[file.key] || detectArabicFileLabel(file.name);
+    html += `<tr>
+      <td>${escapeHtml(label)}</td>
+      <td>${formatBytes(file.size)}</td>
+      <td class="file-actions">
+        <a href="${escapeAttr(file.url)}" target="_blank" rel="noopener">فتح</a>
+        <a href="${escapeAttr(file.url)}" download>تحميل</a>
+      </td>
+    </tr>`;
+  }
+
+  html += "</tbody></table>";
+  details.innerHTML = html;
 }
 
-function safeFilename(value){
-  return String(value||"")
-    .replace(/[\\/:*?"<>|]/g,"_")
-    .replace(/\s+/g," ")
-    .trim()
-    .slice(0,120) || "موظف";
+function detectArabicFileLabel(name) {
+  for (const [key, label] of Object.entries(fileLabels)) {
+    if (name.includes(label.replaceAll(" ", "_"))) return label;
+  }
+  return "مرفق";
 }
 
-function metadataForExcel(m){
-  const row={};
-  const order=[
-    "referenceNumber","fullName","employeeType","title","dob","gender",
-    "idNumber","motherName","bloodType","socialStatus","religion",
-    "jobTitle","jobStatus","jobStatusOther","qualification","college",
-    "specialization","gradDate","firstAppDate","phone","address",
-    "landmark","governorate","district","university","department",
-    "school","notes","createdAt"
-  ];
+function formatValue(v) {
+  if (typeof v === "object") return JSON.stringify(v, null, 2);
+  return String(v);
+}
 
-  order.forEach(k=>{
-    if(k in m && m[k]!==null && m[k]!==undefined && m[k]!=="" && k in labels){
-      row[labels[k]]=typeof m[k]==="object" ? JSON.stringify(m[k]) : m[k];
+function formatBytes(n) {
+  if (!n) return "0 بايت";
+  const units = ["بايت","KB","MB","GB"];
+  let i = 0, x = n;
+  while (x >= 1024 && i < units.length - 1) { x /= 1024; i++; }
+  return x.toFixed(i ? 2 : 0) + " " + units[i];
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+
+function escapeAttr(s) {
+  return escapeHtml(s);
+}
+
+function arabicRow(metadata) {
+  const row = {};
+  for (const [key, value] of Object.entries(metadata || {})) {
+    if (labels[key] && value !== null && value !== undefined && value !== "") {
+      row[labels[key]] = typeof value === "object" ? JSON.stringify(value) : value;
     }
-  });
-
-  // إضافة أي حقل معروف في قاموس الترجمة ولم يرد في الترتيب.
-  Object.entries(m).forEach(([k,v])=>{
-    if(
-      k in labels &&
-      !(labels[k] in row) &&
-      v!==null &&
-      v!==undefined &&
-      v!=="" &&
-      typeof v!=="object"
-    ){
-      row[labels[k]]=v;
-    }
-  });
-
+  }
   return row;
 }
 
-async function exportOneExcel(){
-  const data=window.currentEmployeeData;
-  if(!data || !data.metadata){
-    showMsg($("dashMsg"),"لا توجد بيانات موظف متاحة للتصدير.",true);
-    return;
-  }
-
-  const m=data.metadata;
-  const row=metadataForExcel(m);
-
-  if(typeof XLSX==="undefined"){
-    showMsg($("dashMsg"),"تعذر تحميل مكتبة Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.",true);
-    return;
-  }
-
-  const ws=XLSX.utils.json_to_sheet([row]);
-  ws["!cols"]=Object.keys(row).map(()=>({wch:24}));
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,"بيانات الموظف");
-
-  const name=safeFilename(m.fullName || m.name || data.folder || "موظف");
-  XLSX.writeFile(wb,`بيانات_${name}.xlsx`);
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-async function exportAllExcel(){
-  const btn=$("exportAllBtn");
-  btn.disabled=true;
-  showMsg($("dashMsg"),"جاري جمع بيانات جميع الموظفين وإنشاء ملف Excel...");
-
-  try{
-    const data=await api({action:"adminExportData"});
-    const rows=(data.records||[]).map(x=>metadataForExcel(x.metadata||{}));
-
-    if(!rows.length){
-      throw new Error("لم يتم العثور على بيانات موظفين.");
-    }
-
-    if(typeof XLSX==="undefined"){
-      throw new Error("تعذر تحميل مكتبة Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.");
-    }
-
-    const ws=XLSX.utils.json_to_sheet(rows);
-    ws["!cols"]=Object.keys(rows[0]).map(()=>({wch:24}));
-
-    const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,ws,"بيانات الموظفين");
-
-    const now=new Date();
-    const stamp=
-      now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
-
-    XLSX.writeFile(wb,`بيانات_جميع_الموظفين_${stamp}.xlsx`);
-    showMsg($("dashMsg"),`تم إنشاء ملف Excel ويحتوي على ${rows.length} موظف.`);
-  }catch(e){
-    showMsg($("dashMsg"),e.message,true);
-  }finally{
-    btn.disabled=false;
-  }
+function safeFilename(s) {
+  return String(s || "موظف").replace(/[\\/:*?"<>|]/g, "_").slice(0, 120);
 }
 
-async function exportOnePdf(){
-  const data=window.currentEmployeeData;
+function exportOneExcel() {
+  if (!currentEmployeeData) return;
+  const row = arabicRow(currentEmployeeData.metadata);
+  row["مجلد الموظف"] = currentEmployeeData.folder;
 
-  if(!data || !data.metadata){
-    showMsg($("dashMsg"),"لا توجد بيانات الموظف لإنشاء ملف PDF.",true);
-    return;
-  }
+  const ws = XLSX.utils.json_to_sheet([row]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "بيانات الموظف");
+  XLSX.writeFile(wb, safeFilename(currentEmployeeData.folder) + ".xlsx");
+}
 
-  if(typeof PDFLib==="undefined"){
-    showMsg($("dashMsg"),"تعذر تحميل مكتبة PDF. تحقق من اتصال الإنترنت ثم أعد المحاولة.",true);
-    return;
-  }
-
-  const btn=$("pdfOneBtn");
-  btn.disabled=true;
-
-  try{
-    const PDFDocument=PDFLib.PDFDocument;
-    const pdf=await PDFDocument.create();
-
-    const m=data.metadata;
-    const employeeName=m.fullName || m.name || data.folder || "الموظف";
-
-    // يتم دمج المستندات الأصلية كما هي دون ضغط أو تغيير في الجودة.
-
-    const orderedKeys=[
-      "idFront","idBack","personalPhoto","gradDoc","adminOrder","commencementOrder"
-    ];
-
-    const wanted=[];
-
-    orderedKeys.forEach(k=>{
-      const f=(data.files||[]).find(file=>{
-        const n=String(file.name||"");
-        const key=String(file.key||"");
-        return n.startsWith(k+"_") || key.includes("/"+k+"_");
-      });
-      if(f) wanted.push({key:k,file:f});
+async function exportAllExcel() {
+  try {
+    const data = await apiGet("adminExportData");
+    const rows = (data.records || []).map(r => {
+      const row = arabicRow(r.metadata);
+      row["مجلد الموظف"] = r.folder;
+      return row;
     });
 
-    if(!wanted.length){
-      throw new Error("لم يتم العثور على مستمسكات قابلة للدمج لهذا الموظف.");
+    if (!rows.length) {
+      alert("لا توجد بيانات.");
+      return;
     }
 
-    for(const item of wanted){
-      const f=item.file;
-      const response=await fetch(f.downloadUrl);
-      if(!response.ok){
-        throw new Error(`تعذر تحميل المستند: ${fileLabels[item.key]||"المرفق"}`);
-      }
-
-      const type=(response.headers.get("content-type")||"").toLowerCase();
-      const bytes=new Uint8Array(await response.arrayBuffer());
-
-      if(type.includes("pdf") || String(f.name).toLowerCase().endsWith(".pdf")){
-        const src=await PDFDocument.load(bytes);
-        const pages=await pdf.copyPages(src,src.getPageIndices());
-        pages.forEach(p=>pdf.addPage(p));
-      }else if(
-        type.includes("jpeg") ||
-        type.includes("jpg") ||
-        String(f.name).toLowerCase().match(/\.jpe?g$/)
-      ){
-        const image=await pdf.embedJpg(bytes);
-        const scale=Math.min(
-          535/image.width,
-          760/image.height,
-          1
-        );
-        const w=image.width*scale;
-        const h=image.height*scale;
-        const page=pdf.addPage([595.28,841.89]);
-        page.drawImage(image,{
-          x:(595.28-w)/2,
-          y:(841.89-h)/2,
-          width:w,
-          height:h
-        });
-      }else if(
-        type.includes("png") ||
-        String(f.name).toLowerCase().endsWith(".png")
-      ){
-        const image=await pdf.embedPng(bytes);
-        const scale=Math.min(
-          535/image.width,
-          760/image.height,
-          1
-        );
-        const w=image.width*scale;
-        const h=image.height*scale;
-        const page=pdf.addPage([595.28,841.89]);
-        page.drawImage(image,{
-          x:(595.28-w)/2,
-          y:(841.89-h)/2,
-          width:w,
-          height:h
-        });
-      }else{
-        // HEIC/HEIF لا يمكن دمجها مباشرة في pdf-lib داخل المتصفح.
-        console.warn("تم تجاوز ملف غير مدعوم في PDF:",f.name);
-      }
-    }
-
-    const out=await pdf.save();
-    const blob=new Blob([out],{type:"application/pdf"});
-    await downloadBlob(
-      blob,
-      `مستمسكات_${safeFilename(employeeName)}.pdf`
-    );
-
-    showMsg($("dashMsg"),"تم إنشاء ملف PDF للمستمسكات بنجاح.");
-  }catch(e){
-    showMsg($("dashMsg"),e.message || "تعذر إنشاء ملف PDF.",true);
-  }finally{
-    btn.disabled=false;
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "جميع الموظفين");
+    XLSX.writeFile(wb, "بيانات_جميع_الموظفين.xlsx");
+  } catch (e) {
+    alert(e.message);
   }
 }
 
+async function fetchBytes(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error("تعذر تحميل أحد المستندات.");
+  return new Uint8Array(await r.arrayBuffer());
+}
 
-$("loginBtn").onclick=login;
-$("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
-$("refreshBtn").onclick=loadList;
-$("exportAllBtn").onclick=exportAllExcel;
-$("exportOneBtn").onclick=exportOneExcel;
-$("pdfOneBtn").onclick=exportOnePdf;
-$("search").oninput=renderFolders;
-$("backBtn").onclick=()=>{
-  window.currentEmployeeData=null;
-  $("detailCard").classList.add("hidden");
-  $("listCard").classList.remove("hidden");
-};
-$("logoutBtn").onclick=()=>{
-  adminPassword="";
-  folders=[];
-  window.currentEmployeeData=null;
-  $("dashboard").classList.add("hidden");
-  $("loginCard").classList.remove("hidden");
-  $("password").value="";
-};
+async function exportOnePdf() {
+  if (!currentEmployeeData) return;
+
+  const { PDFDocument, StandardFonts, rgb } = PDFLib;
+  const out = await PDFDocument.create();
+
+  // صفحة تعريفية بسيطة. النص العربي لا يُرسم هنا لأن الخط القياسي في pdf-lib
+  // لا يدعم تشكيل العربية. الملفات الأصلية نفسها تبقى دون تغيير.
+  const cover = out.addPage([595, 842]);
+  const font = await out.embedFont(StandardFonts.Helvetica);
+  cover.drawText("Employee Documents", {x: 50, y: 780, size: 22, font});
+  cover.drawText("Folder: " + currentEmployeeData.folder, {x: 50, y: 750, size: 10, font});
+  cover.drawText("Generated from private R2 storage", {x: 50, y: 730, size: 10, font});
+
+  for (const file of (currentEmployeeData.files || [])) {
+    if (file.key === "submissionData") continue;
+
+    try {
+      const bytes = await fetchBytes(file.url);
+      const lower = file.name.toLowerCase();
+
+      if (lower.endsWith(".pdf")) {
+        const src = await PDFDocument.load(bytes);
+        const pages = await out.copyPages(src, src.getPageIndices());
+        pages.forEach(p => out.addPage(p));
+      } else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) {
+        const img = await out.embedJpg(bytes);
+        addImagePage(out, img);
+      } else if (lower.endsWith(".png")) {
+        const img = await out.embedPng(bytes);
+        addImagePage(out, img);
+      }
+      // HEIC/HEIF/WebP are left out because pdf-lib cannot embed them directly.
+    } catch (e) {
+      console.warn("Skipped file:", file.name, e);
+    }
+  }
+
+  const pdfBytes = await out.save();
+  downloadBlob(new Blob([pdfBytes], {type:"application/pdf"}),
+    safeFilename(currentEmployeeData.folder) + "_مستمسكات.pdf");
+}
+
+function addImagePage(pdf, image) {
+  const iw = image.width, ih = image.height;
+  const maxW = 535, maxH = 760;
+  const scale = Math.min(maxW / iw, maxH / ih, 1);
+  const w = iw * scale, h = ih * scale;
+  const page = pdf.addPage([595, 842]);
+  page.drawImage(image, {
+    x:(595-w)/2,
+    y:(842-h)/2,
+    width:w,
+    height:h
+  });
+}
+
+if (session) {
+  document.getElementById("loginCard").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  loadFolders().catch(() => logout());
+} else {
+  mountTurnstile();
+}
 </script>
 </body>
 </html>
