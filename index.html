@@ -934,6 +934,54 @@
   <!-- زر الرجوع لأعلى -->
   <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
+  <!-- تنقل الخطوات الأساسي: يعمل حتى إذا تأخر أو تعذر تحميل Firebase -->
+  <script>
+    (function () {
+      function basicSetStep(step) {
+        [1,2,3].forEach(function(n) {
+          var dot = document.getElementById('stepDot' + n);
+          if (!dot) return;
+          dot.classList.remove('is-active', 'is-done');
+          if (n < step) dot.classList.add('is-done');
+          else if (n === step) dot.classList.add('is-active');
+        });
+        [1,2].forEach(function(n) {
+          var line = document.getElementById('stepLine' + n);
+          if (!line) return;
+          line.classList.toggle('is-done', n < step);
+        });
+      }
+
+      window.showSection = function(sectionNum) {
+        [1,2,3].forEach(function(n) {
+          var el = document.getElementById('section' + n);
+          if (el) el.classList.add('hidden-section');
+        });
+        var target = document.getElementById('section' + sectionNum);
+        if (!target) return;
+        target.classList.remove('hidden-section');
+        basicSetStep(sectionNum);
+        var progressWrap = document.getElementById('formProgressWrap');
+        if (progressWrap) {
+          if (sectionNum === 2 || sectionNum === 3) progressWrap.classList.remove('hidden-section');
+          else progressWrap.classList.add('hidden-section');
+        }
+        window.scrollTo(0, 0);
+      };
+
+      window.goToNextFromSection1 = function() {
+        var select = document.getElementById('employeeType');
+        var empType = select ? select.value : '';
+        if (!empType) {
+          alert('يرجى اختيار نوع الموظف أولاً.');
+          return false;
+        }
+        window.showSection(empType === 'مدرس' ? 2 : 3);
+        return false;
+      };
+    })();
+  </script>
+
   <script type="module">
     // Firebase: رفع الصور الأصلية مباشرة بدون ضغط أو تغيير في الدقة
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
