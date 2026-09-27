@@ -129,8 +129,21 @@
     .folders button:hover{ background:#f1edf9; border-color: var(--ink-soft); }
 
     .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px; }
-    .field{ border:1px solid var(--border); border-radius:12px; padding:0.75rem 0.85rem; background:#fbfafc; }
-    .field-top{ display:flex; align-items:center; justify-content:space-between; gap:0.4rem; margin-bottom:0.3rem; }
+    .field{
+      position:relative; border:1px solid #e5dcef; border-radius:16px;
+      padding:0.9rem 0.95rem; background:linear-gradient(145deg,#ffffff,#f8f5fc);
+      box-shadow:0 5px 16px rgba(58,33,88,.06), inset 0 1px 0 rgba(255,255,255,.9);
+      overflow:hidden; transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    .field::before{
+      content:""; position:absolute; top:0; right:0; width:4px; height:100%;
+      background:linear-gradient(180deg,var(--brass),#d9b86e); opacity:.9;
+    }
+    .field:hover{
+      transform:translateY(-2px); border-color:#d7c9e8;
+      box-shadow:0 10px 24px rgba(58,33,88,.10);
+    }
+    .field-top{ display:flex; align-items:center; justify-content:space-between; gap:0.55rem; margin-bottom:0.45rem; }
     .field-top .label{ margin-bottom:0; }
     .copy-btn{
       flex-shrink:0; width:34px; height:34px; padding:0; margin:0;
@@ -159,8 +172,26 @@
     .file-actions button.download-btn:hover{ background:var(--ink-dark); transform:translateY(-1px); box-shadow:0 7px 16px rgba(58,33,88,.25); }
     .file-actions button.download-btn:disabled{ opacity:.65; cursor:wait; transform:none; }
     .file-actions svg{ width:15px; height:15px; flex:0 0 auto; }
-    .label{ font-weight:700; color: var(--ink-soft); font-size:0.72rem; margin-bottom:0.3rem; }
-    .value{ word-break:break-word; font-weight:600; color: var(--text); font-size:0.9rem; }
+    .pdf-all-btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      background:linear-gradient(135deg,#5b2a86,#3a2158); color:#fff;
+      border:1px solid #4a266d; border-radius:12px; padding:.68rem 1rem;
+      box-shadow:0 8px 18px rgba(58,33,88,.22);
+      font-weight:800; margin:4px; cursor:pointer;
+    }
+    .pdf-all-btn:hover{ transform:translateY(-1px); box-shadow:0 11px 22px rgba(58,33,88,.28); }
+    .pdf-all-btn:disabled{ opacity:.7; cursor:wait; transform:none; }
+    .pdf-all-btn svg{ width:18px; height:18px; flex:0 0 auto; }
+
+    .label{
+      font-weight:800; color:#705b8f; font-size:0.74rem; margin-bottom:0;
+      letter-spacing:.01em;
+    }
+    .value{
+      word-break:break-word; font-weight:700; color:#2b1d3d; font-size:0.92rem;
+      line-height:1.65; padding:0.5rem 0.65rem; border-radius:10px;
+      background:rgba(243,239,249,.72); border:1px solid #eee8f5;
+    }
 
     table{ width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
     thead tr{ background: linear-gradient(180deg,#efe9f7,#e9e1f5); }
@@ -234,7 +265,12 @@
       <div class="toolbar">
         <h2 id="detailsTitle" style="flex:1"></h2>
         <button class="secondary" onclick="exportOneExcel()">⬇️ Excel — هذا الموظف</button>
-        <button class="primary" onclick="exportOnePdf()">📄 PDF — مستمسكات هذا الموظف</button>
+        <button id="pdfAllBtn" class="pdf-all-btn" type="button" onclick="exportOnePdf()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 2h9l4 4v16H6z"/><path d="M15 2v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/><path d="M9 9h2"/>
+          </svg>
+          تحميل جميع المستمسكات PDF
+        </button>
       </div>
       <div id="details"></div>
     </div>
@@ -658,44 +694,83 @@ async function fetchBytes(url) {
 async function exportOnePdf() {
   if (!currentEmployeeData) return;
 
-  const { PDFDocument, StandardFonts, rgb } = PDFLib;
-  const out = await PDFDocument.create();
-
-  // صفحة تعريفية بسيطة. النص العربي لا يُرسم هنا لأن الخط القياسي في pdf-lib
-  // لا يدعم تشكيل العربية. الملفات الأصلية نفسها تبقى دون تغيير.
-  const cover = out.addPage([595, 842]);
-  const font = await out.embedFont(StandardFonts.Helvetica);
-  cover.drawText("Employee Documents", {x: 50, y: 780, size: 22, font});
-  cover.drawText("Folder: " + currentEmployeeData.folder, {x: 50, y: 750, size: 10, font});
-  cover.drawText("Generated from private R2 storage", {x: 50, y: 730, size: 10, font});
-
-  for (const file of (currentEmployeeData.files || [])) {
-    if (file.key === "submissionData") continue;
-
-    try {
-      const bytes = await fetchBytes(file.url);
-      const lower = file.name.toLowerCase();
-
-      if (lower.endsWith(".pdf")) {
-        const src = await PDFDocument.load(bytes);
-        const pages = await out.copyPages(src, src.getPageIndices());
-        pages.forEach(p => out.addPage(p));
-      } else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) {
-        const img = await out.embedJpg(bytes);
-        addImagePage(out, img);
-      } else if (lower.endsWith(".png")) {
-        const img = await out.embedPng(bytes);
-        addImagePage(out, img);
-      }
-      // HEIC/HEIF/WebP are left out because pdf-lib cannot embed them directly.
-    } catch (e) {
-      console.warn("Skipped file:", file.name, e);
-    }
+  const btn = document.getElementById("pdfAllBtn");
+  const original = btn ? btn.innerHTML : "";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>
+    </svg> جاري تجهيز PDF...`;
   }
 
-  const pdfBytes = await out.save();
-  downloadBlob(new Blob([pdfBytes], {type:"application/pdf"}),
-    safeFilename(currentEmployeeData.folder) + "_مستمسكات.pdf");
+  try {
+    const { PDFDocument, StandardFonts } = PDFLib;
+    const out = await PDFDocument.create();
+
+    // صفحة تعريفية
+    const cover = out.addPage([595, 842]);
+    const font = await out.embedFont(StandardFonts.Helvetica);
+    cover.drawText("Employee Documents", {x:50, y:780, size:22, font});
+    cover.drawText("Folder: " + currentEmployeeData.folder, {x:50, y:750, size:10, font});
+    cover.drawText("Generated from private R2 storage", {x:50, y:730, size:10, font});
+
+    let addedCount = 0;
+    let skippedCount = 0;
+
+    for (const file of (currentEmployeeData.files || [])) {
+      if (file.key === "submissionData") continue;
+
+      try {
+        const bytes = await fetchBytes(file.url);
+        const lower = String(file.name || "").toLowerCase();
+
+        if (lower.endsWith(".pdf")) {
+          const src = await PDFDocument.load(bytes);
+          const pages = await out.copyPages(src, src.getPageIndices());
+          pages.forEach(page => out.addPage(page));
+          addedCount += pages.length;
+        } else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) {
+          const img = await out.embedJpg(bytes);
+          addImagePage(out, img);
+          addedCount++;
+        } else if (lower.endsWith(".png")) {
+          const img = await out.embedPng(bytes);
+          addImagePage(out, img);
+          addedCount++;
+        } else {
+          // HEIC/HEIF/WebP لا يدعمها pdf-lib مباشرة
+          skippedCount++;
+        }
+      } catch (e) {
+        console.warn("Skipped file:", file.name, e);
+        skippedCount++;
+      }
+    }
+
+    if (addedCount === 0) {
+      throw new Error("لم يتم العثور على مستمسكات قابلة للدمج داخل PDF.");
+    }
+
+    const pdfBytes = await out.save();
+    downloadBlob(
+      new Blob([pdfBytes], {type:"application/pdf"}),
+      safeFilename(currentEmployeeData.folder) + "_جميع_المستمسكات.pdf"
+    );
+
+    if (skippedCount > 0) {
+      setTimeout(() => {
+        alert("تم إنشاء PDF، لكن بعض الملفات غير المدعومة مثل HEIC/HEIF أو WebP لم تُضمّن.");
+      }, 300);
+    }
+  } catch (e) {
+    console.error("PDF export failed:", e);
+    alert(e.message || "تعذر إنشاء ملف PDF.");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = original;
+    }
+  }
 }
 
 function addImagePage(pdf, image) {
