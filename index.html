@@ -1151,11 +1151,24 @@
 
       const contentType = file.type || 'application/octet-stream';
 
-      const response = await fetch(SCRIPT_URL, {
+      // Worker الحالي يستقبل طلب إنشاء رابط الرفع على المسار:
+      // ?action=uploadUrl
+      // ويريد fullName + nationalId بدل folderName.
+      // نستخرج الاثنين من اسم المجلد الذي تم بناؤه مسبقًا:
+      // الاسم__رقم_البطاقة
+      const separator = String(folderName || '').lastIndexOf('__');
+      const fullName = separator > 0 ? String(folderName).slice(0, separator) : String(folderName || '');
+      const nationalId = separator > 0 ? String(folderName).slice(separator + 2) : '';
+
+      if (!fullName) throw new Error('اسم الموظف غير موجود.');
+      if (!nationalId) throw new Error('رقم البطاقة الموحدة غير موجود.');
+
+      const response = await fetch(SCRIPT_URL + '?action=uploadUrl', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          folderName,
+          fullName,
+          nationalId,
           fileKey,
           originalName: file.name,
           contentType,
