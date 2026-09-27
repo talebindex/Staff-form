@@ -1748,6 +1748,16 @@
       });
     }
 
+    // مهم: لأن هذا الملف يعمل كـ ES Module، فإن دوال onclick داخل HTML لا تصبح عامة تلقائياً.
+    // نربط الدوال المستخدمة من أزرار HTML مع window حتى تعمل الأزرار بشكل طبيعي.
+    Object.assign(window, {
+      showCustomAlert, closeCustomAlert, toggleDocsSection, toggleDocItem,
+      showWelcomeModal, closeWelcomeModal, openLightbox, closeLightbox,
+      showSection, goToNextFromSection1, toggleLeaveDetails, formatEnglishDigits,
+      formatGradDate, confirmAndSubmit, backToEdit, copyReferenceNumber,
+      shareViaWhatsApp, shareViaEmail, dismissDraft, applyDraftRestore
+    });
+
     // ---------- تهيئة كل الإضافات عند تحميل الصفحة ----------
     window.addEventListener('DOMContentLoaded', () => {
       setupFilePreviews();
