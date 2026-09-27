@@ -1191,9 +1191,84 @@
       return data;
     }
 
-    function putFileToR2(file, uploadUrl, onProgress) {
+    function extractFolderIdentity(folderName) {
+      const separator = String(folderName || '').lastIndexOf('__');
+      const fullName = separator > 0 ? String(folderName).slice(0, separator) : String(folderName || '');
+      const nationalId = separator > 0 ? String(folderName).slice(separator + 2) : '';
+      return { fullName, nationalId };
+    }
+
+    function proxyUploadToWorker(file, fileKey, folderName, onProgress) {
+      return new Promise((resolve, reject) => {
+        const { fullName, nationalId } = extractFolderIdentity(folderName);
+        if (!fullName || !nationalId) {
+          reject(new Error('بيانات الموظف أو رقم البطاقة الموحدة غير موجودة.'));
+          return;
+        }
+
+        const xhr = new XMLHttpRequest();
+        const form = new FormData();
+        form.append('file', file, file.name);
+        form.append('fileKey', fileKey);
+        form.append('fullName', fullName);
+        form.append('nationalId', nationalId);
+        form.append('originalName', file.name);
+        form.append('contentType', file.type || 'application/octet-stream');
+
+        xhr.open('POST', SCRIPT_URL + '?action=proxyUpload', true);
+        xhr.timeout = 15 * 60 * 1000;
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable && typeof onProgress === 'function') {
+            onProgress(event.loaded / event.total);
+          }
+        };
+
+        xhr.onload = () => {
+          let data = null;
+          try { data = JSON.parse(xhr.responseText || '{}'); } catch (_) {}
+
+          if (xhr.status >= 200 && xhr.status < 300 && data && data.ok && data.key) {
+            resolve({
+              key: data.key,
+              name: data.name || file.name,
+              size: data.size || file.size,
+              type: data.type || file.type || 'application/octet-stream',
+              uploadMode: 'proxy-fallback'
+            });
+            return;
+          }
+
+          reject(new Error(
+            (data && (data.detail || data.error)) ||
+            `فشل مسار الرفع البديل. HTTP ${xhr.status}.`
+          ));
+        };
+
+        xhr.onerror = () => reject(new Error('تعذر الاتصال بخادم الرفع البديل.'));
+        xhr.ontimeout = () => reject(new Error('انتهت مهلة الرفع البديل. تحقق من الإنترنت وحاول مرة أخرى.'));
+        xhr.onabort = () => reject(new Error('تم إلغاء الرفع.'));
+
+        // لا نضع Content-Type يدويًا هنا؛ المتصفح يضع multipart/form-data مع boundary.
+        xhr.send(form);
+      });
+    }
+
+    function putFileToR2(file, uploadUrl, fileKey, folderName, onProgress) {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
+        let settled = false;
+
+        const useFallback = async () => {
+          if (settled) return;
+          settled = true;
+          try {
+            const result = await proxyUploadToWorker(file, fileKey, folderName, onProgress);
+            resolve(result);
+          } catch (fallbackError) {
+            reject(fallbackError);
+          }
+        };
 
         xhr.open('PUT', uploadUrl, true);
         xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
@@ -1207,15 +1282,18 @@
 
         xhr.onload = () => {
           if (xhr.status >= 200 && xhr.status < 300) {
-            resolve();
+            settled = true;
+            resolve({ mode: 'direct-r2' });
           } else {
-            reject(new Error(`فشل رفع "${file.name}" إلى R2. HTTP ${xhr.status}.`));
+            useFallback();
           }
         };
 
-        xhr.onerror = () => reject(new Error(`تعذر الاتصال بـ R2 أثناء رفع "${file.name}".`));
-        xhr.ontimeout = () => reject(new Error(`انتهت مهلة رفع "${file.name}". تحقق من الإنترنت وحاول مرة أخرى.`));
-        xhr.onabort = () => reject(new Error(`تم إلغاء رفع "${file.name}".`));
+        // Android/بعض الشبكات قد تمنع طلب PUT المباشر إلى نطاق R2 بسبب CORS أو الشبكة.
+        // في هذه الحالة نستخدم مسار multipart احتياطي عبر Worker.
+        xhr.onerror = () => useFallback();
+        xhr.ontimeout = () => useFallback();
+        xhr.onabort = () => useFallback();
 
         xhr.send(file);
       });
@@ -1223,12 +1301,16 @@
 
     async function uploadFileToR2(file, fileKey, folderName, onProgress) {
       const signed = await requestR2UploadUrl(file, fileKey, folderName);
-      await putFileToR2(file, signed.uploadUrl, onProgress);
+      const result = await putFileToR2(file, signed.uploadUrl, fileKey, folderName, onProgress);
+
+      // إذا تم الرفع مباشرة إلى R2 نستخدم المفتاح الذي أنشأه Worker.
+      // وإذا نجح المسار الاحتياطي نستخدم مفتاحه بدلًا منه.
       return {
-        key: signed.key,
+        key: result && result.key ? result.key : signed.key,
         name: file.name,
         size: file.size,
-        type: file.type || 'application/octet-stream'
+        type: file.type || 'application/octet-stream',
+        uploadMode: result && result.uploadMode ? result.uploadMode : 'direct-r2'
       };
     }
 
