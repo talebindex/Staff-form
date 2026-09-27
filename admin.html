@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة إدارة استمارة الكادر</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <style>
   :root{--p:#3b1f5e;--g:#a67c3b;--bg:#f5f1f8;--card:#fff;--text:#20172b;--muted:#756b7d;--line:#e7e0eb}
   *{box-sizing:border-box}
@@ -44,6 +46,8 @@
   .file-size{font-size:12px;color:var(--muted)}
   a.btn{display:inline-block;text-decoration:none;border-radius:10px;padding:9px 12px;background:#eee8f1;color:var(--p);font-weight:700}
   .loading{padding:20px;text-align:center;color:var(--muted)}
+  .export-progress{margin-top:10px;padding:11px 13px;border-radius:10px;background:#f2edf5;color:var(--p)}
+  .export-progress.error{background:#fdecec;color:#8a2020}
   .top-actions{display:flex;gap:8px;flex-wrap:wrap}
   @media(max-width:600px){header h1{font-size:18px}.card{padding:14px}.file{align-items:flex-start}}
 </style>
@@ -69,6 +73,7 @@
     <div class="card">
       <div class="top-actions">
         <button id="refreshBtn">تحديث القائمة</button>
+        <button id="exportAllBtn" class="gold">⬇️ Excel — جميع الموظفين</button>
         <button id="logoutBtn" class="secondary">تسجيل الخروج</button>
       </div>
       <div id="dashMsg" class="msg hidden"></div>
@@ -78,7 +83,7 @@
       <div class="stats">
         <div class="stat"><b id="count">0</b><span>عدد الموظفين</span></div>
       </div>
-      <input id="search" class="search" placeholder="بحث باسم الموظف أو رقم البطاقة...">
+      <input id="search" class="search" placeholder="بحث باسم الموظف أو رقم البطاقة الموحدة...">
       <div id="folders" class="folders"></div>
       <div id="listLoading" class="loading hidden">جاري تحميل البيانات...</div>
     </div>
@@ -89,7 +94,11 @@
           <div id="detailName" class="name"></div>
           <div id="detailSub" style="color:var(--muted);font-size:13px;margin-top:4px"></div>
         </div>
-        <button id="backBtn" class="secondary">العودة للقائمة</button>
+        <div class="row">
+          <button id="exportOneBtn" class="gold">⬇️ Excel — هذا الموظف</button>
+          <button id="pdfOneBtn">📄 PDF — مستمسكات هذا الموظف</button>
+          <button id="backBtn" class="secondary">العودة للقائمة</button>
+        </div>
       </div>
       <div id="meta" class="meta"></div>
       <h3>المستمسكات والملفات</h3>
@@ -104,6 +113,7 @@ let adminPassword = "";
 let folders = [];
 
 const labels = {
+  referenceNumber:"رقم الاستمارة",
   fullName:"الاسم الرباعي",
   name:"الاسم",
   employeeType:"نوع الموظف",
@@ -112,16 +122,23 @@ const labels = {
   fatherName:"اسم الأب",
   grandfatherName:"اسم الجد",
   familyName:"اللقب",
+  title:"اللقب",
   gender:"الجنس",
+  dob:"تاريخ التولد",
   birthDate:"تاريخ التولد",
   birthPlace:"محل التولد",
   motherName:"اسم الأم",
-  maritalStatus:"الحالة الاجتماعية",
+  bloodType:"فصيلة الدم",
+  socialStatus:"الحالة الاجتماعية",
+  religion:"الديانة",
   phone:"رقم الهاتف",
   mobile:"رقم الهاتف",
   nationalId:"رقم البطاقة الموحدة",
+  idNumber:"رقم البطاقة الموحدة",
   cardNumber:"رقم البطاقة الموحدة",
   jobTitle:"العنوان الوظيفي",
+  jobStatus:"الحالة الوظيفية",
+  jobStatusOther:"تفاصيل الحالة الوظيفية",
   specialization:"الاختصاص",
   qualification:"التحصيل الدراسي",
   gradDate:"تاريخ التخرج",
@@ -129,9 +146,11 @@ const labels = {
   college:"الكلية",
   department:"القسم",
   school:"المدرسة",
-  address:"العنوان",
+  firstAppDate:"تاريخ أول تعيين",
+  address:"عنوان السكن",
   governorate:"المحافظة",
   district:"القضاء",
+  landmark:"أقرب نقطة دالة",
   notes:"ملاحظات",
   createdAt:"تاريخ الإرسال"
 };
@@ -239,6 +258,7 @@ async function openFolder(folder){
   $("files").innerHTML="";
   try{
     const data=await api({action:"adminDetails",folder});
+    window.currentEmployeeData=data;
     renderDetails(data);
   }catch(e){
     $("detailSub").textContent="";
@@ -248,46 +268,384 @@ async function openFolder(folder){
 
 function renderDetails(data){
   const m=data.metadata||{};
-  $("detailSub").textContent=m.createdAt ? "تاريخ الإرسال: "+new Date(m.createdAt).toLocaleString("ar-IQ") : "";
+
+  $("detailSub").textContent = m.createdAt
+    ? "تاريخ الإرسال: " + new Date(m.createdAt).toLocaleString("ar-IQ")
+    : "";
+
   $("meta").innerHTML="";
-  const entries=Object.entries(m).filter(([k,v])=>k!=="files" && k!=="folderName" && k!=="metadataKey" && v!==null && v!=="" && typeof v!=="object");
-  if(!entries.length) $("meta").innerHTML='<div class="loading">لم يتم العثور على بيانات الاستمارة.</div>';
-  entries.forEach(([k,v])=>{
+
+  // نعرض فقط الحقول التي لها عنوان عربي معروف.
+  // أي حقول تقنية أو غير معروفة يتم تجاهلها ولا يظهر اسمها البرمجي.
+  const preferredOrder = [
+    "referenceNumber",
+    "employeeType",
+    "fullName",
+    "title",
+    "dob",
+    "gender",
+    "idNumber",
+    "motherName",
+    "bloodType",
+    "socialStatus",
+    "religion",
+    "jobTitle",
+    "jobStatus",
+    "jobStatusOther",
+    "qualification",
+    "college",
+    "specialization",
+    "gradDate",
+    "firstAppDate",
+    "phone",
+    "address",
+    "landmark",
+    "governorate",
+    "district",
+    "university",
+    "department",
+    "school",
+    "notes",
+    "createdAt"
+  ];
+
+  const shown = new Set();
+
+  preferredOrder.forEach(k => {
+    const v = m[k];
+
+    if (
+      !(k in labels) ||
+      v === null ||
+      v === undefined ||
+      v === "" ||
+      typeof v === "object"
+    ) return;
+
+    shown.add(k);
+
     const div=document.createElement("div");
     div.className="field";
-    div.innerHTML=`<small>${esc(labels[k]||k)}</small><strong>${esc(v)}</strong>`;
+    div.innerHTML =
+      `<small>${esc(labels[k])}</small>` +
+      `<strong>${esc(v)}</strong>`;
+
     $("meta").appendChild(div);
   });
 
+  // في حال كانت هناك حقول معروفة في القاموس لكنها لم تدخل في الترتيب أعلاه.
+  Object.entries(m).forEach(([k,v]) => {
+    if (
+      shown.has(k) ||
+      !(k in labels) ||
+      v === null ||
+      v === undefined ||
+      v === "" ||
+      typeof v === "object"
+    ) return;
+
+    const div=document.createElement("div");
+    div.className="field";
+    div.innerHTML =
+      `<small>${esc(labels[k])}</small>` +
+      `<strong>${esc(v)}</strong>`;
+
+    $("meta").appendChild(div);
+    shown.add(k);
+  });
+
+  if(!$("meta").children.length){
+    $("meta").innerHTML='<div class="loading">لم يتم العثور على بيانات الموظف.</div>';
+  }
+
   $("files").innerHTML="";
+
   (data.files||[]).forEach(f=>{
     const div=document.createElement("div");
     div.className="file";
-    const label=fileLabels[f.name.split("_")[0]] || humanKey(f.key);
+
+    // نحدد اسم المستند من مفتاح الملف، ولا نعرض اسم الملف البرمجي الخام.
+    const rawName = String(f.name || "");
+    const rawKey = String(f.key || "");
+
+    let fileKey = "";
+    for (const key of Object.keys(fileLabels)) {
+      if (
+        rawName.startsWith(key + "_") ||
+        rawKey.includes("/" + key + "_")
+      ) {
+        fileKey = key;
+        break;
+      }
+    }
+
+    const label = fileLabels[fileKey] || "مرفق";
+
     div.innerHTML=`
       <div>
         <div class="file-name">${esc(label)}</div>
-        <div class="file-size">${esc(f.name)} — ${bytes(f.size)}</div>
+        <div class="file-size">${bytes(f.size)}</div>
       </div>
       <div class="row">
-        <a class="btn" target="_blank" rel="noopener" href="${esc(f.downloadUrl)}">فتح / تحميل</a>
+        <a class="btn" target="_blank" rel="noopener"
+           href="${esc(f.downloadUrl)}">فتح / تحميل</a>
       </div>`;
+
     $("files").appendChild(div);
   });
-  if(!(data.files||[]).length) $("files").innerHTML='<div class="loading">لا توجد ملفات.</div>';
+
+  if(!(data.files||[]).length){
+    $("files").innerHTML='<div class="loading">لا توجد مستمسكات أو ملفات.</div>';
+  }
 }
+async function downloadBlob(blob, filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
+function safeFilename(value){
+  return String(value||"")
+    .replace(/[\\/:*?"<>|]/g,"_")
+    .replace(/\s+/g," ")
+    .trim()
+    .slice(0,120) || "موظف";
+}
+
+function metadataForExcel(m){
+  const row={};
+  const order=[
+    "referenceNumber","fullName","employeeType","title","dob","gender",
+    "idNumber","motherName","bloodType","socialStatus","religion",
+    "jobTitle","jobStatus","jobStatusOther","qualification","college",
+    "specialization","gradDate","firstAppDate","phone","address",
+    "landmark","governorate","district","university","department",
+    "school","notes","createdAt"
+  ];
+
+  order.forEach(k=>{
+    if(k in m && m[k]!==null && m[k]!==undefined && m[k]!=="" && k in labels){
+      row[labels[k]]=typeof m[k]==="object" ? JSON.stringify(m[k]) : m[k];
+    }
+  });
+
+  // إضافة أي حقل معروف في قاموس الترجمة ولم يرد في الترتيب.
+  Object.entries(m).forEach(([k,v])=>{
+    if(
+      k in labels &&
+      !(labels[k] in row) &&
+      v!==null &&
+      v!==undefined &&
+      v!=="" &&
+      typeof v!=="object"
+    ){
+      row[labels[k]]=v;
+    }
+  });
+
+  return row;
+}
+
+async function exportOneExcel(){
+  const data=window.currentEmployeeData;
+  if(!data || !data.metadata){
+    showMsg($("dashMsg"),"لا توجد بيانات موظف متاحة للتصدير.",true);
+    return;
+  }
+
+  const m=data.metadata;
+  const row=metadataForExcel(m);
+
+  if(typeof XLSX==="undefined"){
+    showMsg($("dashMsg"),"تعذر تحميل مكتبة Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.",true);
+    return;
+  }
+
+  const ws=XLSX.utils.json_to_sheet([row]);
+  ws["!cols"]=Object.keys(row).map(()=>({wch:24}));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"بيانات الموظف");
+
+  const name=safeFilename(m.fullName || m.name || data.folder || "موظف");
+  XLSX.writeFile(wb,`بيانات_${name}.xlsx`);
+}
+
+async function exportAllExcel(){
+  const btn=$("exportAllBtn");
+  btn.disabled=true;
+  showMsg($("dashMsg"),"جاري جمع بيانات جميع الموظفين وإنشاء ملف Excel...");
+
+  try{
+    const data=await api({action:"adminExportData"});
+    const rows=(data.records||[]).map(x=>metadataForExcel(x.metadata||{}));
+
+    if(!rows.length){
+      throw new Error("لم يتم العثور على بيانات موظفين.");
+    }
+
+    if(typeof XLSX==="undefined"){
+      throw new Error("تعذر تحميل مكتبة Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.");
+    }
+
+    const ws=XLSX.utils.json_to_sheet(rows);
+    ws["!cols"]=Object.keys(rows[0]).map(()=>({wch:24}));
+
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,"بيانات الموظفين");
+
+    const now=new Date();
+    const stamp=
+      now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+
+    XLSX.writeFile(wb,`بيانات_جميع_الموظفين_${stamp}.xlsx`);
+    showMsg($("dashMsg"),`تم إنشاء ملف Excel ويحتوي على ${rows.length} موظف.`);
+  }catch(e){
+    showMsg($("dashMsg"),e.message,true);
+  }finally{
+    btn.disabled=false;
+  }
+}
+
+async function exportOnePdf(){
+  const data=window.currentEmployeeData;
+
+  if(!data || !data.metadata){
+    showMsg($("dashMsg"),"لا توجد بيانات الموظف لإنشاء ملف PDF.",true);
+    return;
+  }
+
+  if(typeof PDFLib==="undefined"){
+    showMsg($("dashMsg"),"تعذر تحميل مكتبة PDF. تحقق من اتصال الإنترنت ثم أعد المحاولة.",true);
+    return;
+  }
+
+  const btn=$("pdfOneBtn");
+  btn.disabled=true;
+
+  try{
+    const PDFDocument=PDFLib.PDFDocument;
+    const pdf=await PDFDocument.create();
+
+    const m=data.metadata;
+    const employeeName=m.fullName || m.name || data.folder || "الموظف";
+
+    // يتم دمج المستندات الأصلية كما هي دون ضغط أو تغيير في الجودة.
+
+    const orderedKeys=[
+      "idFront","idBack","personalPhoto","gradDoc","adminOrder","commencementOrder"
+    ];
+
+    const wanted=[];
+
+    orderedKeys.forEach(k=>{
+      const f=(data.files||[]).find(file=>{
+        const n=String(file.name||"");
+        const key=String(file.key||"");
+        return n.startsWith(k+"_") || key.includes("/"+k+"_");
+      });
+      if(f) wanted.push({key:k,file:f});
+    });
+
+    if(!wanted.length){
+      throw new Error("لم يتم العثور على مستمسكات قابلة للدمج لهذا الموظف.");
+    }
+
+    for(const item of wanted){
+      const f=item.file;
+      const response=await fetch(f.downloadUrl);
+      if(!response.ok){
+        throw new Error(`تعذر تحميل المستند: ${fileLabels[item.key]||"المرفق"}`);
+      }
+
+      const type=(response.headers.get("content-type")||"").toLowerCase();
+      const bytes=new Uint8Array(await response.arrayBuffer());
+
+      if(type.includes("pdf") || String(f.name).toLowerCase().endsWith(".pdf")){
+        const src=await PDFDocument.load(bytes);
+        const pages=await pdf.copyPages(src,src.getPageIndices());
+        pages.forEach(p=>pdf.addPage(p));
+      }else if(
+        type.includes("jpeg") ||
+        type.includes("jpg") ||
+        String(f.name).toLowerCase().match(/\.jpe?g$/)
+      ){
+        const image=await pdf.embedJpg(bytes);
+        const scale=Math.min(
+          535/image.width,
+          760/image.height,
+          1
+        );
+        const w=image.width*scale;
+        const h=image.height*scale;
+        const page=pdf.addPage([595.28,841.89]);
+        page.drawImage(image,{
+          x:(595.28-w)/2,
+          y:(841.89-h)/2,
+          width:w,
+          height:h
+        });
+      }else if(
+        type.includes("png") ||
+        String(f.name).toLowerCase().endsWith(".png")
+      ){
+        const image=await pdf.embedPng(bytes);
+        const scale=Math.min(
+          535/image.width,
+          760/image.height,
+          1
+        );
+        const w=image.width*scale;
+        const h=image.height*scale;
+        const page=pdf.addPage([595.28,841.89]);
+        page.drawImage(image,{
+          x:(595.28-w)/2,
+          y:(841.89-h)/2,
+          width:w,
+          height:h
+        });
+      }else{
+        // HEIC/HEIF لا يمكن دمجها مباشرة في pdf-lib داخل المتصفح.
+        console.warn("تم تجاوز ملف غير مدعوم في PDF:",f.name);
+      }
+    }
+
+    const out=await pdf.save();
+    const blob=new Blob([out],{type:"application/pdf"});
+    await downloadBlob(
+      blob,
+      `مستمسكات_${safeFilename(employeeName)}.pdf`
+    );
+
+    showMsg($("dashMsg"),"تم إنشاء ملف PDF للمستمسكات بنجاح.");
+  }catch(e){
+    showMsg($("dashMsg"),e.message || "تعذر إنشاء ملف PDF.",true);
+  }finally{
+    btn.disabled=false;
+  }
+}
+
 
 $("loginBtn").onclick=login;
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
 $("refreshBtn").onclick=loadList;
+$("exportAllBtn").onclick=exportAllExcel;
+$("exportOneBtn").onclick=exportOneExcel;
+$("pdfOneBtn").onclick=exportOnePdf;
 $("search").oninput=renderFolders;
 $("backBtn").onclick=()=>{
+  window.currentEmployeeData=null;
   $("detailCard").classList.add("hidden");
   $("listCard").classList.remove("hidden");
 };
 $("logoutBtn").onclick=()=>{
   adminPassword="";
   folders=[];
+  window.currentEmployeeData=null;
   $("dashboard").classList.add("hidden");
   $("loginCard").classList.remove("hidden");
   $("password").value="";
