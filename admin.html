@@ -130,6 +130,19 @@
 
     .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px; }
     .field{ border:1px solid var(--border); border-radius:12px; padding:0.75rem 0.85rem; background:#fbfafc; }
+    .field-top{ display:flex; align-items:center; justify-content:space-between; gap:0.4rem; margin-bottom:0.3rem; }
+    .field-top .label{ margin-bottom:0; }
+    .copy-btn{
+      flex-shrink:0; width:26px; height:26px; padding:0; margin:0;
+      border-radius:8px; background:#efe9f7; border:1px solid var(--border);
+      color: var(--ink); font-size:0.8rem; line-height:1;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition: background .15s ease, transform .12s ease;
+    }
+    .copy-btn:hover{ background: var(--brass-light); }
+    .copy-btn:active{ transform: scale(0.92); }
+    .copy-btn.copied{ background: var(--success-bg); border-color:#cdeade; color: var(--success); }
+    .copy-btn.copy-failed{ background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger); }
     .label{ font-weight:700; color: var(--ink-soft); font-size:0.72rem; margin-bottom:0.3rem; }
     .value{ word-break:break-word; font-weight:600; color: var(--text); font-size:0.9rem; }
 
@@ -424,7 +437,14 @@ function renderEmployee(data) {
   for (const [key, value] of Object.entries(metadata)) {
     if (!(key in labels)) continue;
     if (value === null || value === undefined || value === "") continue;
-    html += `<div class="field"><div class="label">${escapeHtml(labels[key])}</div><div class="value">${escapeHtml(formatValue(value))}</div></div>`;
+    const displayValue = formatValue(value);
+    html += `<div class="field">
+      <div class="field-top">
+        <div class="label">${escapeHtml(labels[key])}</div>
+        <button type="button" class="copy-btn" onclick="copyFieldValue(this)" data-value="${escapeAttr(displayValue)}" title="نسخ القيمة">📋</button>
+      </div>
+      <div class="value">${escapeHtml(displayValue)}</div>
+    </div>`;
   }
   html += "</div>";
 
@@ -475,6 +495,38 @@ function escapeHtml(s) {
 
 function escapeAttr(s) {
   return escapeHtml(s);
+}
+
+function copyFieldValue(btn) {
+  const value = btn.getAttribute("data-value") || "";
+  const finish = (ok) => {
+    btn.textContent = ok ? "✓" : "⚠";
+    btn.classList.add(ok ? "copied" : "copy-failed");
+    setTimeout(() => {
+      btn.textContent = "📋";
+      btn.classList.remove("copied", "copy-failed");
+    }, 1200);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(value).then(() => finish(true)).catch(() => finish(false));
+    return;
+  }
+
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = value;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    finish(true);
+  } catch (e) {
+    finish(false);
+  }
 }
 
 function arabicRow(metadata) {
