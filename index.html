@@ -865,12 +865,6 @@
           <h2 class="font-display text-xl sm:text-2xl font-extrabold" style="color:#155c3a;">تم إرسال البيانات والمستمسكات بنجاح!</h2>
           <p class="text-sm" style="color:#3f6f57;">شكراً لك، تم تسجيل معلوماتك بنجاح في قاعدة بيانات ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين.</p>
 
-          <div class="ref-number-box">
-            <span class="ref-number-label">الرقم المرجعي للطلب</span>
-            <span id="referenceNumberValue" class="ref-number-value">—</span>
-            <button type="button" class="ref-copy-btn" onclick="copyReferenceNumber()">نسخ الرقم</button>
-          </div>
-
           <div class="success-share-row">
             <button type="button" class="btn btn-secondary w-1/2" onclick="shareViaWhatsApp()">إرسال نسخة عبر واتساب</button>
             <button type="button" class="btn btn-secondary w-1/2" onclick="shareViaEmail()">إرسال نسخة عبر البريد</button>
@@ -1136,17 +1130,10 @@
     // لا يوجد ضغط أو تحويل للصورة حتى تبقى الجودة الأصلية.
     // ============================================================
 
-  const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30 MB
-
-const R2_FILE_KEYS = new Set([
-  'idFront',
-  'idBack',
-  'personalPhoto',
-  'gradDoc',
-  'adminOrder',
-  'commencementOrder',
-  'submissionData'
-]);
+    const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30 MB
+    const R2_FILE_KEYS = new Set([
+      'idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder', 'submissionData'
+    ]);
 
     function formatBytes(bytes) {
       if (!Number.isFinite(bytes)) return '';
@@ -1154,7 +1141,7 @@ const R2_FILE_KEYS = new Set([
       return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
     }
 
-    async function requestR2UploadUrl(file, fileKey, referenceNumber) {
+    async function requestR2UploadUrl(file, fileKey, folderName) {
       if (!file) throw new Error(`لم يتم اختيار ملف: ${fileKey}`);
       if (!R2_FILE_KEYS.has(fileKey)) throw new Error(`نوع مرفق غير مسموح: ${fileKey}`);
       if (file.size <= 0) throw new Error(`الملف ${file.name} فارغ.`);
@@ -1168,7 +1155,7 @@ const R2_FILE_KEYS = new Set([
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          referenceNumber,
+          folderName,
           fileKey,
           originalName: file.name,
           contentType,
@@ -1221,8 +1208,8 @@ const R2_FILE_KEYS = new Set([
       });
     }
 
-    async function uploadFileToR2(file, fileKey, referenceNumber, onProgress) {
-      const signed = await requestR2UploadUrl(file, fileKey, referenceNumber);
+    async function uploadFileToR2(file, fileKey, folderName, onProgress) {
+      const signed = await requestR2UploadUrl(file, fileKey, folderName);
       await putFileToR2(file, signed.uploadUrl, onProgress);
       return {
         key: signed.key,
@@ -1421,10 +1408,21 @@ const R2_FILE_KEYS = new Set([
 
         const jobStatus = getVal(`jobStatus${sec}`);
         const jobStatusOther = getVal(`jobStatusOther${sec}`);
-        const referenceNumber = generateReferenceNumber();
+        const fullNameValue = getVal(`fullName${sec}`);
+        const idNumberValue = getVal(`idNumber${sec}`);
+
+        if (!fullNameValue) {
+          throw new Error('اسم الموظف غير موجود، ولا يمكن إنشاء مجلد بدون اسم.');
+        }
+        if (!idNumberValue) {
+          throw new Error('رقم البطاقة الموحدة غير موجود، ولا يمكن منع تكرار أسماء الموظفين بدونه.');
+        }
+
+        // اسم المجلد = اسم الموظف + رقم البطاقة الموحدة كمعرّف تقني.
+        // لا نستخدم الرقم المرجعي REQ إطلاقًا.
+        const folderName = `${fullNameValue}__${idNumberValue}`;
 
         const formData = {
-          referenceNumber,
           employeeType: document.getElementById('employeeType').value,
           fullName: getVal(`fullName${sec}`),
           title: getVal(`title${sec}`),
@@ -1448,7 +1446,6 @@ const R2_FILE_KEYS = new Set([
           landmark: getVal(`landmark${sec}`)
         };
 
-        lastReferenceNumber = referenceNumber;
         lastSummaryText = buildSummaryText(formData);
 
         const fileOrder = [
@@ -1497,7 +1494,7 @@ const R2_FILE_KEYS = new Set([
           const result = await uploadFileToR2(
             file,
             key,
-            referenceNumber,
+            folderName,
             (ratio) => {
               const value = base + stepSize * ratio;
               currentProgress = value;
@@ -1517,6 +1514,7 @@ const R2_FILE_KEYS = new Set([
         // والصور تبقى أيضًا داخل R2 بجودتها الأصلية.
         const submissionPayload = {
           ...formData,
+          folderName,
           files: filesData,
           createdAt: new Date().toISOString(),
           storage: "cloudflare-r2"
@@ -1525,7 +1523,7 @@ const R2_FILE_KEYS = new Set([
         const jsonText = JSON.stringify(submissionPayload, null, 2);
         const jsonFile = new File(
           [jsonText],
-          `${referenceNumber}.json`,
+          `${folderName}.json`,
           { type: "application/json" }
         );
 
@@ -1533,7 +1531,7 @@ const R2_FILE_KEYS = new Set([
         const metadataResult = await uploadFileToR2(
           jsonFile,
           "submissionData",
-          referenceNumber,
+          folderName,
           (ratio) => {
             const value = 90 + (5 * ratio);
             currentProgress = value;
@@ -1547,9 +1545,6 @@ const R2_FILE_KEYS = new Set([
         await animateProgressTo(100, 500);
         setProgressStatus("تم إتمام الإرسال بنجاح!");
         clearDraft();
-
-        const refEl = document.getElementById('referenceNumberValue');
-        if (refEl) refEl.textContent = referenceNumber;
 
         setTimeout(() => {
           document.getElementById('loading').classList.add('hidden-section');
@@ -1805,22 +1800,12 @@ const R2_FILE_KEYS = new Set([
       });
     }
 
-    // ---------- 5) رقم مرجعي للطلب + مشاركة ملخص عبر واتساب/البريد ----------
-    let lastReferenceNumber = '';
+    // ---------- 5) مشاركة ملخص عبر واتساب/البريد ----------
     let lastSummaryText = '';
-
-    function generateReferenceNumber() {
-      const now = new Date();
-      const y = now.getFullYear();
-      const stamp = now.getTime().toString().slice(-6);
-      const rand = Math.floor(1000 + Math.random() * 9000);
-      return `REQ-${y}-${stamp}${rand}`;
-    }
 
     function buildSummaryText(formData) {
       return [
         'ملخص استمارة معلومات الكادر - ثانوية الشهيد محمد عبدالعزيز الكنعان للبنين',
-        `الرقم المرجعي: ${formData.referenceNumber}`,
         `نوع الموظف: ${formData.employeeType}`,
         `الاسم الرباعي: ${formData.fullName}`,
         `اللقب: ${formData.title}`,
@@ -1831,13 +1816,6 @@ const R2_FILE_KEYS = new Set([
       ].join('\n');
     }
 
-    function copyReferenceNumber() {
-      if (!lastReferenceNumber) return;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(lastReferenceNumber).catch(() => {});
-      }
-    }
-
     function shareViaWhatsApp() {
       if (!lastSummaryText) return;
       const text = encodeURIComponent(lastSummaryText);
@@ -1846,7 +1824,7 @@ const R2_FILE_KEYS = new Set([
 
     function shareViaEmail() {
       if (!lastSummaryText) return;
-      const subject = encodeURIComponent('نسخة من بيانات الاستمارة - ' + lastReferenceNumber);
+      const subject = encodeURIComponent('نسخة من بيانات استمارة الكادر - ' + (lastSummaryText.split('\n').find(x => x.startsWith('الاسم الرباعي:')) || ''));
       const body = encodeURIComponent(lastSummaryText);
       window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
