@@ -934,15 +934,13 @@
   <!-- زر الرجوع لأعلى -->
   <button type="button" id="scrollTopBtn" class="scroll-top-btn hidden-section" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="الرجوع لأعلى">↑</button>
 
-  <!-- Firebase: تمت الإضافة فقط لربط الاستمارة بالتخزين وقاعدة البيانات، دون تغيير HTML أو التصميم -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
     const firebaseConfig = {
-      apiKey: "AIzaSyCsLN_g2BkxmhLzI862fe-QxBxRlkKmKAI",
+      apiKey: "AIzaSyCslnG2BkxmhLzI862fe-QxBxRlkKmKAI",
       authDomain: "staf-9343f.firebaseapp.com",
       projectId: "staf-9343f",
       storageBucket: "staf-9343f.firebasestorage.app",
@@ -951,14 +949,17 @@
       measurementId: "G-WNSGQFGCHM"
     };
 
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const firebaseAuth = firebase.auth();
-    const firebaseStorage = firebase.storage();
-    const firebaseDb = firebase.firestore();
-    const firebaseReady = firebaseAuth.signInAnonymously();
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+    window.__staffDb = db;
+    window.__staffCollection = collection(db, "staffSubmissions");
+    window.__staffServerTimestamp = serverTimestamp;
+    window.__staffAddDoc = addDoc;
+  </script>
 
-    // رابط سكربت Cloudflare Worker المحدث
-    const SCRIPT_URL = "https://shiny-wind-9857.hassanfaleh2018.workers.dev/";
+  <script>
+    // رابط Cloudflare Worker المحدث
+    const SCRIPT_URL = "https://small-thunder-126d.hassanfaleh2018.workers.dev/";
 
     let activeSection = 1;
 
@@ -1150,78 +1151,99 @@
       }
     }
 
-    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 ميجابايت
+    // ============================================================
+    // رفع الملفات مباشرة إلى Cloudflare R2
+    // Worker يعطي رابط PUT مؤقت، والملف لا يمر عبر Worker.
+    // لا يوجد ضغط أو تحويل للصورة حتى تبقى الجودة الأصلية.
+    // ============================================================
 
-    function drawToJpegBlob(img, scale, quality) {
-      return new Promise((resolve) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
-        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        if (canvas.toBlob) {
-          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
-        } else {
-          const dataUrl = canvas.toDataURL('image/jpeg', quality);
-          const bin = atob(dataUrl.split(',')[1]);
-          const arr = new Uint8Array(bin.length);
-          for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-          resolve(new Blob([arr], { type: 'image/jpeg' }));
-        }
-      });
+    const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30 MB
+    const R2_FILE_KEYS = new Set([
+      'idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'
+    ]);
+
+    function formatBytes(bytes) {
+      if (!Number.isFinite(bytes)) return '';
+      const mb = bytes / (1024 * 1024);
+      return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
     }
 
-    async function compressImageIfNeeded(file) {
-      if (!file.type || !file.type.startsWith('image/') || file.size <= MAX_IMAGE_SIZE) {
-        return file;
+    async function requestR2UploadUrl(file, fileKey, referenceNumber) {
+      if (!file) throw new Error(`لم يتم اختيار ملف: ${fileKey}`);
+      if (!R2_FILE_KEYS.has(fileKey)) throw new Error(`نوع مرفق غير مسموح: ${fileKey}`);
+      if (file.size <= 0) throw new Error(`الملف ${file.name} فارغ.`);
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error(`الملف "${file.name}" حجمه ${formatBytes(file.size)}، والحد الأقصى 30 MB.`);
       }
 
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+      const contentType = file.type || 'application/octet-stream';
+
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          referenceNumber,
+          fileKey,
+          originalName: file.name,
+          contentType,
+          size: file.size
+        })
       });
 
-      const img = await new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = dataUrl;
-      });
-
-      let quality = 0.9;
-      let scale = 1;
-      let blob = await drawToJpegBlob(img, scale, quality);
-
-      while (blob && blob.size > MAX_IMAGE_SIZE && quality > 0.4) {
-        quality -= 0.1;
-        blob = await drawToJpegBlob(img, scale, quality);
-      }
-      while (blob && blob.size > MAX_IMAGE_SIZE && scale > 0.3) {
-        scale -= 0.15;
-        blob = await drawToJpegBlob(img, scale, quality);
+      const raw = await response.text();
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw new Error(`استجابة غير صالحة من خادم الرفع (HTTP ${response.status}).`);
       }
 
-      if (!blob) return file;
+      if (!response.ok || !data.uploadUrl || !data.key) {
+        throw new Error(data.detail || data.error || `تعذر تجهيز رفع الملف (HTTP ${response.status}).`);
+      }
 
-      const newName = file.name ? file.name.replace(/\.[^./\\]+$/, '') + '.jpg' : 'image.jpg';
-      return new File([blob], newName, { type: 'image/jpeg' });
+      return data;
     }
 
-    async function fileToBase64(fileInputId) {
-      const input = document.getElementById(fileInputId);
-      if (!input || !input.files || input.files.length === 0) return null;
-
-      const original = input.files[0];
-      const file = await compressImageIfNeeded(original);
-
+    function putFileToR2(file, uploadUrl, onProgress) {
       return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve({ data: reader.result, name: file.name });
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('PUT', uploadUrl, true);
+        xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+        xhr.timeout = 15 * 60 * 1000;
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable && typeof onProgress === 'function') {
+            onProgress(event.loaded / event.total);
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve();
+          } else {
+            reject(new Error(`فشل رفع "${file.name}" إلى R2. HTTP ${xhr.status}.`));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error(`تعذر الاتصال بـ R2 أثناء رفع "${file.name}".`));
+        xhr.ontimeout = () => reject(new Error(`انتهت مهلة رفع "${file.name}". تحقق من الإنترنت وحاول مرة أخرى.`));
+        xhr.onabort = () => reject(new Error(`تم إلغاء رفع "${file.name}".`));
+
+        xhr.send(file);
       });
+    }
+
+    async function uploadFileToR2(file, fileKey, referenceNumber, onProgress) {
+      const signed = await requestR2UploadUrl(file, fileKey, referenceNumber);
+      await putFileToR2(file, signed.uploadUrl, onProgress);
+      return {
+        key: signed.key,
+        name: file.name,
+        size: file.size,
+        type: file.type || 'application/octet-stream'
+      };
     }
 
     // المعالجة الآمنة لعملية إرسال النموذج والانتقال للمراجعة مع حماية ضد الأخطاء
@@ -1390,6 +1412,7 @@
     async function confirmAndSubmit() {
       const sec = activeSection;
       const submitBtn = document.getElementById('confirmSubmitBtn');
+
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.6';
@@ -1402,9 +1425,8 @@
       paintProgress(0);
 
       try {
-        await animateProgressTo(8, 400);
-        setProgressStatus("جاري الاتصال بـ Firebase...");
-        await firebaseReady;
+        await animateProgressTo(5, 250);
+        setProgressStatus("جاري تجهيز البيانات...");
 
         const getVal = (id) => {
           const el = document.getElementById(id);
@@ -1443,59 +1465,85 @@
         lastReferenceNumber = referenceNumber;
         lastSummaryText = buildSummaryText(formData);
 
-        const fileOrder = ['idFront', 'idBack', 'personalPhoto', 'gradDoc', 'adminOrder', 'commencementOrder'];
+        const fileOrder = [
+          'idFront',
+          'idBack',
+          'personalPhoto',
+          'gradDoc',
+          'adminOrder',
+          'commencementOrder'
+        ];
+
         const filesData = {};
+        const requiredFileKeys = sec === 2
+          ? new Set(['idFront', 'idBack', 'personalPhoto', 'adminOrder'])
+          : new Set(['idFront', 'idBack', 'personalPhoto', 'adminOrder']);
 
-        setProgressStatus("جاري رفع المرفقات بالحجم والدقة الأصلية...");
-        for (let i = 0; i < fileOrder.length; i++) {
-          const key = fileOrder[i];
+        // 8% = بدء الرفع. من 8 إلى 88% موزعة على الملفات.
+        await animateProgressTo(8, 250);
+
+        let filesToUpload = [];
+        for (const key of fileOrder) {
           const input = document.getElementById(`${key}${sec}`);
-          const file = input && input.files && input.files[0];
-          if (file) {
-            const safeName = file.name.replace(/[^a-zA-Z0-9._-؀-ۿ]/g, '_');
-            const path = `staff-submissions/${referenceNumber}/${key}_${safeName}`;
-            const ref = firebaseStorage.ref(path);
-            const uploadTask = ref.put(file, {
-              contentType: file.type || 'application/octet-stream',
-              customMetadata: {
-                originalName: file.name,
-                referenceNumber,
-                field: key
-              }
-            });
+          const file = input && input.files && input.files[0] ? input.files[0] : null;
 
-            await new Promise((resolve, reject) => {
-              uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, (snapshot) => {
-                const percent = snapshot.totalBytes ? snapshot.bytesTransferred / snapshot.totalBytes : 0;
-                const base = 15 + (i / fileOrder.length) * 70;
-                const target = base + percent * (70 / fileOrder.length);
-                paintProgress(target);
-              }, reject, resolve);
-            });
-
-            const url = await ref.getDownloadURL();
-            filesData[key] = {
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              path,
-              url
-            };
-          } else {
+          if (!file) {
+            if (requiredFileKeys.has(key)) {
+              throw new Error(`المرفق المطلوب غير موجود: ${key}. ارجع إلى المراجعة وأرفقه.`);
+            }
             filesData[key] = null;
+            continue;
           }
+          filesToUpload.push({ key, file });
         }
 
-        setProgressStatus("جاري حفظ بيانات الاستمارة...");
-        await firebaseDb.collection('staffSubmissions').doc(referenceNumber).set({
-          formData,
-          filesData,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        const uploadStart = 8;
+        const uploadEnd = 88;
+        const stepSize = filesToUpload.length ? (uploadEnd - uploadStart) / filesToUpload.length : 0;
 
-        await animateProgressTo(100, 450);
+        for (let i = 0; i < filesToUpload.length; i++) {
+          const { key, file } = filesToUpload[i];
+          const base = uploadStart + stepSize * i;
+          const ceiling = uploadStart + stepSize * (i + 1);
+
+          setProgressStatus(`جاري رفع ${file.name} (${i + 1} من ${filesToUpload.length})...`);
+
+          const result = await uploadFileToR2(
+            file,
+            key,
+            referenceNumber,
+            (ratio) => {
+              const value = base + stepSize * ratio;
+              currentProgress = value;
+              paintProgress(value);
+            }
+          );
+
+          filesData[key] = result;
+          await animateProgressTo(ceiling, 180);
+        }
+
+        setProgressStatus("تم رفع المستمسكات. جاري حفظ بيانات الاستمارة...");
+        await animateProgressTo(92, 250);
+
+        // حفظ البيانات الوصفية فقط في Firestore.
+        // الصور تبقى في R2 ولا تمر عبر Firestore.
+        if (!window.__staffDb || !window.__staffAddDoc || !window.__staffCollection) {
+          throw new Error("تعذر تهيئة Firebase Firestore. تأكد من اتصال الإنترنت وقواعد Firestore.");
+        }
+
+        const firestorePayload = {
+          ...formData,
+          files: filesData,
+          createdAt: window.__staffServerTimestamp()
+        };
+
+        await window.__staffAddDoc(window.__staffCollection, firestorePayload);
+
+        await animateProgressTo(100, 500);
         setProgressStatus("تم إتمام الإرسال بنجاح!");
         clearDraft();
+
         const refEl = document.getElementById('referenceNumberValue');
         if (refEl) refEl.textContent = referenceNumber;
 
@@ -1504,12 +1552,24 @@
           document.getElementById('successCard').classList.remove('hidden-section');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 500);
+
       } catch (err) {
-        console.error('Firebase submission error:', err);
         stopProgressCreep();
-        showCustomAlert('حدث خطأ أثناء رفع البيانات إلى Firebase: ' + (err && err.message ? err.message : err));
+        console.error('Submission error:', err);
+
+        const message = err && err.message
+          ? err.message
+          : String(err);
+
+        showCustomAlert(
+          "تعذر إكمال الإرسال.\n\n" +
+          message +
+          "\n\nلم يتم حذف الملفات التي تم رفعها إلى R2، ويمكن المحاولة مرة أخرى."
+        );
+
         document.getElementById('loading').classList.add('hidden-section');
         document.getElementById('reviewSection').classList.remove('hidden-section');
+
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.style.opacity = '';
@@ -1522,7 +1582,7 @@
 
     // ---------- 1) معاينة الصورة فور اختيارها + التحقق من الصيغة والحجم ----------
     const MIN_IMAGE_DIMENSION = 400; // بكسل، تحذير فقط إن كانت الصورة أصغر من هذا
-    const MAX_UPLOAD_SIZE_HINT = 30 * 1024 * 1024; // 30 ميجابايت كحد أقصى قبل الرفض الفوري
+    const MAX_UPLOAD_SIZE_HINT = 30 * 1024 * 1024; // 30 ميجابايت حد الواجهة، مطابق لـ R2 Worker
 
     function ensureFilePreviewWrap(input) {
       let wrap = input.nextElementSibling;
@@ -1563,7 +1623,7 @@
       }
 
       if (file.size > MAX_UPLOAD_SIZE_HINT) {
-        showCustomAlert('حجم الصورة كبير جداً، يرجى اختيار صورة أصغر (أقل من 30 ميجابايت).');
+        showCustomAlert('حجم الصورة كبير جداً، يرجى اختيار صورة أصغر (30 ميجابايت أو أقل).');
         input.value = '';
         wrap.classList.add('hidden-section');
         return;
